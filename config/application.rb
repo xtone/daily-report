@@ -31,5 +31,9 @@ module DailyReport
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    if !Rails.env.production? && File.exist?(Rails.root.join 'config', 'database.local.yml')
+      config.paths.add "config/database", with: "config/database.local.yml"
+    end
   end
 end
