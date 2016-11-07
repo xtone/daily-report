@@ -33,6 +33,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'capistrano-rails', group: :development
 
 gem 'pundit'
+gem 'devise'
 
 group :development, :test do
   gem 'rspec-rails'
