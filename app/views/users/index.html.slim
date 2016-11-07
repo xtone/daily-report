@@ -1,0 +1,5 @@
+h1 Users#index
+p Find me in app/views/users/index.html.slim
+
+- User.all.each do |u|
+  p= u.email
