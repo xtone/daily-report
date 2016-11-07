@@ -6,6 +6,8 @@ class CreateProjects < ActiveRecord::Migration[5.0]
       t.string :name_reading
 
       t.timestamps
+
+      t.index :code, unique: true
     end
   end
 end

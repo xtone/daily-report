@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161027104324) do
+ActiveRecord::Schema.define(version: 20161028053423) do
+
+  create_table "operations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "project_code"
+    t.integer  "workload"
+    t.date     "worked_in",    null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["project_code"], name: "index_operations_on_project_code", using: :btree
+    t.index ["user_id"], name: "index_operations_on_user_id", using: :btree
+  end
 
   create_table "projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "code"
@@ -18,9 +29,10 @@ ActiveRecord::Schema.define(version: 20161027104324) do
     t.string   "name_reading"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.index ["code"], name: "index_projects_on_code", unique: true, using: :btree
   end
 
-  create_table "user_role_associations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "user_role_associations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "user_role_id"
     t.datetime "created_at",   null: false
@@ -37,10 +49,15 @@ ActiveRecord::Schema.define(version: 20161027104324) do
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.string   "email"
-    t.string   "password"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.boolean  "enrolled",            default: true, null: false
+    t.string   "email",               default: "",   null: false
+    t.string   "encrypted_password",  default: "",   null: false
+    t.datetime "remember_created_at"
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
   end
 
+  add_foreign_key "user_role_associations", "user_roles"
+  add_foreign_key "user_role_associations", "users"
 end
