@@ -2,11 +2,12 @@ version: '2'
 services:
   app:
     build: .
+    command: bin/rails server -p 3000 -b 0.0.0.0
     environment:
       RAILS_ENV: development
       MYSQL_HOST: mysql
     ports:
-      - '6000:3000'
+      - '3456:3000'
     volumes:
       - .:/daily-report
     links:
@@ -21,6 +22,6 @@ services:
   memcached:
     image: 'memcached:1.4'
   bundle:
-    image: busybox
+    image: dailyreport_app
     volumes:
       - /bundle
