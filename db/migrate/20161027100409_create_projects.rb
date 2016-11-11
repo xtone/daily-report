@@ -4,6 +4,7 @@ class CreateProjects < ActiveRecord::Migration[5.0]
       t.integer :code
       t.string :name
       t.string :name_reading
+      t.boolean :hidden, null: false, default: false
 
       t.timestamps
 

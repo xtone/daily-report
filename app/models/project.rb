@@ -12,4 +12,10 @@ class Project < ApplicationRecord
       (at.year % 100) * 100 + this_year_projects + 1
     end
   end
+
+  # 表示ステータス
+  # @return [String]
+  def display_status
+    self.hidden ? I18n.t('project.display_status.hidden') : I18n.t('project.display_status.display')
+  end
 end

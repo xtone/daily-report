@@ -1,0 +1,22 @@
+ja:
+  activerecord: &activerecord
+    models:
+      user: ユーザー
+      user_role: ユーザー権限
+      project: プロジェクト
+      operation: 稼働内容
+    attributes:
+      project:
+        id: ID
+        name: 名前
+        name_readling: よみ(かな)
+        hidden: 表示/非表示
+        created_at: 作成日
+
+  activemodel:
+    <<: *activerecord
+
+  project:
+    display_status:
+      display: 表示
+      hidden: 非表示
