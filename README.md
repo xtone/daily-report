@@ -22,7 +22,7 @@ docker-compose exec app bin/rails db:create
 docker-compose exec app bin/rails db:migrate
 ```
 
-バックグラウンドでイメージ実行（ポート6000でlocalhostに接続してね）
+バックグラウンドでイメージ実行（ポート3456でlocalhostに接続してね）
 ```
 docker-compose start
 ```
