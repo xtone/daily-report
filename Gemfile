@@ -32,8 +32,13 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
 
+# Use Pundit and Devise to provide authorization system
 gem 'pundit'
 gem 'devise'
+gem 'devise-encryptable'
+
+# Use Holidays to deal holidays
+gem 'holidays'
 
 group :development, :test do
   gem 'rspec-rails'
