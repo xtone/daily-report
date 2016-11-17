@@ -14,10 +14,4 @@ Rails.application.routes.draw do
 
   resources :reports
   resources :projects
-
-  scope :csvs do
-    get :reports, to: 'reports#csv'
-    get :projects, to: 'projects#csv'
-    get :users, to: 'users#csv'
-  end
 end
