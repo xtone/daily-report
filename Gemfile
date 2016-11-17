@@ -40,6 +40,9 @@ gem 'devise-encryptable'
 # Use Holidays to deal holidays
 gem 'holidays'
 
+# Use react-rails to use React and JSX easily
+gem 'react-rails'
+
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
