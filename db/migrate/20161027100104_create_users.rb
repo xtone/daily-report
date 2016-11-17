@@ -5,7 +5,7 @@ class CreateUsers < ActiveRecord::Migration[5.0]
       t.boolean :enrolled, null: false, default: true
 
       ## Database authenticatable
-      t.string :email,              null: false, default: ""
+      t.string :email
       t.string :encrypted_password, null: false, default: ""
 
       ## Rememberable

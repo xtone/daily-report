@@ -10,26 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161028053423) do
+ActiveRecord::Schema.define(version: 20161116032124) do
 
   create_table "operations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id"
-    t.integer  "project_code"
+    t.integer  "report_id"
+    t.integer  "project_id"
     t.integer  "workload"
-    t.date     "worked_in",    null: false
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.index ["project_code"], name: "index_operations_on_project_code", using: :btree
-    t.index ["user_id"], name: "index_operations_on_user_id", using: :btree
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_operations_on_project_id", using: :btree
+    t.index ["report_id"], name: "index_operations_on_report_id", using: :btree
   end
 
   create_table "projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "code"
     t.string   "name"
     t.string   "name_reading"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.index ["code"], name: "index_projects_on_code", unique: true, using: :btree
+    t.boolean  "hidden",       default: false, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.index ["code"], name: "index_projects_on_code", using: :btree
+  end
+
+  create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.date     "worked_in"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 
   create_table "user_role_associations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -50,7 +58,7 @@ ActiveRecord::Schema.define(version: 20161028053423) do
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.boolean  "enrolled",            default: true, null: false
-    t.string   "email",               default: "",   null: false
+    t.string   "email"
     t.string   "encrypted_password",  default: "",   null: false
     t.datetime "remember_created_at"
     t.datetime "created_at",                         null: false
