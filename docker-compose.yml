@@ -15,12 +15,15 @@ services:
       - memcached
     volumes_from:
       - bundle
+
   mysql:
     image: 'mysql:5.7.16'
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
   memcached:
     image: 'memcached:1.4'
+
   bundle:
     image: dailyreport_app
     volumes:

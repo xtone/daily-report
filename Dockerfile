@@ -17,5 +17,3 @@ ENV BUNDLE_GEMFILE=$APP_ROOT/Gemfile \
   BUNDLE_PATH=/bundle
 
 RUN bundle install
-
-ADD . $APP_ROOT

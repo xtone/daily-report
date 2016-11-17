@@ -18,21 +18,21 @@ docker-compose run app bundle install
 
 DBセットアップ
 ```
-docker-compose run app bundle exec rake db:create
-docker-compose run app bundle exec rake db:migrate
+docker-compose exec app bin/rails db:create
+docker-compose exec app bin/rails db:migrate
 ```
 
-バックグラウンドでイメージ実行（ポート6000でlocalhostに接続してね）
+バックグラウンドでイメージ実行（ポート3456でlocalhostに接続してね）
 ```
-docker-compose up -d
+docker-compose start
 ```
 
-サーバーログを見る
+Railsのサーバーログを見る
 ```
 docker-compose logs app
 ```
 
 RSpec実行
 ```
-docker-compose run app bundle exec rspec
+docker-compose exec app bundle exec rspec
 ```
