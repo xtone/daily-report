@@ -1,0 +1,15 @@
+- last_month = date << 1
+- next_month = date >> 1
+
+ul.pager
+  li.previous
+    = link_to '← Older',
+      root_path(date: last_month.strftime('%Y%m')),
+      data: { toggle: 'tooltip', placement: 'right', 'original-title': last_month.strftime('%Y年%-m月') }
+  li.next
+    = link_to 'Newer →',
+      root_path(date: next_month.strftime('%Y%m')),
+      data: { toggle: 'tooltip', placement: 'left', 'original-title': next_month.strftime('%Y年%-m月') }
+
+javascript:
+  $('.pager [data-toggle="tooltip"]').tooltip();

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161116032124) do
+ActiveRecord::Schema.define(version: 20161202034233) do
 
   create_table "operations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "report_id"
@@ -40,6 +40,14 @@ ActiveRecord::Schema.define(version: 20161116032124) do
     t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 
+  create_table "user_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "user_id"
+    t.integer "project_id"
+    t.index ["project_id"], name: "index_user_projects_on_project_id", using: :btree
+    t.index ["user_id", "project_id"], name: "index_user_projects_on_user_id_and_project_id", unique: true, using: :btree
+    t.index ["user_id"], name: "index_user_projects_on_user_id", using: :btree
+  end
+
   create_table "user_role_associations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "user_role_id"
@@ -66,6 +74,8 @@ ActiveRecord::Schema.define(version: 20161116032124) do
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
   end
 
+  add_foreign_key "user_projects", "projects"
+  add_foreign_key "user_projects", "users"
   add_foreign_key "user_role_associations", "user_roles"
   add_foreign_key "user_role_associations", "users"
 end

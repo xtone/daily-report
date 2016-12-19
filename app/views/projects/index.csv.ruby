@@ -1,6 +1,6 @@
 require 'csv'
 
-CSV.generate do |csv|
+CSV.generate(encoding: 'Shift_JIS') do |csv|
   csv << %w{コード 名前 よみ(かな) 表示/非表示 作成日}
   @projects.each do |project|
     csv << [

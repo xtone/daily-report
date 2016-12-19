@@ -33,6 +33,15 @@ namespace :app do
           )
         end
 
+        # user_projects.csv -> UserProject
+        CSV.table(Rails.root.join('tmp', 'user_projects.csv')).each do |row|
+          # 元データがUniqueでないので、ここはcreateに失敗しても例外にしない
+          UserProject.create(
+            user_id: row[:user_id],
+            project_id: row[:project_id]
+          )
+        end
+
         # daily_reports.csv -> Report
         CSV.table(Rails.root.join('tmp', 'daily_reports.csv')).each do |row|
           Report.create!(

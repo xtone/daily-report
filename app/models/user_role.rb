@@ -7,7 +7,7 @@ class UserRole < ApplicationRecord
 
   enum role: {
     administrator: 0,
-    generail_affairs: 1,
+    general_affairs: 1,
     director: 2
   }
 end

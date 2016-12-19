@@ -1,5 +1,7 @@
 class Project < ApplicationRecord
-  has_many :projects
+  has_many :operations
+  has_many :user_projects
+  has_many :users, through: :user_projects
 
   validates :code,
     allow_blank: true,
@@ -11,6 +13,8 @@ class Project < ApplicationRecord
   validates :name_reading,
     presence: true,
     format: { with: /\A[\p{hiragana}ー]+\Z/ }
+
+  scope :available, -> { where(hidden: false) }
 
   class << self
     # 次に割り当てられるプロジェクトコード

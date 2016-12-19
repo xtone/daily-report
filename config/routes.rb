@@ -14,4 +14,8 @@ Rails.application.routes.draw do
 
   resources :reports
   resources :projects
+
+  namespace :settings do
+    resources :projects
+  end
 end
