@@ -18,13 +18,13 @@ namespace :app do
         # user_printouts.csv -> User
         CSV.table(Rails.root.join('tmp', 'user_printouts.csv')).each do |row|
           user = User.find_by(id: row[:id])
-          user.update_attributes!(enrolled: row[:printout] == 1, created_at: row[:starting_date])
+          user.update_attributes!(deleted_at: row[:printout] == 1 ? nil : user.updated_at, created_at: row[:starting_date])
         end
         # projects.csv -> Project
         CSV.table(Rails.root.join('tmp', 'projects.csv')).each do |row|
           Project.create!(
             id: row[:id],
-            code: row[:pid].to_i,
+            code: row[:pid].present? ? row[:pid].to_i : nil,
             name: row[:name],
             name_reading: row[:name_kana],
             hidden: row[:deleted] == 1,

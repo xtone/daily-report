@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     get 'users/sign_out', to: 'users/sessions#destroy'
-    resources :users, only: [:index, :show]
+    resources :users
   end
 
   resources :reports
@@ -17,5 +17,12 @@ Rails.application.routes.draw do
 
   namespace :settings do
     resources :projects
+  end
+
+  scope :admin do
+    root to: 'admin#index', as: :admin_root
+  end
+  namespace :admin do
+    resources :csvs, only: [:index]
   end
 end

@@ -1,0 +1,25 @@
+= form_for project, html: { class: 'form-horizontal' } do |f|
+  .form-group
+    label.col-sm-2.control-label= t('project.code')
+    .col-sm-10
+      = f.text_field :code, class: 'form-control'
+      = error_message project, :code
+  .form-group
+    label.col-sm-2.control-label= t('project.name')
+    .col-sm-10
+      = f.text_field :name, class: 'form-control'
+      = error_message project, :name
+  .form-group
+    label.col-sm-2.control-label= t('project.name_reading')
+    .col-sm-10
+      = f.text_field :name_reading, class: 'form-control'
+      = error_message project, :name_reading
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        label
+          = f.check_box :hidden
+          = t ('project.hidden')
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      = f.submit project.new_record? ? '登録' : '更新', class: 'btn btn-default'

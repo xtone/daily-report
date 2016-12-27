@@ -2,40 +2,6 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-#my-projects {
-  li {
-    &:after {
-      display: block;
-      clear: both;
-      height: 0px;
-      visibility: hidden;
-      content: '.';
-    }
-    div {
-      float: left;
-      margin-right: 0.5em;
-    }
-    form {
-      float: right;
-    }
-  }
-}
-
-#all-projects {
-  li {
-    &:after {
-      display: block;
-      clear: both;
-      height: 0px;
-      visibility: hidden;
-      content: '.';
-    }
-    div {
-      float: left;
-      margin-left: 0.5em;
-    }
-    form {
-      float: left;
-    }
-  }
+#project-setting {
+  width: 40em;
 }

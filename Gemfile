@@ -40,6 +40,9 @@ gem 'devise-encryptable'
 # Use Holidays to deal holidays
 gem 'holidays'
 
+# Use Gretel to make it easy to create breadcrumbs
+gem 'gretel'
+
 # Use react-rails to use React and JSX easily
 gem 'react-rails'
 

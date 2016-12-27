@@ -1,0 +1,31 @@
+= form_for user, html: { class: 'form-horizontal' } do |f|
+  .form-group
+    label.col-sm-2.control-label= t('user.name')
+    .col-sm-10
+      = f.text_field :name, class: 'form-control'
+      = error_message user, :name
+  .form-group
+    label.col-sm-2.control-label= t('user.email')
+    .col-sm-10
+      = f.text_field :email, class: 'form-control'
+      = error_message user, :email
+  .form-group
+    label.col-sm-2.control-label= t('user.password')
+    .col-sm-10
+      = f.password_field :password, class: 'form-control'
+      = error_message user, :password
+  .form-group
+    label.col-sm-2.control-label= t('user.password_confirmation')
+    .col-sm-10
+      = f.password_field :password_confirmation, class: 'form-control'
+      = error_message user, :password_confirmation
+  .form-group
+    label.col-sm-2.control-label= t('user.role')
+    .col-sm-10
+      - roles.each do |role, value|
+        label.checkbox-inline
+          = check_box_tag 'user_roles[]', value, user.user_roles.any?{ |u| u.send("#{role}?") }
+          = t("user_role.#{role}")
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      = f.submit user.new_record? ? '登録' : '更新', class: 'btn btn-default'

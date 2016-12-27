@@ -1,10 +1,5 @@
-h2 参加プロジェクト設定
+h1 参加プロジェクト設定
 
-.container
-  .row
-    .col-md-6
-      h3 自分のプロジェクト
-      = react_component('MyProjectList', id: 'my-projects', data: @my_projects.to_json)
-    .col-md-6
-      h3 すべてのプロジェクト
-      = react_component('AllProjectList', id: 'all-projects', data: @all_projects.to_json)
+p クリックすると参加状態のOn/Offを切り替えることができます。
+
+= react_component('ProjectListRoot', resource_url: settings_projects_path(format: :json))

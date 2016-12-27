@@ -17,6 +17,23 @@ class Project < ApplicationRecord
   scope :available, -> { where(hidden: false) }
 
   class << self
+    # 該当のユーザーが関与しているかの情報を含むリストを取得
+    # @param [Integer] user_id
+    # @return [Array]
+    def find_in_user(user_id)
+      user_pids = UserProject.where(user_id: user_id).pluck(:project_id)
+      list = []
+      available.order(name_reading: :asc).each do |project|
+        list << {
+          id: project.id,
+          name: project.name,
+          name_reading: project.name_reading,
+          related: user_pids.include?(project.id)
+        }
+      end
+      list
+    end
+
     # 次に割り当てられるプロジェクトコード
     # 頭2桁が年の下2桁、続く3桁が年内のプロジェクトの通し番号
     # @return [Integer]
@@ -24,6 +41,10 @@ class Project < ApplicationRecord
       this_year_projects = where(created_at: (at.beginning_of_year)..(at.end_of_year)).count
       (at.year % 100) * 1000 + this_year_projects + 1
     end
+  end
+
+  def displayed?
+    !self.hidden
   end
 
   # 表示ステータス

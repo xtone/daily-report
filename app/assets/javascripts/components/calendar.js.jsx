@@ -19,7 +19,7 @@ var Calendar = React.createClass({
     $.ajax(this.props.reports_url, {
       dataType: 'json'
     }).done(function(data) {
-        this.setState({ reports: data });
+      this.setState({ reports: data });
     }.bind(this)
     ).fail(function(xhr, status, err) {
       console.error(this.props.reports_url, status, err.toString());
@@ -95,11 +95,7 @@ var CalendarDay = React.createClass({
   },
 
   componentWillMount: function() {
-    if (this.props.data.hasOwnProperty('report')) {
-      this.setState({
-        operationCount: this.props.data.report.operations.length
-      });
-    }
+    this.setOperationCountDefault();
   },
 
   /**
@@ -108,6 +104,22 @@ var CalendarDay = React.createClass({
    */
   reportExist: function() {
     return this.props.data.hasOwnProperty('report');
+  },
+
+  /**
+   * dateが未来かどうかチェックする
+   * @returns {boolean}
+   */
+  isFuture: function() {
+    return new Date().getTime() < new Date(this.props.data.date).getTime();
+  },
+
+  setOperationCountDefault: function() {
+    if (this.reportExist()) {
+      this.setState({ operationCount: this.props.data.report.operations.length });
+    } else {
+      this.setState({ operationCount: 1 });
+    }
   },
 
   /**
@@ -121,12 +133,7 @@ var CalendarDay = React.createClass({
    * 登録作業を中止する
    */
   abort: function() {
-    if (this.reportExist()) {
-      this.setState({ operationCount: this.props.data.report.operations.length });
-    } else {
-      this.setState({ operationCount: 0 });
-    }
-
+    this.setOperationCountDefault();
     this.toggleForm();
   },
 
@@ -198,6 +205,7 @@ var CalendarDay = React.createClass({
                         wday={this.props.data.wday}
                         key={this.props.data.date + '-date'} />
           <RegisterButton isRegistered={this.reportExist()}
+                          disabled={this.isFuture()}
                           toggleForm={this.toggleForm} />
           <div className="operations">
             {operations}
@@ -234,7 +242,6 @@ var CalendarDate = React.createClass({
  **/
 var RegisterButton = React.createClass({
   onClick: function(event) {
-    event.preventDefault();
     this.props.toggleForm();
   },
 
@@ -242,15 +249,23 @@ var RegisterButton = React.createClass({
     if (this.props.isRegistered) {
       return (
         <div>
-          <a href="#" className="btn btn-success" onClick={this.onClick}>更新</a>
+          <button type="button" className="btn btn-success" onClick={this.onClick}>更新</button>
         </div>
       );
     } else {
-      return (
-        <div>
-          <a href="#" className="btn btn-primary" onClick={this.onClick}>登録</a>
-        </div>
-      );
+      if (this.props.disabled) {
+        return (
+          <div>
+            <button type="button" className="btn btn-default" disabled="disabled">登録</button>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <button type="button" className="btn btn-primary" onClick={this.onClick}>登録</button>
+          </div>
+        );
+      }
     }
   }
 });
@@ -260,14 +275,13 @@ var RegisterButton = React.createClass({
  */
 var AbortButton = React.createClass({
   onClick: function(event) {
-    event.preventDefault();
     this.props.onClick();
   },
 
   render: function() {
     return (
       <div>
-        <a href="#" className="btn btn-danger" onClick={this.onClick}>中止</a>
+        <button type="button" className="btn btn-danger" onClick={this.onClick}>中止</button>
       </div>
     );
   }
@@ -280,7 +294,9 @@ var Operation = React.createClass({
   render: function() {
     return (
       <div className="operation">
-        <span className="project">{this.props.project.name}</span>
+        <span className="project label label-default">
+          {this.props.project.name}
+        </span>
         <span className="workload">{this.props.workload}%</span>
       </div>
     );
@@ -295,7 +311,8 @@ var ReportForm = React.createClass({
     return {
       id: null,
       displayed: [],
-      errors: []
+      reportError: null,
+      operationErrors: []
     };
   },
 
@@ -313,7 +330,6 @@ var ReportForm = React.createClass({
   },
 
   addOperation: function(event) {
-    event.preventDefault();
     this.props.onAddForm();
   },
 
@@ -357,7 +373,10 @@ var ReportForm = React.createClass({
       }
       total += intval;
     }, this);
-    this.setState({ errors: errors });
+    if (total != 100) {
+      this.setState({ reportError: '稼働率の合計が100になっていません。' });
+    }
+    this.setState({ operationErrors: errors });
     return total == 100 && errors.join('') == '';
   },
 
@@ -374,7 +393,7 @@ var ReportForm = React.createClass({
       if (typeof operation == 'object') {
         inputs.push(
           <OperationForm operation={operation}
-                         error={this.state.errors[i]}
+                         error={this.state.operationErrors[i]}
                          projects={this.props.projects}
                          onDestroy={this.destroy}
                          index={i}
@@ -382,10 +401,11 @@ var ReportForm = React.createClass({
         );
       } else {
         inputs.push(
-          <OperationForm error={this.state.errors[i]}
+          <OperationForm error={this.state.operationErrors[i]}
                          projects={this.props.projects}
                          onDestroy={this.destroy}
-                         index={i} />
+                         index={i}
+                         key={i} />
         );
       }
     }
@@ -396,12 +416,17 @@ var ReportForm = React.createClass({
       action = '/reports.json';
       method = 'POST';
     }
+    var error = null;
+    if (this.state.reportError) {
+      error = <span className="alert alert-danger">{this.state.reportError}</span>;
+    }
     return (
       <form action={action} method="post" ref="form" onSubmit={this.onSubmit}>
         <input type="hidden" name="_method" value={method} />
         {inputs}
-        <a href="#" className="btn btn-info" onClick={this.addOperation}>フォームの追加</a>
-        <input type="submit" className="btn btn-primary" value="送信" />
+        <button type="button" className="btn btn-info btn-sm" onClick={this.addOperation}>フォームの追加</button>
+        <input type="submit" className="btn btn-primary pull-right" value="送信" />
+        {error}
       </form>
     );
   }
@@ -411,26 +436,20 @@ var ReportForm = React.createClass({
  * 作業内容を登録するフォームComponent
  */
 var OperationForm = React.createClass({
-  getInitialState: function() {
-    return {
-      project_id: '',
-      workload: ''
-    }
-  },
-
-  componentWillMount: function() {
-    if (this.props.hasOwnProperty('operation')) {
-      this.setState({
-        id: this.props.operation.id,
-        project_id: this.props.operation.project.id,
-        workload: this.props.operation.workload
-      });
-    }
+  operationExist: function() {
+    return this.props.hasOwnProperty('operation');
   },
 
   destroyOperation: function(event) {
-    event.preventDefault();
     this.props.onDestroy(this.props.index);
+  },
+
+  /**
+   * プロジェクト変更後、稼働率の入力のためfocusを移動させる
+   * @param event
+   */
+  onChangeProject: function(event) {
+    this.refs.workload.focus();
   },
 
   render: function() {
@@ -440,29 +459,48 @@ var OperationForm = React.createClass({
     } else {
       error = null;
     }
-    if (this.state.project_id) {
+    if (this.operationExist()) {
       return (
-        <div>
+        <div className="form-inline">
           <input type="hidden" name="operation_ids[]" value={this.props.operation.id} />
-          <ProjectSelect project_id={this.state.project_id}
+          <ProjectSelect project_id={this.props.operation.project.id}
                          projects={this.props.projects}
-                         key={this.state.project_id} />
-          <input type="text" name="workloads[]" defaultValue={this.state.workload} />%
-          <button type="button" className="btn btn-danger btn-sm" onClick={this.destroyOperation}>
-            <span className="glyphicon glyphicon-trash" />
+                         key={"project" + this.props.operation.id}
+                         onChange={this.onChangeProject} />
+          <div className="input-group">
+            <input type="text"
+                   name="workloads[]"
+                   defaultValue={this.props.operation.workload}
+                   ref="workload"
+                   className="form-control input-sm" />
+            <div className="input-group-addon">%</div>
+          </div>
+          <button type="button"
+                  className="btn btn-danger btn-xs"
+                  onClick={this.destroyOperation}>
+            <span className="glyphicon glyphicon-remove" />
           </button>
           {error}
         </div>
       );
     } else {
       return (
-        <div>
+        <div className="form-inline">
           <input type="hidden" name="operation_ids[]" value="" />
           <ProjectSelect projects={this.props.projects}
-                         key="projectSelect"/>
-          <input type="text" name="workloads[]" defaultValue={this.state.workload} />%
-          <button type="button" className="btn btn-danger btn-sm" onClick={this.destroyOperation}>
-            <span className="glyphicon glyphicon-trash" />
+                         onChange={this.onChangeProject} />
+          <div className="input-group">
+            <input type="text"
+                   name="workloads[]"
+                   defaultValue=""
+                   ref="workload"
+                   className="form-control input-sm" />
+            <div className="input-group-addon">%</div>
+          </div>
+          <button type="button"
+                  className="btn btn-danger btn-xs"
+                  onClick={this.destroyOperation}>
+            <span className="glyphicon glyphicon-remove" />
           </button>
           {error}
         </div>
@@ -481,11 +519,11 @@ var ProjectSelect = React.createClass({
 
   render: function() {
     var options = this.props.projects.map(function(project) {
-      return <option value={project.id}>{project.name}</option>;
+      return <option value={project.id} key={project.id}>{project.name}</option>;
     });
 
     return (
-      <select name="project_ids[]" defaultValue={this.props.project_id}>
+      <select name="project_ids[]" defaultValue={this.props.project_id} className="form-control input-sm" onChange={this.props.onChange}>
         {options}
       </select>
     );

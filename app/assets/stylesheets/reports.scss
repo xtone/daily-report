@@ -2,6 +2,12 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+h2.date {
+  text-align: center;
+}
+ul.date-pager {
+  margin-top: -3em;
+}
 .calendar {
   .day {
     display: flex;
@@ -23,7 +29,7 @@
     .operations {
       padding-left: 0.5em;
       .operation {
-        .project {
+        .workload {
           padding-left: 0.5em;
         }
       }
@@ -32,7 +38,7 @@
       padding-left: 0.5em;
       input[type="text"] {
         text-align: right;
-        width: 2em;
+        width: 3.5em;
       }
     }
   }

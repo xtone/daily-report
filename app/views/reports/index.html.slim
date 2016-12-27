@@ -1,9 +1,4 @@
-h1 日報システム
-
-div
-  = link_to 'プロジェクト設定', settings_projects_path
-
-h2= @date.strftime('%Y年%-m月')
+h1 日報
 
 = render 'pager', date: @date
 

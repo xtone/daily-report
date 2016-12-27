@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title Daily Report
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+
+  body
+    .navbar.navbar-default
+      .container
+        .navbar-header
+          = link_to '日報システム', root_path, class: 'navbar-brand'
+        .navbar-collapse.collapse
+          = global_header
+
+    .container
+      == breadcrumbs style: :bootstrap
+      = yield

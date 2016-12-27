@@ -6,8 +6,11 @@ class ReportsController < ApplicationController
   def index
     respond_to do |format|
       format.json do
-        date = get_date
-        @reports = Report.find_in_month(current_user.id, date)
+        if params[:date].present?
+          @reports = Report.find_in_month(current_user.id, get_date)
+        else
+          @reports = Report.find_in_week(current_user.id)
+        end
       end
 
       format.csv do

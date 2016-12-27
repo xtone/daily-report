@@ -8,7 +8,35 @@ class User < ApplicationRecord
   has_many :user_projects
   has_many :projects, through: :user_projects
 
-  accepts_nested_attributes_for :user_role_associations, allow_destroy: true
+  accepts_nested_attributes_for :user_roles
+
+  scope :available, -> { where(deleted_at: nil) }
+
+  # ensure user account is active
+  def active_for_authentication?
+    super && !self.deleted_at
+  end
+
+  def administrator?
+    user_roles.any?(&:administrator?)
+  end
+
+  def available?
+    self.deleted_at.nil?
+  end
+
+  def director?
+    user_roles.any?(&:director?)
+  end
+
+  def general_affairs?
+    user_roles.any?(&:general_affairs?)
+  end
+
+  # provide a custom message for a deleted account
+  def inative_message
+    !self.deleted_at ? super : :deleted_account
+  end
 
   # @return [String]
   def password_salt
@@ -16,5 +44,11 @@ class User < ApplicationRecord
   end
 
   def password_salt=(new_salt)
+  end
+
+  # instead of deleting, indicate the user requested a delete & timestamp it
+  # @param [Time] at
+  def soft_delete(at = Time.zone.now)
+    update_attribute(:deleted_at, at)
   end
 end
