@@ -1,4 +1,4 @@
-FROM ruby:2.3.1
+FROM ruby:2.4.0
 ENV LANG C.UTF-8
 
 RUN apt-get update -qq
