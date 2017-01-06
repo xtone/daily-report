@@ -13,13 +13,18 @@ docker-compose build
 
 bundle install
 ```
-docker-compose run app bundle install
+docker-compose exec app bundle install
 ```
 
 DBセットアップ
 ```
 docker-compose exec app bin/rails db:create
 docker-compose exec app bin/rails db:migrate
+```
+
+データのインポート( あらかじめ、`tmp`ディレクトリに各種CSVファイルを配置してください )
+```
+docker-compose exec app bin/rails app:import_csv
 ```
 
 バックグラウンドでイメージ実行（ポート3456でlocalhostに接続してね）
