@@ -45,5 +45,34 @@ class Report < ApplicationRecord
       end
       ary
     end
+
+    # 指定した期間内に日報を提出したユーザーの配列を返す
+    # @param [Date] start_on
+    # @param [Date] end_on
+    # @return [Array]
+    def submitted_users(start_on, end_on)
+      user_ids = where(worked_in: [start_on..end_on])
+                   .select(:user_id)
+                   .uniq
+                   .pluck(:user_id)
+      User.where(id: user_ids)
+    end
+
+    # 該当のユーザーが指定期間内で日報未提出の日付を返す
+    # @param [Integer] user_id
+    # @param [Date] start_on
+    # @param [Date] end_on
+    # @return [Array]
+    def unsubmitted(user_id, start_on, end_on)
+      result = []
+      reports = where(user_id: user_id, worked_in: start_on..end_on).pluck(:worked_in)
+      (start_on..end_on).each do |date|
+        next if date.sunday? || date.saturday? || date.holiday?(:jp)
+        unless reports.any? { |worked_in| worked_in === date }
+          result << date
+        end
+      end
+      result
+    end
   end
 end

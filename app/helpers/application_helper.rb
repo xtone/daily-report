@@ -36,4 +36,18 @@ module ApplicationHelper
       submit_tag 'ログアウト', class: 'btn btn-default'
     end
   end
+
+  def date_select_ja(object_name, method, options = {}, html_options = {})
+    date_select(
+      object_name,
+      method,
+      {
+        use_month_numbers: true,
+        start_year: 2011,
+        end_year: Time.zone.now.year,
+        date_separator: '%s'
+      }.merge(options),
+      { class: 'form-control' }.merge(html_options)
+    ) % ['年', '月'] + '日'
+  end
 end

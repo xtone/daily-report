@@ -6,4 +6,12 @@ class ReportPolicy < ApplicationPolicy
   def destroy?
     update?
   end
+
+  def summary?
+    user.administrator? || user.director?
+  end
+
+  def unsubmitted?
+    summary?
+  end
 end

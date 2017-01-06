@@ -12,7 +12,12 @@ Rails.application.routes.draw do
     resources :users
   end
 
-  resources :reports
+  resources :reports do
+    collection do
+      get 'summary'
+      get 'unsubmitted'
+    end
+  end
   resources :projects
 
   namespace :settings do

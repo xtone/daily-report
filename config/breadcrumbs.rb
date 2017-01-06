@@ -28,6 +28,14 @@ crumb :user do |user|
   parent :users
 end
 
+crumb :csvs do
+  link 'CSV出力', admin_csvs_path
+end
+
+crumb :summary do
+  link '稼働集計', summary_reports_path
+end
+
 # crumb :project_issues do |project|
 #   link "Issues", project_issues_path(project)
 #   parent :project, project

@@ -14,9 +14,9 @@ class ReportsController < ApplicationController
       end
 
       format.csv do
-        raise ActiveRecord::RecordNotFound if params[:start].blank? || params[:end].blank?
+        raise ActiveRecord::RecordNotFound if params[:reports][:start].blank? || params[:reports][:end].blank?
         @reports = Report.includes(:user).joins(:user)
-          .where(worked_in: [params[:start]..params[:end]])
+          .where(worked_in: [params[:reports][:start]..params[:reports][:end]])
           .order('users.id', worked_in: :asc)
         send_data render_to_string, filename: "dailyreport_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
       end
@@ -85,6 +85,47 @@ class ReportsController < ApplicationController
     authorize @report
   end
 
+  # 集計
+  def summary
+    authorize Report.new
+    if params[:reports].present?
+      @date_start = params_to_date(:reports, :start)
+      @date_end = params_to_date(:reports, :end)
+      @sum = Operation.summary(@date_start, @date_end)
+      @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
+      @users = Report.submitted_users(@date_start, @date_end).order(:id)
+      if params[:csv].present?
+        send_data render_to_string(template: 'reports/summary.csv.ruby'), filename: "summary_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
+        return
+      end
+    else
+      @date_start = Time.zone.now.to_date << 1
+      @date_end = Time.zone.now.to_date
+    end
+  end
+
+  # 未提出一覧
+  def unsubmitted
+    authorize Report.new
+    if params[:reports].present?
+      @date_start = params_to_date(:reports, :start)
+      @date_end = params_to_date(:reports, :end)
+      @data = []
+      User.available.each do |user|
+        dates = Report.unsubmitted(user.id, @date_start, @date_end)
+        if dates.present?
+          @data << {
+            user: user,
+            dates: dates
+          }
+        end
+      end
+    else
+      @date_start = Time.zone.now.to_date << 1
+      @date_end = Time.zone.now.to_date
+    end
+  end
+
   private
 
   def get_date
@@ -98,5 +139,13 @@ class ReportsController < ApplicationController
 
   def get_resource
     @report = Report.find(params[:id])
+  end
+
+  def params_to_date(object_name, method)
+    Date.new(
+      params[object_name]["#{method}(1i)"].to_i,
+      params[object_name]["#{method}(2i)"].to_i,
+      params[object_name]["#{method}(3i)"].to_i
+    )
   end
 end

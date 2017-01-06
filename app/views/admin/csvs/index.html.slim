@@ -1,2 +1,23 @@
-h1 Admin::Csvs#index
-p Find me in app/views/admin/csvs/index.html.slim
+- breadcrumb :csvs
+
+h1 CSV出力
+
+h2 提出済みの日報一覧
+
+= form_tag reports_path(format: :csv), method: :get, class: 'form-inline' do
+  .form-group
+    = date_select_ja :reports, :start
+    | 〜
+    = date_select_ja :reports, :end
+    | の日報を
+  = submit_tag 'ダウンロード', class: 'btn btn-primary'
+
+h2 プロジェクト一覧
+
+= form_tag projects_path(format: :csv), method: :get do
+  = submit_tag 'ダウンロード', class: 'btn btn-primary'
+
+h2 ユーザー一覧
+
+= form_tag users_path(format: :csv), method: :get do
+  = submit_tag 'ダウンロード', class: 'btn btn-primary'
