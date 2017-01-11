@@ -1,0 +1,17 @@
+h1 パスワード変更
+
+= content_tag :div, flash[:notice], class: 'alert alert-success' if flash[:notice].present?
+= content_tag :div, flash[:alert], class: 'alert alert-danger' if flash[:alert].present?
+
+= form_tag settings_password_path, method: :put, class: 'form-horizontal' do
+  .form-group
+    label.col-sm-3.control-label= t('user.new_password')
+    .col-sm-9
+      = password_field_tag 'password', nil, class: 'form-control'
+  .form-group
+    label.col-sm-3.control-label= t('user.new_password_confirmation')
+    .col-sm-9
+      = password_field_tag 'password_confirmation', nil, class: 'form-control'
+  .form-group
+    .col-sm-offset-3.col-sm-9
+      = submit_tag '保存', class: 'btn btn-primary'

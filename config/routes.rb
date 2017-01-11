@@ -3,8 +3,7 @@ Rails.application.routes.draw do
   root to: 'reports#index'
 
   devise_for :users, controllers: {
-    sessions: 'users/sessions',
-    registrations: 'users/registrations'
+    sessions: 'users/sessions'
   }
 
   devise_scope :user do
@@ -25,7 +24,8 @@ Rails.application.routes.draw do
   resources :projects
 
   namespace :settings do
-    resources :projects
+    resources :projects, only: [:index, :update, :destroy]
+    resource :password, only: [:show, :update]
   end
 
   scope :admin do

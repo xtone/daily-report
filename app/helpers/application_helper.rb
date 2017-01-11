@@ -1,4 +1,7 @@
 module ApplicationHelper
+  # ActiveRecordのエラーメッセージを表示する
+  # @param [ActiveRecord] resource
+  # @param [Symbol] attribute
   def error_message(resource, attribute)
     return nil unless resource.errors[attribute].present?
     content_tag :div, class: 'alert alert-danger' do
@@ -22,6 +25,9 @@ module ApplicationHelper
       end)
       concat(content_tag(:li, class: current_page?(settings_projects_path) ? 'active' : nil) do
         link_to 'プロジェクト設定', settings_projects_path
+      end)
+      concat(content_tag(:li, class: current_page?(settings_password_path) ? 'active' : nil) do
+        link_to 'パスワード変更', settings_password_path
       end)
       if current_user.user_roles.present?
         concat(content_tag(:li, class: current_page?(admin_root_path) ? 'active' : nil) do

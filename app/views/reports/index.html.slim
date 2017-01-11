@@ -1,5 +1,7 @@
 h1 日報
 
+= content_tag :div, flash[:notice], class: 'alert alert-success' if flash[:notice]
+
 = render 'pager', date: @date
 
 = react_component('Calendar',

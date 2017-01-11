@@ -5,6 +5,9 @@ ja:
     email: メールアドレス
     password: パスワード
     password_confirmation: パスワード(確認)
+    current_password: 現在のパスワード
+    new_password: 新しいパスワード
+    new_password_confirmation: 新しいパスワード(確認)
     available: 集計中
     role: 権限
     created_at: 日報集計開始日
