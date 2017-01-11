@@ -2,6 +2,12 @@
 
 h1 ユーザー一覧
 
+.navbar.navbar-default
+  .container-fluid
+    .collapse.navbar-collapse
+      .nav.navbar-nav.navbar-right
+        = link_to '新規登録', new_user_path, class: 'btn btn-primary navbar-btn'
+
 = content_tag :div, flash[:notice], class: 'alert alert-success' if flash[:notice].present?
 
 table.table.table-hover

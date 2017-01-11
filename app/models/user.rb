@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  devise :database_authenticatable, :registerable, :rememberable, :encryptable
+  devise :database_authenticatable, :rememberable, :encryptable
 
   has_many :user_role_associations, dependent: :destroy
   has_many :user_roles, through: :user_role_associations
@@ -11,6 +11,17 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :user_roles
 
   scope :available, -> { where(deleted_at: nil) }
+
+  validates :name,
+    presence: true
+
+  validates :email,
+    presence: true
+
+  validates :password,
+    presence: true,
+    confirmation: true,
+    if: Proc.new { |user| user.new_record? || user.password.present? }
 
   # ensure user account is active
   def active_for_authentication?

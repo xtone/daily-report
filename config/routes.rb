@@ -9,7 +9,11 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     get 'users/sign_out', to: 'users/sessions#destroy'
-    resources :users
+    resources :users do
+      member do
+        patch 'revive'
+      end
+    end
   end
 
   resources :reports do

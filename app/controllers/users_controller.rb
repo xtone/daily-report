@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :get_resource, only: %i(edit update destroy)
+  before_action :get_resource, only: %i(edit update destroy revive)
 
   layout 'admin'
 
@@ -19,6 +19,22 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+    authorize @user
+    @roles = UserRole.roles
+  end
+
+  def create
+    @user = User.new(user_params)
+    authorize @user
+    ApplicationRecord.transaction do
+      @user.save!
+      @user.user_roles = UserRole.where(role: params[:user_roles])
+    end
+    redirect_to users_path, notice: "#{@user.name}さんを登録しました。"
+  rescue => e
+    flash.now[:alert] = (%w(ユーザーの登録に失敗しました。) << @user.errors.full_messages).join("\n")
+    @roles = UserRole.roles
+    render :new
   end
 
   def edit
@@ -32,15 +48,23 @@ class UsersController < ApplicationController
       @user.update_attributes!(user_params)
       @user.user_roles = UserRole.where(role: params[:user_roles])
     end
-    redirect_to users_path, notice: 'ユーザーの設定を更新しました。'
+    redirect_to users_path, notice: "#{@user.name}さんの設定を更新しました。"
   rescue => e
     flash.now[:alert] = (%w(ユーザーの設定の更新に失敗しました。) << @user.errors.full_messages).join("\n")
+    @roles = UserRole.roles
     render :edit
   end
 
   def destroy
-    @user.update_attribute(deleted_at: Time.zone.now)
-    redirect_to users_path, notice: 'ユーザーを集計対象から外しました。'
+    authorize @user
+    @user.update_attribute(:deleted_at, Time.zone.now)
+    redirect_to users_path, notice: "#{@user.name}さんを集計対象から外しました。"
+  end
+
+  def revive
+    authorize @user
+    @user.update_attribute(:deleted_at, nil)
+    redirect_to users_path, notice: "#{@user.name}さんを集計対象に設定しました。"
   end
 
   private

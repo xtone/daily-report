@@ -5,7 +5,7 @@ class UserPolicy < ApplicationPolicy
 
   def create?
     return false if @user.nil?
-    @user.user_roles.find(&:administrator?) || @user.user_roles.find(&:generail_affairs?)
+    @user.administrator? || @user.general_affairs?
   end
 
   def edit?
@@ -13,6 +13,14 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
+    create?
+  end
+
+  def destroy?
+    create?
+  end
+
+  def revive?
     create?
   end
 end
