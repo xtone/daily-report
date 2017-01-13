@@ -1,8 +1,7 @@
 FactoryGirl.define do
   factory :operation do
-    user ""
-    project_code 1
-    workload 1
-    worked_in "2016-10-28"
+    report_id 1
+    project_id 1
+    workload 100
   end
 end

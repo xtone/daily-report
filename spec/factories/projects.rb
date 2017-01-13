@@ -1,7 +1,11 @@
 FactoryGirl.define do
   factory :project do
-    code 1
-    name "MyString"
-    name_reading "MyString"
+    code 16001
+    name "プロジェクト"
+    name_reading "ぷろじぇくと"
+
+    trait :hidden do
+      hidden true
+    end
   end
 end
