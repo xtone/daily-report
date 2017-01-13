@@ -6,8 +6,9 @@ class ReportsController < ApplicationController
   def index
     respond_to do |format|
       format.json do
-        if params[:date].present?
-          @reports = Report.find_in_month(current_user.id, get_date)
+        date = get_date
+        if date.present?
+          @reports = Report.find_in_month(current_user.id, date)
         else
           @reports = Report.find_in_week(current_user.id)
         end
@@ -22,7 +23,7 @@ class ReportsController < ApplicationController
       end
 
       format.any do
-        @date = get_date
+        @date = get_date || Time.zone.now.to_date
         @projects = current_user.projects.available
         # render view
       end
@@ -112,7 +113,7 @@ class ReportsController < ApplicationController
       @date_end = params_to_date(:reports, :end)
       @data = []
       User.available.each do |user|
-        dates = Report.unsubmitted(user.id, @date_start, @date_end)
+        dates = Report.unsubmitted_dates(user.id, @date_start, @date_end)
         if dates.present?
           @data << {
             user: user,
@@ -129,18 +130,22 @@ class ReportsController < ApplicationController
   private
 
   def get_date
-    if params[:date].present?
-      time = /\A(\d{4})(\d{2})\Z/.match(params[:date]) { |m| Time.zone.local(m[1], m[2]) } || Time.zone.now
-    else
-      time = Time.zone.now
+    return nil unless params[:date].present?
+
+    /\A(\d{4})(\d{2})\Z/.match(params[:date]) do |m|
+      time = Time.zone.local(m[1], m[2]) rescue nil
+      time&.to_date
     end
-    time.to_date
   end
 
   def get_resource
     @report = Report.find(params[:id])
   end
 
+  # datetime_select のFormヘルパーのパラメータをDateに変換する
+  # @param [Symbol] object_name
+  # @param [Symbol] method
+  # @return [Date]
   def params_to_date(object_name, method)
     Date.new(
       params[object_name]["#{method}(1i)"].to_i,
