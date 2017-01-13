@@ -1,24 +1,30 @@
 require 'csv'
 
 namespace :app do
-  desc ''
+  desc '旧システムからのデータをインポートする'
   task import_csv: :environment do
     begin
       ApplicationRecord.transaction do
         # user.csv -> User
         CSV.table(Rails.root.join('tmp', 'user.csv')).each do |row|
-          user = User.create!(id: row[:id], email: row[:email] == 'NULL' ? nil : row[:email])
-          user.update_attributes!(encrypted_password: row[:password])
+          user = User.new(
+            id: row[:id],
+            email: row[:email] == 'NULL' ? nil : row[:email],
+            encrypted_password: row[:password]
+          )
+          user.save(validate: false)
         end
         # profile.csv -> User
         CSV.table(Rails.root.join('tmp', 'profile.csv')).each do |row|
-          user = User.find_by(id: row[:id])
-          user.update_attributes!(name: row[:fullname])
+          user = User.find(row[:id])
+          user.update_attribute(:name, row[:fullname])
         end
         # user_printouts.csv -> User
         CSV.table(Rails.root.join('tmp', 'user_printouts.csv')).each do |row|
-          user = User.find_by(id: row[:id])
-          user.update_attributes!(deleted_at: row[:printout] == 1 ? nil : user.updated_at, created_at: row[:starting_date])
+          user = User.find(row[:id])
+          user.deleted_at = row[:printout] == 1 ? nil : user.updated_at
+          user.created_at = row[:starting_date]
+          user.save(validate: false)
         end
         # projects.csv -> Project
         CSV.table(Rails.root.join('tmp', 'projects.csv')).each do |row|
@@ -72,6 +78,16 @@ namespace :app do
     rescue => e
       puts "#{e.class}: #{e.message}"
       e.backtrace.each { |str| puts str }
+    end
+  end
+
+  desc ''
+  task unsubmitted_notification_mail: :environment do
+    now = Time.zone.now
+    User.available.each do |user|
+      dates = Report.unsubmitted_dates(user.id)
+      next if dates.blank?
+      ReportMailer.unsubmitted_notification(user, dates, now).deliver_later
     end
   end
 end
