@@ -63,8 +63,10 @@ class Report < ApplicationRecord
     # @param [Date] start_on
     # @param [Date] end_on
     # @return [Array]
-    def unsubmitted(user_id, start_on, end_on)
+    def unsubmitted_dates(user_id, start_on = nil, end_on = nil)
       result = []
+      start_on ||= User.find_by(id: user_id).created_at.to_date
+      end_on ||= Time.zone.now.to_date
       reports = where(user_id: user_id, worked_in: start_on..end_on).pluck(:worked_in)
       (start_on..end_on).each do |date|
         next if date.sunday? || date.saturday? || date.holiday?(:jp)
