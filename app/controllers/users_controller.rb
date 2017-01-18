@@ -57,13 +57,13 @@ class UsersController < ApplicationController
 
   def destroy
     authorize @user
-    @user.update_attribute(:deleted_at, Time.zone.now)
+    @user.soft_delete
     redirect_to users_path, notice: "#{@user.name}さんを集計対象から外しました。"
   end
 
   def revive
     authorize @user
-    @user.update_attribute(:deleted_at, nil)
+    @user.revive
     redirect_to users_path, notice: "#{@user.name}さんを集計対象に設定しました。"
   end
 
@@ -74,6 +74,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :began_on)
   end
 end

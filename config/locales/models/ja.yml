@@ -10,7 +10,7 @@ ja:
     new_password_confirmation: 新しいパスワード(確認)
     available: 集計中
     role: 権限
-    created_at: 日報集計開始日
+    began_on: 日報集計開始日
     status:
       available: 集計中
       deleted: 削除済

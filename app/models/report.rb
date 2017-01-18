@@ -19,8 +19,12 @@ class Report < ApplicationRecord
       output(data, date.beginning_of_month.to_date, date.end_of_month.day)
     end
 
+    # 日報のデータを7日分取得する
+    # @param [Integer] user_id
+    # @param [Time] at
+    # @return [Array]
     def find_in_week(user_id, at = Time.zone.now)
-      base_date = at.to_date - 3
+      base_date = at.to_date - 4
       data = includes(operations: :project)
                .where(user_id: user_id, worked_in: [base_date..(base_date + 6)])
                .order(worked_in: :asc)
@@ -65,7 +69,13 @@ class Report < ApplicationRecord
     # @return [Array]
     def unsubmitted_dates(user_id, start_on = nil, end_on = nil)
       result = []
-      start_on ||= User.find_by(id: user_id).created_at.to_date
+      user = User.find(user_id)
+      # ユーザーの集計開始日より前のデータは無視する
+      if start_on.present?
+        start_on = [start_on, user.began_on].max
+      else
+        start_on = user.began_on
+      end
       end_on ||= Time.zone.now.to_date
       reports = where(user_id: user_id, worked_in: start_on..end_on).pluck(:worked_in)
       (start_on..end_on).each do |date|

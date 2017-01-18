@@ -57,6 +57,10 @@ class User < ApplicationRecord
   def password_salt=(new_salt)
   end
 
+  def revive
+    update_attribute(:deleted_at, nil)
+  end
+
   # instead of deleting, indicate the user requested a delete & timestamp it
   # @param [Time] at
   def soft_delete(at = Time.zone.now)

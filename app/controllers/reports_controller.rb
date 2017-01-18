@@ -15,9 +15,11 @@ class ReportsController < ApplicationController
       end
 
       format.csv do
-        raise ActiveRecord::RecordNotFound if params[:reports][:start].blank? || params[:reports][:end].blank?
+        start_on = params_to_date(:reports, :start)
+        end_on = params_to_date(:reports, :end)
+        raise ActiveRecord::RecordNotFound if start_on.blank? || end_on.blank? || start_on > end_on
         @reports = Report.includes(:user).joins(:user)
-          .where(worked_in: [params[:reports][:start]..params[:reports][:end]])
+          .where(worked_in: [start_on..end_on])
           .order('users.id', worked_in: :asc)
         send_data render_to_string, filename: "dailyreport_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
       end
@@ -92,6 +94,8 @@ class ReportsController < ApplicationController
     if params[:reports].present?
       @date_start = params_to_date(:reports, :start)
       @date_end = params_to_date(:reports, :end)
+      raise ActiveRecord::RecordNotFound if @date_start > @date_end
+
       @sum = Operation.summary(@date_start, @date_end)
       @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
       @users = Report.submitted_users(@date_start, @date_end).order(:id)
@@ -103,6 +107,7 @@ class ReportsController < ApplicationController
       @date_start = Time.zone.now.to_date << 1
       @date_end = Time.zone.now.to_date
     end
+    render layout: 'admin'
   end
 
   # 未提出一覧
@@ -125,6 +130,7 @@ class ReportsController < ApplicationController
       @date_start = Time.zone.now.to_date << 1
       @date_end = Time.zone.now.to_date
     end
+    render layout: 'admin'
   end
 
   private
