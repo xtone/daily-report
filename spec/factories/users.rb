@@ -3,6 +3,8 @@ FactoryGirl.define do
     name "苗字名前"
     email "user@example.com"
     password "password"
+    password_confirmation "password"
+    encrypted_password "encrypted_password"
 
     trait :administrator do
       after(:create) do |user, evaluator|
