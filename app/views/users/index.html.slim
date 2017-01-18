@@ -5,6 +5,11 @@ h1 ユーザー一覧
 .navbar.navbar-default
   .container-fluid
     .collapse.navbar-collapse
+      .nav.navbar-nav
+        - if params[:active].present?
+          = link_to '全ユーザー表示', users_path, class: 'btn btn-info navbar-btn'
+        - else
+          = link_to '集計中ユーザーのみ表示', users_path(active: true), class: 'btn btn-info navbar-btn'
       .nav.navbar-nav.navbar-right
         = link_to '新規登録', new_user_path, class: 'btn btn-primary navbar-btn'
 
