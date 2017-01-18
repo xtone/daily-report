@@ -1,9 +1,9 @@
 crumb :root do
-  link 'Home', admin_root_path
+  link '管理画面', admin_root_path
 end
 
 crumb :projects do
-  link 'プロジェクト一覧', projects_path
+  link 'プロジェクト管理', projects_path
 end
 
 crumb :project do |project|
@@ -34,6 +34,10 @@ end
 
 crumb :summary do
   link '稼働集計', summary_reports_path
+end
+
+crumb :unsubmitted do
+  link '日報未提出一覧', unsubmitted_reports_path
 end
 
 # crumb :project_issues do |project|
