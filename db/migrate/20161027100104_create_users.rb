@@ -11,6 +11,8 @@ class CreateUsers < ActiveRecord::Migration[5.0]
       ## Rememberable
       t.datetime :remember_created_at
 
+      t.date :began_on
+
       t.timestamps
 
       t.index :email, unique: true

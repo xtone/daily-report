@@ -23,7 +23,7 @@ namespace :app do
         CSV.table(Rails.root.join('tmp', 'user_printouts.csv')).each do |row|
           user = User.find(row[:id])
           user.deleted_at = row[:printout] == 1 ? nil : user.updated_at
-          user.created_at = row[:starting_date]
+          user.began_on = row[:starting_date]
           user.save(validate: false)
         end
         # projects.csv -> Project

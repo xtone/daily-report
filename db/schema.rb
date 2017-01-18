@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 20161202034233) do
     t.string   "email"
     t.string   "encrypted_password",  default: "", null: false
     t.datetime "remember_created_at"
+    t.date     "began_on"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree

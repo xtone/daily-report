@@ -20,6 +20,11 @@
       = f.password_field :password_confirmation, class: 'form-control'
       = error_message user, :password_confirmation
   .form-group
+    label.col-sm-2.control-label= t('user.began_on')
+    .col-sm-10.form-inline
+      = (f.date_select :began_on, {use_month_numbers: true, start_year: 2011, end_year: Time.zone.now.year, date_separator: '%s'}, { class: 'form-control' }) % ['年', '月'] + '日'
+      = error_message user, :began_on
+  .form-group
     label.col-sm-2.control-label= t('user.role')
     .col-sm-10
       - roles.each do |role, value|
