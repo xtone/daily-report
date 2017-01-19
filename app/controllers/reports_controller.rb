@@ -139,6 +139,8 @@ class ReportsController < ApplicationController
 
   private
 
+  # params[:date]のStringを、Dateに変換する
+  # @return [Date] 変換できなければnilを返す
   def get_date
     return nil unless params[:date].present?
 
