@@ -100,7 +100,9 @@ class ReportsController < ApplicationController
       @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
       @users = Report.submitted_users(@date_start, @date_end).order(:id)
       if params[:csv].present?
-        send_data render_to_string(template: 'reports/summary.csv.ruby'), filename: "summary_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
+        send_data render_to_string(template: 'reports/summary.csv.ruby'),
+                  filename: "summary_#{@date_start.strftime('%Y%m%d')}-#{@date_end.strftime('%Y%m%d')}.csv",
+                  type: :csv
         return
       end
     else
