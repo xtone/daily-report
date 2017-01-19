@@ -21,7 +21,9 @@ class ReportsController < ApplicationController
         @reports = Report.includes(:user).joins(:user)
           .where(worked_in: [start_on..end_on])
           .order('users.id', worked_in: :asc)
-        send_data render_to_string, filename: "dailyreport_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
+        send_data render_to_string,
+                  filename: "dailyreport_#{start_on.strftime('%Y%m%d')}-#{end_on.strftime('%Y%m%d')}.csv",
+                  type: :csv
       end
 
       format.any do
