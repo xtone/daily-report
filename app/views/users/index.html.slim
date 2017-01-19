@@ -1,0 +1,31 @@
+- breadcrumb :users
+
+h1 ユーザー一覧
+
+.navbar.navbar-default
+  .container-fluid
+    .collapse.navbar-collapse
+      .nav.navbar-nav
+        - if params[:active].present?
+          = link_to '全ユーザー表示', users_path, class: 'btn btn-info navbar-btn'
+        - else
+          = link_to '集計中ユーザーのみ表示', users_path(active: true), class: 'btn btn-info navbar-btn'
+      .nav.navbar-nav.navbar-right
+        = link_to '新規登録', new_user_path, class: 'btn btn-primary navbar-btn'
+
+= content_tag :div, flash[:notice], class: 'alert alert-success' if flash[:notice].present?
+
+table.table.table-hover
+  tr
+    th= t('user.id')
+    th= t('user.name')
+    th= t('user.began_on')
+    th= t('user.available')
+    th= t('user.role')
+  - @users.each do |user|
+    tr
+      td= user.id
+      td= link_to user.name, edit_user_path(user.id)
+      td= user.began_on&.strftime('%Y/%m/%d')
+      td= available_label(user)
+      td= role_labels(user)

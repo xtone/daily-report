@@ -1,0 +1,45 @@
+// Place all the styles related to the reports controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+h2.date {
+  text-align: center;
+}
+ul.date-pager {
+  margin-top: -3em;
+}
+.calendar {
+  .day {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+
+    &.sun, &.holiday {
+      background-color: #f9c9c9;
+    }
+    &.sat {
+      background-color: #c9c9f9;
+    }
+
+    .date {
+      padding-right: 0.5em;
+      text-align: right;
+      width: 3.5em;
+    }
+    .operations {
+      padding-left: 0.5em;
+      .operation {
+        .workload {
+          padding-left: 0.5em;
+        }
+      }
+    }
+    form {
+      padding-left: 0.5em;
+      input[type="text"] {
+        text-align: right;
+        width: 3.5em;
+      }
+    }
+  }
+}

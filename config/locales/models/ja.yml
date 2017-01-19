@@ -1,0 +1,51 @@
+ja:
+  user: &user_attributes
+    id: ID
+    name: ユーザー名
+    email: メールアドレス
+    password: パスワード
+    password_confirmation: パスワード(確認)
+    current_password: 現在のパスワード
+    new_password: 新しいパスワード
+    new_password_confirmation: 新しいパスワード(確認)
+    available: 集計中
+    role: 権限
+    began_on: 日報集計開始日
+    status:
+      available: 集計中
+      deleted: 削除済
+
+  user_role: &user_role_attributes
+    administrator: 管理者
+    general_affairs: 総務
+    director: ディレクター
+
+  project: &project_attributes
+    id: ID
+    display_status:
+      display: 表示
+      hidden: 非表示
+    code: PJコード
+    name: プロジェクト名
+    name_reading: 読みかな
+    displayed: 表示
+    hidden: 非表示
+    created_at: 作成日
+
+  activerecord: &activerecord
+    models:
+      user: ユーザー
+      user_role: ユーザー権限
+      project: プロジェクト
+      operation: 稼働内容
+      report: 日報
+    attributes:
+      user:
+        <<: *user_attributes
+      user_role:
+        <<: *user_role_attributes
+      project:
+        <<: *project_attributes
+
+  activemodel:
+    <<: *activerecord

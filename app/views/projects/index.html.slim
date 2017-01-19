@@ -1,0 +1,31 @@
+- breadcrumb :projects
+
+.page-header
+  h1 プロジェクト管理
+
+.navbar.navbar-default
+  .container-fluid
+    .collapse.navbar-collapse
+      .nav.navbar-nav
+        - if params[:active].present?
+          = link_to '全プロジェクト表示', projects_path, class: 'btn btn-info navbar-btn'
+        - else
+          = link_to '進行中プロジェクトのみ表示', projects_path(active: true), class: 'btn btn-info navbar-btn'
+      .nav.navbar-nav.navbar-right
+        = link_to '新規登録', new_project_path, class: 'btn btn-primary navbar-btn'
+
+
+= content_tag :div, flash[:notice], class: 'alert alert-success' if flash[:notice].present?
+
+table.table.table-hover
+  tr
+    th= t('project.code')
+    th= t('project.name')
+    th= t('project.name_reading')
+    th= t('project.displayed')
+  - @projects.each do |project|
+    tr
+      td= project.code
+      td= link_to project.name, edit_project_path(project.id)
+      td.small= project.name_reading
+      td.text-center= display_status(project)

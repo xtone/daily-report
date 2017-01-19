@@ -1,0 +1,1 @@
+json.array!(@projects, :id, :name, :name_reading, :related)

@@ -1,0 +1,11 @@
+- last_month = date << 1
+- next_month = date >> 1
+
+nav.text-center
+  ul.pagination
+    li
+      = link_to last_month.strftime('%Y年%-m月'), root_path(date: last_month.strftime('%Y%m'))
+    li class="#{'active' if params[:date].present?}"
+      = link_to date.strftime('%Y年%-m月'), root_path(date: date.strftime('%Y%m'))
+    li
+      = link_to next_month.strftime('%Y年%-m月'), root_path(date: next_month.strftime('%Y%m'))

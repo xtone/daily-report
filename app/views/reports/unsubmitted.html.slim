@@ -1,0 +1,22 @@
+- breadcrumb :unsubmitted
+
+h1 日報未提出一覧
+
+= form_tag unsubmitted_reports_path, method: :get, class: 'form-inline' do
+  .form-group
+    = date_select_ja :reports, :start, default: @date_start
+    | 〜
+    = date_select_ja :reports, :end, default: @date_end
+    | の未提出一覧を
+  = submit_tag '表示', class: 'btn btn-default'
+
+- if @data.present?
+  .well= "集計期間：#{@date_start.strftime('%Y年%-m月%-d日')} 〜 #{@date_end.strftime('%Y年%-m月%-d日')}"
+
+  - @data.each do |data|
+    h2= data[:user].name
+
+    div
+      - data[:dates].each do |date|
+        = date.strftime('%Y-%m-%d')
+        br

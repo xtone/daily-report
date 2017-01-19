@@ -1,24 +1,43 @@
-# README
+# Daily Report
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+社内の日報管理用システムです。
 
-Things you may want to cover:
+## 開発環境のセットアップ
 
-* Ruby version
+[Docker](https://www.docker.com/)を利用しています。
 
-* System dependencies
+イメージのビルド
+```
+docker-compose build
+```
 
-* Configuration
+bundle install
+```
+docker-compose exec app bundle install
+```
 
-* Database creation
+DBセットアップ
+```
+docker-compose exec app bin/rails db:create
+docker-compose exec app bin/rails db:migrate
+```
 
-* Database initialization
+データのインポート( あらかじめ、`tmp`ディレクトリに各種CSVファイルを配置してください )
+```
+docker-compose exec app bin/rails app:import_csv
+```
 
-* How to run the test suite
+バックグラウンドでイメージ実行（ポート3456でlocalhostに接続してね）
+```
+docker-compose start
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+Railsのサーバーログを見る
+```
+docker-compose logs app
+```
 
-* Deployment instructions
-
-* ...
+RSpec実行
+```
+docker-compose exec app bundle exec rspec
+```
