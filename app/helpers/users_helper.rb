@@ -12,9 +12,6 @@ module UsersHelper
       if user.administrator?
         concat content_tag(:span, t('user_role.administrator'), class: 'label label-primary')
       end
-      if user.general_affairs?
-        concat content_tag(:span, t('user_role.general_affairs'), class: 'label label-primary')
-      end
       if user.director?
         concat content_tag(:span, t('user_role.director'), class: 'label label-primary')
       end
