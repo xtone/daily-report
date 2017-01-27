@@ -1,3 +1,18 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+class ReportSummary
+  constructor: (params) ->
+    @renderForm = document.getElementById(params.renderForm)
+    document.getElementById(params.downloadForm).addEventListener('submit', (event) =>
+      event.preventDefault()
+      @.download(event)
+    )
+
+  download: (event) ->
+    form = event.target
+    attrs = []
+    selects = @renderForm.getElementsByTagName('select')
+    for i in [0..selects.length-1]
+      select = selects[i]
+      attrs.push(select.name + '=' + select.value)
+    window.location.href = form.action + '?' + attrs.join('&')
+
+window.ReportSummary = ReportSummary

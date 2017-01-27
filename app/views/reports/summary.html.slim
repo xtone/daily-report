@@ -2,15 +2,18 @@
 
 h1 稼働集計
 
-= form_tag summary_reports_path, method: :get, class: 'form-inline' do
+= content_tag :div, flash[:alert], class: 'alert alert-danger' if flash[:alert].present?
+
+= form_tag summary_reports_path, method: :get, class: 'form-inline', id: 'summary-render' do
   .form-group
     = date_select_ja :reports, :start, default: @date_start
     | 〜
     = date_select_ja :reports, :end, default: @date_end
     | の稼働集計を
   = submit_tag '表示', class: 'btn btn-default'
-  br
-  = submit_tag 'CSVダウンロード', name: 'csv', class: 'btn btn-primary'
+
+= form_tag summary_reports_path(format: :csv), method: :get, id: 'summary-download' do
+  = submit_tag 'CSVダウンロード', class: 'btn btn-primary'
 
 - if @sum.present?
   .well= "集計期間：#{@date_start.strftime('%Y年%-m月%-d日')} 〜 #{@date_end.strftime('%Y年%-m月%-d日')}"
@@ -27,3 +30,9 @@ h1 稼働集計
         th= @projects[sum[0]].name
         - @users.each do |user|
           td= sum[1][user.id] if sum[1].has_key?(user.id)
+
+javascript:
+  new ReportSummary({
+    renderForm: 'summary-render',
+    downloadForm: 'summary-download'
+  });
