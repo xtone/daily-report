@@ -4,7 +4,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def create?
-    @user.user_roles.find(&:administrator?) || @user.user_roles.find(&:director?)
+    @user.administrator? || @user.director?
   end
 
   def edit?

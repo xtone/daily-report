@@ -40,12 +40,8 @@ class User < ApplicationRecord
     user_roles.any?(&:director?)
   end
 
-  def general_affairs?
-    user_roles.any?(&:general_affairs?)
-  end
-
   # provide a custom message for a deleted account
-  def inative_message
+  def inactive_message
     !self.deleted_at ? super : :deleted_account
   end
 
