@@ -3,11 +3,10 @@ class ReportSummary
     @renderForm = document.getElementById(params.renderForm)
     document.getElementById(params.downloadForm).addEventListener('submit', (event) =>
       event.preventDefault()
-      @.download(event)
+      @download(event.target)
     )
 
-  download: (event) ->
-    form = event.target
+  download: (form) ->
     attrs = []
     selects = @renderForm.getElementsByTagName('select')
     for i in [0..selects.length-1]
