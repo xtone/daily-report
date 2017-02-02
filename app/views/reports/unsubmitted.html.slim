@@ -2,6 +2,8 @@
 
 h1 日報未提出一覧
 
+= render_flash_message
+
 = form_tag unsubmitted_reports_path, method: :get, class: 'form-inline' do
   .form-group
     = date_select_ja :reports, :start, default: @date_start

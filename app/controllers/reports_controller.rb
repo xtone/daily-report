@@ -135,6 +135,10 @@ class ReportsController < ApplicationController
     if params[:reports].present?
       @date_start = params_to_date(:reports, :start)
       @date_end = params_to_date(:reports, :end)
+      if @date_start > @date_end
+        flash.now[:alert] = '集計開始日が集計終了日より後になっています。'
+        render layout: 'admin' and return
+      end
       @data = []
       User.available.each do |user|
         dates = Report.unsubmitted_dates(user.id, @date_start, @date_end)

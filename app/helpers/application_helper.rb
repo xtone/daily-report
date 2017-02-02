@@ -9,6 +9,13 @@ module ApplicationHelper
     end
   end
 
+  def render_flash_message
+    capture do
+      concat content_tag(:div, flash[:alert], class: 'alert alert-danger') if flash[:alert].present?
+      concat content_tag(:div, flash[:notice], class: 'alert alert-success') if flash[:notice].present?
+    end
+  end
+
   def global_header
     return nil unless user_signed_in?
     capture do

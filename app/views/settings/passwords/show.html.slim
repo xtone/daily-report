@@ -1,7 +1,6 @@
 h1 パスワード変更
 
-= content_tag :div, flash[:notice], class: 'alert alert-success' if flash[:notice].present?
-= content_tag :div, flash[:alert], class: 'alert alert-danger' if flash[:alert].present?
+= render_flash_message
 
 = form_tag settings_password_path, method: :put, class: 'form-horizontal' do
   .form-group
