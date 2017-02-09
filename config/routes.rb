@@ -17,21 +17,22 @@ Rails.application.routes.draw do
 
   resources :reports do
     collection do
-      get 'summary'
-      get 'unsubmitted'
+      resource :summary, only: %i(show), module: :reports
+      resource :unsubmitted, only: %i(show), module: :reports
     end
   end
   resources :projects
 
   namespace :settings do
-    resources :projects, only: [:index, :update, :destroy]
-    resource :password, only: [:show, :update]
+    resources :projects, only: %i(index update destroy)
+    resource :password, only: %i(show update)
   end
 
   scope :admin do
     root to: 'admin#index', as: :admin_root
   end
+
   namespace :admin do
-    resources :csvs, only: [:index]
+    resources :csvs, only: %i(index)
   end
 end

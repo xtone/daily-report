@@ -28,14 +28,20 @@ class User < ApplicationRecord
     super && !self.deleted_at
   end
 
+  # 管理者権限を持っている？
+  # @return [TrueClass | FalseClass]
   def administrator?
     user_roles.any?(&:administrator?)
   end
 
+  # 有効な(集計中の)ユーザー？
+  # @return [TrueClass | FalseClass]
   def available?
     self.deleted_at.nil?
   end
 
+  # ディレクター権限を持っている？
+  # @return [TrueClass | FalseClass]
   def director?
     user_roles.any?(&:director?)
   end
@@ -53,6 +59,7 @@ class User < ApplicationRecord
   def password_salt=(new_salt)
   end
 
+  # 削除状態を取り消す
   def revive
     update_attribute(:deleted_at, nil)
   end

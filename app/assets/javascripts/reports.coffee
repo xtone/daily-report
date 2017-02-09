@@ -1,3 +1,16 @@
+class Report
+  constructor: (params) ->
+    form = document.getElementById(params.form)
+    for select in form.getElementsByTagName('select')
+      select.addEventListener('change', (event) =>
+        @enable(form)
+      )
+
+  enable: (form) ->
+    form.getElementsByClassName('btn')[0].removeAttribute('disabled')
+
+
+
 class ReportSummary
   constructor: (params) ->
     @renderForm = document.getElementById(params.renderForm)
@@ -23,4 +36,5 @@ class ReportSummary
   enable: (form) ->
     form.getElementsByClassName('btn')[0].removeAttribute('disabled')
 
+window.Report = Report
 window.ReportSummary = ReportSummary

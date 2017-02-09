@@ -1,5 +1,6 @@
 class ReportsController < ApplicationController
-  before_action :authenticate_user!
+  include Reports
+
   before_action :get_resource, only: %i(update destroy)
 
   # 日報の一覧
@@ -17,7 +18,10 @@ class ReportsController < ApplicationController
       format.csv do
         start_on = params_to_date(:reports, :start)
         end_on = params_to_date(:reports, :end)
-        raise ActiveRecord::RecordNotFound if start_on.blank? || end_on.blank? || start_on > end_on
+        if start_on.blank? || end_on.blank? || start_on > end_on
+          redirect_to admin_csvs_path, alert: '集計開始日が集計終了日より後になっています。'
+          return
+        end
         @reports = Report.includes(:user).joins(:user)
           .where(worked_in: [start_on..end_on])
           .order('users.id', worked_in: :asc)
@@ -90,98 +94,9 @@ class ReportsController < ApplicationController
     authorize @report
   end
 
-  # 集計
-  def summary
-    authorize Report.new
-    respond_to do |format|
-      format.csv do
-        raise ActiveRecord::RecordNotFoundunless unless params[:reports].present?
-        @date_start = params_to_date(:reports, :start)
-        @date_end = params_to_date(:reports, :end)
-        if @date_start > @date_end
-          redirect_to summary_reports_path, alert: '集計開始日が集計終了日より後になっています。'
-          return
-        end
-        @sum = Operation.summary(@date_start, @date_end)
-        @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
-        @users = Report.submitted_users(@date_start, @date_end).order(:id)
-        send_data render_to_string,
-                  filename: "summary_#{@date_start.strftime('%Y%m%d')}-#{@date_end.strftime('%Y%m%d')}.csv",
-                  type: :csv
-      end
-      format.any do
-        if params[:reports].present?
-          @date_start = params_to_date(:reports, :start)
-          @date_end = params_to_date(:reports, :end)
-          if @date_start > @date_end
-            flash.now[:alert] = '集計開始日が集計終了日より後になっています。'
-            render layout: 'admin' and return
-          end
-          @sum = Operation.summary(@date_start, @date_end)
-          @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
-          @users = Report.submitted_users(@date_start, @date_end).order(:id)
-        else
-          @date_end = Time.zone.now.to_date
-          @date_start = @date_end << 1
-        end
-        render layout: 'admin'
-      end
-    end
-  end
-
-  # 未提出一覧
-  def unsubmitted
-    authorize Report.new
-    if params[:reports].present?
-      @date_start = params_to_date(:reports, :start)
-      @date_end = params_to_date(:reports, :end)
-      if @date_start > @date_end
-        flash.now[:alert] = '集計開始日が集計終了日より後になっています。'
-        render layout: 'admin' and return
-      end
-      @data = []
-      User.available.each do |user|
-        dates = Report.unsubmitted_dates(user.id, @date_start, @date_end)
-        if dates.present?
-          @data << {
-            user: user,
-            dates: dates
-          }
-        end
-      end
-    else
-      @date_start = Time.zone.now.to_date << 1
-      @date_end = Time.zone.now.to_date
-    end
-    render layout: 'admin'
-  end
-
   private
-
-  # params[:date]のStringを、Dateに変換する
-  # @return [Date] 変換できなければnilを返す
-  def get_date
-    return nil unless params[:date].present?
-
-    /\A(\d{4})(\d{2})\Z/.match(params[:date]) do |m|
-      time = Time.zone.local(m[1], m[2]) rescue nil
-      time&.to_date
-    end
-  end
 
   def get_resource
     @report = Report.find(params[:id])
-  end
-
-  # datetime_select のFormヘルパーのパラメータをDateに変換する
-  # @param [Symbol] object_name
-  # @param [Symbol] method
-  # @return [Date]
-  def params_to_date(object_name, method)
-    Date.new(
-      params[object_name]["#{method}(1i)"].to_i,
-      params[object_name]["#{method}(2i)"].to_i,
-      params[object_name]["#{method}(3i)"].to_i
-    )
   end
 end

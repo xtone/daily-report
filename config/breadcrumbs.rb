@@ -33,11 +33,11 @@ crumb :csvs do
 end
 
 crumb :summary do
-  link '稼働集計', summary_reports_path
+  link '稼働集計', summary_path
 end
 
 crumb :unsubmitted do
-  link '日報未提出一覧', unsubmitted_reports_path
+  link '日報未提出一覧', unsubmitted_path
 end
 
 # crumb :project_issues do |project|

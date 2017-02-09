@@ -4,7 +4,9 @@ h1 CSV出力
 
 h2 提出済みの日報一覧
 
-= form_tag reports_path(format: :csv), method: :get, class: 'form-inline' do
+= render_flash_message
+
+= form_tag reports_path(format: :csv), method: :get, id: 'reports', class: 'form-inline' do
   .form-group
     = date_select_ja :reports, :start
     | 〜
@@ -21,3 +23,8 @@ h2 ユーザー一覧
 
 = form_tag users_path(format: :csv), method: :get do
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
+
+javascript:
+  new Report({
+    form: 'reports'
+  });
