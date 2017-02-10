@@ -24,9 +24,9 @@ module Reports
   # @return [Date]
   def params_to_date(object_name, method)
     Date.new(
-        params[object_name]["#{method}(1i)"].to_i,
-        params[object_name]["#{method}(2i)"].to_i,
-        params[object_name]["#{method}(3i)"].to_i
+      params[object_name]["#{method}(1i)"].to_i,
+      params[object_name]["#{method}(2i)"].to_i,
+      params[object_name]["#{method}(3i)"].to_i
     )
   end
 end
