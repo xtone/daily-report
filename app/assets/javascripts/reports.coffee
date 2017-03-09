@@ -1,13 +1,29 @@
+# 日報一覧ダウンロードフォームに機能を追加する
 class Report
+  alertNode = null
+
   constructor: (params) ->
     form = document.getElementById(params.form)
+    submitBtn = form.getElementsByClassName('btn')[0]
+    alerts = document.getElementsByClassName('alert')
+    if alerts.length != 0
+      alertNode = alerts[0]
+
     for select in form.getElementsByTagName('select')
       select.addEventListener('change', (event) =>
-        @enable(form)
+        @enable(submitBtn)
+        @removeAlert()
       )
 
-  enable: (form) ->
-    form.getElementsByClassName('btn')[0].removeAttribute('disabled')
+  # ダウンロードボタンが使用不能になっていたら、その状態を解除する
+  enable: (submitBtn) ->
+    submitBtn.removeAttribute('disabled')
+
+  # 警告が出ていたら、それを消去する
+  removeAlert: ->
+    if alertNode?
+      alertNode.parentNode.removeChild(alertNode)
+      alertNode = null
 
 
 
