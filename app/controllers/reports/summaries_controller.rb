@@ -2,6 +2,7 @@ class Reports::SummariesController < ApplicationController
   include Reports
   layout 'admin'
 
+  # 稼働集計表示＆CSVダウンロード
   def show
     authorize Report.new, :summary?
     respond_to do |format|

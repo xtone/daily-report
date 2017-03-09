@@ -3,6 +3,7 @@ class Reports::UnsubmittedsController < ApplicationController
 
   layout 'admin'
 
+  # 日報未提出一覧
   def show
     authorize Report.new, :unsubmitted?
     if params[:reports].present?
@@ -15,12 +16,7 @@ class Reports::UnsubmittedsController < ApplicationController
       @data = []
       User.available.each do |user|
         dates = Report.unsubmitted_dates(user.id, @date_start, @date_end)
-        if dates.present?
-          @data << {
-              user: user,
-              dates: dates
-          }
-        end
+        @data << { user: user, dates: dates } if dates.present?
       end
     else
       @date_start = Time.zone.now.to_date << 1
