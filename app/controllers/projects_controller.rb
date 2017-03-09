@@ -13,7 +13,20 @@ class ProjectsController < ApplicationController
         send_data render_to_string, filename: "project_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
       end
       format.any do
-        @projects = Project.order(name_reading: :asc)
+        order_hash = {}
+        if params[:order].present? && params[:order] =~ /\A(.+)_([^_]+)\Z/
+          if %w(code name name_reading displayed).include?($1)
+            order_hash[$1.to_sym] = $2
+            @order = "#{$1}_#{$2}"
+          else
+            order_hash[:name_reading] = 'asc'
+            @order = 'name_reading_asc'
+          end
+        else
+          @order = 'name_reading_asc'
+          order_hash[:name_reading] = 'asc'
+        end
+        @projects = Project.order(order_hash)
         if params[:active].present?
           @projects = @projects.available
         end
@@ -59,6 +72,6 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name, :name_reading, :hidden)
+    params.require(:project).permit(:name, :code, :name_reading, :hidden)
   end
 end
