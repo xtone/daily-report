@@ -16,7 +16,7 @@ crumb :project do |project|
 end
 
 crumb :users do
-  link 'ユーザー一覧'
+  link 'ユーザー一覧', users_path
 end
 
 crumb :user do |user|
