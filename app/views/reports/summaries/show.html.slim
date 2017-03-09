@@ -4,7 +4,7 @@ h1 稼働集計
 
 = render_flash_message
 
-= form_tag reports_path, method: :get, class: 'form-inline', id: 'summary-render' do
+= form_tag summary_path, method: :get, class: 'form-inline', id: 'summary-render' do
   .form-group
     = date_select_ja :reports, :start, default: @date_start
     | 〜
