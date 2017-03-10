@@ -19,10 +19,10 @@
 
 table.table.table-hover
   tr
-    th= index_header(:project, :code, @order)
-    th= index_header(:project, :name, @order)
-    th= index_header(:project, :name_reading, @order)
-    th= index_header(:project, :displayed, @order)
+    th= index_header(:project, :code, order_by: @order, active: params[:active])
+    th= index_header(:project, :name, order_by: @order, active: params[:active])
+    th= index_header(:project, :name_reading, order_by: @order, active: params[:active])
+    th= index_header(:project, :displayed, order_by: @order, active: params[:active])
   - @projects.each do |project|
     tr
       td= project.code
