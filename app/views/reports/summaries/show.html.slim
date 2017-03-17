@@ -15,7 +15,7 @@ h1 稼働集計
 = form_tag summary_path(format: :csv), method: :get, id: 'summary-download' do
   = submit_tag 'CSVダウンロード', class: 'btn btn-primary'
 
-- if @sum.present?
+- if params[:reports].present?
   .well= "集計期間：#{@date_start.strftime('%Y年%-m月%-d日')} 〜 #{@date_end.strftime('%Y年%-m月%-d日')}"
 
   table.table.table-bordered.table-striped
