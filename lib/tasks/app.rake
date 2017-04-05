@@ -28,7 +28,7 @@ namespace :app do
         end
         # projects.csv -> Project
         CSV.table(Rails.root.join('tmp', 'projects.csv')).each do |row|
-          Project.create!(
+          project = Project.new(
             id: row[:id],
             code: row[:pid].present? ? row[:pid].to_i : nil,
             name: row[:name],
@@ -37,6 +37,9 @@ namespace :app do
             created_at: row[:created],
             updated_at: row[:modified]
           )
+          # codeはuniqueness制約があるが、既存projectのcodeにUniqueでないものがあるため
+          # ここではvalidationをスキップする。
+          project.save(validate: false)
         end
 
         # user_projects.csv -> UserProject
