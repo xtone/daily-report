@@ -25,6 +25,5 @@ h2 ユーザー一覧
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
 
 javascript:
-  new Report({
-    form: 'reports'
-  });
+  new Report({ form: 'reports' });
+  new CsvDownload();

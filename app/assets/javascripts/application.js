@@ -18,3 +18,4 @@
 //= require react_ujs
 //= require components
 //= require reports
+//= require csvs

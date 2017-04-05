@@ -5,7 +5,8 @@ class Project < ApplicationRecord
 
   validates :code,
     allow_blank: true,
-    numericality: { greater_than_or_equal_to: 0 }
+    numericality: { greater_than_or_equal_to: 0 },
+    uniqueness: true
 
   validates :name,
     presence: true

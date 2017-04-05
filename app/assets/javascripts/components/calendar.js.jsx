@@ -18,12 +18,14 @@ var Calendar = React.createClass({
   componentDidMount: function() {
     $.ajax(this.props.reports_url, {
       dataType: 'json'
-    }).done(function(data) {
-      this.setState({ reports: data });
-    }.bind(this)
-    ).fail(function(xhr, status, err) {
-      console.error(this.props.reports_url, status, err.toString());
-    }.bind(this)
+    }).done(
+      function(data) {
+        this.setState({ reports: data });
+      }.bind(this)
+    ).fail(
+      function(xhr, status, err) {
+        console.error(this.props.reports_url, status, err.toString());
+      }.bind(this)
     );
   },
 
@@ -34,11 +36,12 @@ var Calendar = React.createClass({
       data: params.data,
       processData: false,
       contentType: false
-    }).done(function(response) {
-      var reports = this.state.reports;
-      reports[index] = response;
-      this.setState({ reports: reports });
-    }.bind(this)
+    }).done(
+      function(response) {
+        var reports = this.state.reports;
+        reports[index] = response;
+        this.setState({ reports: reports });
+      }.bind(this)
     ).fail(function() {
 
     }
