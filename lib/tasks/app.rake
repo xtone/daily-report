@@ -84,7 +84,14 @@ namespace :app do
     end
   end
 
-  desc ''
+  desc 'ユーザーに管理者権限を付与する'
+  task :give_administrator_role_to, ['user_email'] => :environment do |task, args|
+    user = User.find_by!(email: args[:user_email])
+    user.user_roles << UserRole.administrator.first
+    user.save!
+  end
+
+  desc '日報未提出者にメールを送信する'
   task unsubmitted_notification_mail: :environment do
     User.available.each do |user|
       dates = Report.unsubmitted_dates(user.id)
