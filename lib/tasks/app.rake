@@ -86,11 +86,10 @@ namespace :app do
 
   desc ''
   task unsubmitted_notification_mail: :environment do
-    now = Time.zone.now
     User.available.each do |user|
       dates = Report.unsubmitted_dates(user.id)
       next if dates.blank?
-      ReportMailer.unsubmitted_notification(user, dates, now).deliver_later
+      ReportMailer.unsubmitted_notification(user, dates).deliver_later
     end
   end
 end
