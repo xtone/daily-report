@@ -10,14 +10,21 @@ services:
       - '3456:3000'
     volumes:
       - .:/daily-report
-    links:
+    depends_on:
       - mysql
       - memcached
     volumes_from:
       - bundle
 
+  mysql_data:
+    image: busybox
+    volumes:
+      - /var/lib/mysql
+
   mysql:
     image: 'mysql:5.7.16'
+    volumes_from:
+      - mysql_data
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
 
@@ -25,6 +32,6 @@ services:
     image: 'memcached:1.4'
 
   bundle:
-    image: dailyreport_app
+    image: busybox
     volumes:
       - /bundle
