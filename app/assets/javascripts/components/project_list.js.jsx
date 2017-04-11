@@ -1,3 +1,6 @@
+/**
+ * プロジェクト一覧のラッパーComponent
+ */
 var ProjectListRoot = React.createClass({
   getInitialState: function() {
     return {
@@ -13,33 +16,27 @@ var ProjectListRoot = React.createClass({
     }.bind(this));
   },
 
-  toggleRelated: function(index) {
-    var project = this.state.projects[index];
-    $.ajax('/settings/projects/' + project.id + '.json', {
-      method: project.related ? 'DELETE' : 'PUT',
-      dataType: 'text'
-    }).done(function(response) {
-      project.related = !project.related;
-      var projects = this.state.projects;
-      projects[index] = project;
-      this.setState({ projects: projects });
-    }.bind(this)
-    ).fail(function() {
-
-    });
-  },
-
+  /**
+   * プロジェクトの一覧を作る
+   * @param {object} data - プロジェクトのデータ
+   */
   setProjectList: function(data) {
-    var projects = [[], [], [], [], [], [], [], [], [], []], index;
+    var projects = [[], [], [], [], [], [], [], [], [], []];
     data.forEach(function(project) {
-      index = this.getCharCodeIndex(project.name_reading);
+      var index = this.getCharCodeIndex(project.name_reading);
       projects[index].push(project);
     }, this);
     this.setState({ projects: projects });
   },
 
-  getCharCodeIndex: function(str) {
-    var unicode = str.charCodeAt(0);
+  /**
+   * プロジェクトの読みの頭文字で this.state.projects の index を決定して、返す
+   * @param {string} initialChar プロジェクトの読みの頭文字
+   * @return {number} index
+   * @throws {RangeError} 想定されていない文字 initialChar が渡された時
+   */
+  getCharCodeIndex: function(initialChar) {
+    var unicode = initialChar.charCodeAt(0);
     if (unicode < 0x3041) throw new RangeError();
     if (unicode < 0x304B) return 0; // あ行
     if (unicode < 0X3055) return 1; // か行
@@ -68,6 +65,9 @@ var ProjectListRoot = React.createClass({
   }
 });
 
+/**
+ * ◯行の文字で始まるプロジェクトの一覧Component
+ */
 var ProjectList = React.createClass({
   getInitialState: function() {
     return {
@@ -79,6 +79,10 @@ var ProjectList = React.createClass({
     this.setState({ projects: this.props.projects });
   },
 
+  /**
+   * 自分が関わってる/関わってない状態の切り替えを行う
+   * @param {number} index - 変更するStateのindex
+   */
   toggleRelated: function(index) {
     var project = this.state.projects[index];
     $.ajax('/settings/projects/' + project.id + '.json', {
@@ -97,6 +101,10 @@ var ProjectList = React.createClass({
 
   initials: ['あ','か','さ','た','な','は','ま','や','ら','わ'],
 
+  /**
+   * プロジェクトの頭文字
+   * @returns {string}
+   */
   initialChar: function() {
     return this.initials[this.props.index];
   },
@@ -117,6 +125,9 @@ var ProjectList = React.createClass({
   }
 });
 
+/**
+ * プロジェクトComponent
+ */
 var Project = React.createClass({
   onClick: function(event) {
     event.preventDefault();
