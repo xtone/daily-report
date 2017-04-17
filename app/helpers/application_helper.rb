@@ -11,8 +11,8 @@ module ApplicationHelper
 
   def render_flash_message
     capture do
-      concat content_tag(:div, flash[:alert], class: 'alert alert-danger') if flash[:alert].present?
-      concat content_tag(:div, flash[:notice], class: 'alert alert-success') if flash[:notice].present?
+      concat tag.div(flash[:alert], class: 'alert alert-danger') if flash[:alert].present?
+      concat tag.div(flash[:notice], class: 'alert alert-success') if flash[:notice].present?
     end
   end
 
@@ -62,5 +62,14 @@ module ApplicationHelper
       }.merge(options),
       { class: 'form-control' }.merge(html_options)
     ) % ['年', '月'] + '日'
+  end
+
+  def text_with_ruby(text, ruby)
+    tag.ruby do
+      concat text
+      concat tag.rp('（')
+      concat tag.rt(ruby)
+      concat tag.rp('）')
+    end
   end
 end
