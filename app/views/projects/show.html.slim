@@ -5,7 +5,7 @@
 
 dl.row
   dt.col-sm-2= t('project.code')
-  dd.col-sm-10= @project.code
+  dd.col-sm-10= @project.code || '（未設定）'
 
   dt.col-sm-2= t('project.name')
   dd.col-sm-10= text_with_ruby(@project.name, @project.name_reading)
