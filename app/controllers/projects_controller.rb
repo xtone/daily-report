@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :get_resource, only: %i(edit update destroy)
+  before_action :get_resource, only: %i(show edit update destroy)
 
   layout 'admin'
 
@@ -34,6 +34,7 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # プロジェクト新規登録
   def new
     @project = Project.new(code: Project.next_expected_code)
     authorize @project
@@ -51,6 +52,12 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # プロジェクト詳細
+  def show
+    authorize @project
+  end
+
+  # プロジェクト編集
   def edit
     authorize @project
   end

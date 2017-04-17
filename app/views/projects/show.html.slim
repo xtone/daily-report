@@ -1,0 +1,37 @@
+- breadcrumb :project, @project
+
+.page-header
+  h1 プロジェクト詳細
+
+dl.row
+  dt.col-sm-2= t('project.code')
+  dd.col-sm-10= @project.code
+
+  dt.col-sm-2= t('project.name')
+  dd.col-sm-10= text_with_ruby(@project.name, @project.name_reading)
+
+  dt.col-sm-2= t('project.displayed')
+  dd.col-sm-10
+    = display_status(@project)
+    = @project.display_status
+
+.navbar.navbar-default
+  .collapse.navbar-collapse
+    .nav.navbar-nav
+      = link_to 'このプロジェクトを編集', edit_project_path(@project.id), class: 'btn btn-primary navbar-btn'
+
+h2 プロジェクトメンバー
+
+- if @project.users.present?
+  ul.list-inline
+    - @project.users.each do |user|
+      li.list-inline-item
+        span.label.label-default= user.name
+
+- else
+  p このプロジェクトにはメンバーがいません。
+
+.navbar.navbar-default
+  .collapse.navbar-collapse
+    .nav.navbar-nav
+      = link_to 'このプロジェクトのメンバーを編集', project_members_path(@project.id), class: 'btn btn-primary navbar-btn'

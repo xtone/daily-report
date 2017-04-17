@@ -23,6 +23,24 @@ class User < ApplicationRecord
     confirmation: true,
     if: Proc.new { |user| user.new_record? || user.password.present? }
 
+  class << self
+    # 該当のプロジェクトに関与しているかの情報を含むリストを取得
+    # @param [Integer] project_id
+    # @return [Array]
+    def find_in_project(project_id)
+      user_ids = UserProject.where(project_id: project_id).pluck(:user_id)
+      list = []
+      available.each do |user|
+        list << {
+          id: user.id,
+          name: user.name,
+          related: user_ids.include?(user.id)
+        }
+      end
+      list
+    end
+  end
+
   # ensure user account is active
   def active_for_authentication?
     super && !self.deleted_at
@@ -65,8 +83,10 @@ class User < ApplicationRecord
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
+  # 同時にプロジェクトの関与データも削除する
   # @param [Time] at
   def soft_delete(at = Time.zone.now)
     update_attribute(:deleted_at, at)
+    UserProject.destroy_all(user_id: self.id)
   end
 end

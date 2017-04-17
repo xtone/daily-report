@@ -26,6 +26,6 @@ table.table.table-hover
   - @projects.each do |project|
     tr
       td= project.code
-      td= link_to project.name, edit_project_path(project.id)
+      td= link_to project.name, project_path(project.id)
       td.small= project.name_reading
       td.text-center= display_status(project)
