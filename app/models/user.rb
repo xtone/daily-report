@@ -87,6 +87,6 @@ class User < ApplicationRecord
   # @param [Time] at
   def soft_delete(at = Time.zone.now)
     update_attribute(:deleted_at, at)
-    UserProject.destroy_all(user_id: self.id)
+    UserProject.where(user_id: self.id).destroy_all
   end
 end
