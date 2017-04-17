@@ -4,7 +4,7 @@ module UsersHelper
       form_for user, method: :delete do |f|
         f.submit('このユーザーを集計対象から外す',
                  class: 'btn btn-danger navbar-btn',
-                 data: { confirm: 'このユーザーを集計対象から外します。\n全てのプロジェクトからこのユーザーの関連付けが削除されます。\nよろしいですか？' })
+                 data: { confirm: "このユーザーを集計対象から外します。\n全てのプロジェクトからこのユーザーの関連付けが削除されます。\nよろしいですか？" })
       end
     else
       form_for user, url: revive_user_path(user), method: :patch do |f|
