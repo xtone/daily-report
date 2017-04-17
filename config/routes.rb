@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  namespace :projects do
+    get 'members/edit'
+  end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'reports#index'
 
@@ -21,7 +25,9 @@ Rails.application.routes.draw do
       resource :unsubmitted, only: %i(show), module: :reports
     end
   end
-  resources :projects
+  resources :projects do
+    resources :members, only: %i(index update destroy), module: :projects
+  end
 
   namespace :settings do
     resources :projects, only: %i(index update destroy)
