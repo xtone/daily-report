@@ -58,7 +58,7 @@ var ProjectListRoot = React.createClass({
       return <ProjectList projects={ps} index={i} key={i} />;
     });
     return(
-      <div id="project-setting" className="container">
+      <div id="projectSetting" className="container">
         {projects}
       </div>
     );
@@ -134,20 +134,39 @@ var Project = React.createClass({
     this.props.onClick(this.props.index);
   },
 
+  projectCode: function(code) {
+    if (code) {
+      return ' (' + code + ')'
+    } else {
+      return ''
+    }
+  },
+
   render: function() {
     if (this.props.project.related) {
       return (
         <a href="#" className="list-group-item list-group-item-success" onClick={this.onClick}>
-          <strong>{this.props.project.name}</strong>
+          <ProjectCode code={this.props.project.code} />
+          <div className="project selected">{this.props.project.name}</div>
         </a>
       );
     } else {
       return (
         <a href="#" className="list-group-item" onClick={this.onClick}>
-          {this.props.project.name}
+          <ProjectCode code={this.props.project.code} />
+          <div className="project">{this.props.project.name}</div>
         </a>
       );
     }
+  }
+});
 
+var ProjectCode = React.createClass({
+  render: function() {
+    if (this.props.code) {
+      return <div className="project-code">【{this.props.code}】</div>
+    } else {
+      return <div className="project-code" />
+    }
   }
 });

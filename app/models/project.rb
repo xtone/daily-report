@@ -29,6 +29,7 @@ class Project < ApplicationRecord
           id: project.id,
           name: project.name,
           name_reading: project.name_reading,
+          code: project.code,
           related: user_pids.include?(project.id)
         }
       end
