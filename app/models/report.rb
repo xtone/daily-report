@@ -52,6 +52,7 @@ class Report < ApplicationRecord
     def unsubmitted_dates(user_id, start_on = nil, end_on = nil)
       result = []
       user = User.find(user_id)
+      return result if user.began_on.nil?
       # ユーザーの集計開始日より前のデータは無視する
       if start_on.present?
         start_on = [start_on, user.began_on].max
