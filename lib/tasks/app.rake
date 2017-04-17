@@ -14,11 +14,13 @@ namespace :app do
           )
           user.save(validate: false)
         end
+
         # profile.csv -> User
         CSV.table(Rails.root.join('tmp', 'profile.csv')).each do |row|
           user = User.find(row[:id])
           user.update_attribute(:name, row[:fullname])
         end
+
         # user_printouts.csv -> User
         CSV.table(Rails.root.join('tmp', 'user_printouts.csv')).each do |row|
           user = User.find(row[:id])
@@ -26,6 +28,8 @@ namespace :app do
           user.began_on = row[:starting_date]
           user.save(validate: false)
         end
+        puts 'Users imported.'
+
         # projects.csv -> Project
         CSV.table(Rails.root.join('tmp', 'projects.csv')).each do |row|
           project = Project.new(
@@ -41,15 +45,19 @@ namespace :app do
           # ここではvalidationをスキップする。
           project.save(validate: false)
         end
+        puts 'Projects imported.'
 
         # user_projects.csv -> UserProject
         CSV.table(Rails.root.join('tmp', 'user_projects.csv')).each do |row|
+          user = User.find(row[:user_id])
+          next unless user.available?
           # 元データがUniqueでないので、ここはcreateに失敗しても例外にしない
           UserProject.create(
             user_id: row[:user_id],
             project_id: row[:project_id]
           )
         end
+        puts 'UserProjects imported.'
 
         # daily_reports.csv -> Report
         CSV.table(Rails.root.join('tmp', 'daily_reports.csv')).each do |row|
@@ -61,6 +69,7 @@ namespace :app do
             updated_at: row[:modified]
           )
         end
+        puts 'Reports imported.'
 
         # contents.csv -> Operation
         CSV.table(Rails.root.join('tmp', 'contents.csv')).each do |row|
@@ -73,6 +82,7 @@ namespace :app do
             updated_at: row[:modified]
           )
         end
+        puts 'Operations imported.'
       end
     rescue ActiveRecord::RecordInvalid => e
       puts "#{e.class}: #{e.message}"
