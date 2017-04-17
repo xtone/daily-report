@@ -15,6 +15,11 @@ crumb :project do |project|
   parent :projects
 end
 
+crumb :project_members do |project|
+  link 'プロジェクトメンバー管理', project_members_path(project)
+  parent :project, project
+end
+
 crumb :users do
   link 'ユーザー一覧', users_path
 end
