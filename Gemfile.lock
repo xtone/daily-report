@@ -50,6 +50,8 @@ GEM
     bcrypt (3.1.11)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap3-datetimepicker-rails (4.14.30)
+      momentjs-rails (>= 2.8.1)
     builder (3.2.3)
     byebug (9.0.6)
     capistrano (3.6.1)
@@ -120,6 +122,8 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.10.1)
+    momentjs-rails (2.17.1)
+      railties (>= 3.1)
     multi_json (1.12.1)
     mysql2 (0.4.5)
     net-scp (1.2.1)
@@ -266,6 +270,7 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
+  bootstrap3-datetimepicker-rails (~> 4.14.30)
   byebug
   capistrano-rails
   coffee-rails (~> 4.2)
@@ -278,6 +283,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)
+  momentjs-rails (>= 2.9.0)
   mysql2 (>= 0.3.18, < 0.5)
   pry-byebug
   pry-rails

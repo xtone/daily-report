@@ -6,6 +6,7 @@ h1 稼働集計
 
 = form_tag summary_path, method: :get, class: 'form-inline', id: 'summary-render' do
   .form-group
+    input#dateStart type="text"
     = date_select_ja :reports, :start, default: @date_start
     | 〜
     = date_select_ja :reports, :end, default: @date_end
@@ -42,3 +43,5 @@ javascript:
     renderForm: 'summary-render',
     downloadForm: 'summary-download'
   });
+
+  $('#dateStart').datetimepicker();
