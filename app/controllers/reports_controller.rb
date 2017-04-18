@@ -16,8 +16,12 @@ class ReportsController < ApplicationController
       end
 
       format.csv do
-        start_on = params_to_date(:reports, :start)
-        end_on = params_to_date(:reports, :end)
+        if params.dig(:reports, :start).blank? || params.dig(:reports, :end).blank?
+          redirect_to admin_csvs_path, alert: '集計開始日と集計終了日を設定してください。'
+          return
+        end
+        start_on = Date.parse(params[:reports][:start])
+        end_on = Date.parse(params[:reports][:end])
         if start_on.blank? || end_on.blank? || start_on > end_on
           redirect_to admin_csvs_path, alert: '集計開始日が集計終了日より後になっています。'
           return
