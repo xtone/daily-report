@@ -7,20 +7,20 @@ class Reports::UnsubmittedsController < ApplicationController
   def show
     authorize Report.new, :unsubmitted?
     if params[:reports].present?
-      @date_start = params_to_date(:reports, :start)
-      @date_end = params_to_date(:reports, :end)
-      if @date_start > @date_end
+      @start_date = Date.parse(params[:reports][:start])
+      @end_date = Date.parse(params[:reports][:end])
+      if @start_date > @end_date
         flash.now[:alert] = '集計開始日が集計終了日より後になっています。'
         return
       end
       @data = []
       User.available.each do |user|
-        dates = Report.unsubmitted_dates(user.id, @date_start, @date_end)
+        dates = Report.unsubmitted_dates(user.id, @start_date, @end_date)
         @data << { user: user, dates: dates } if dates.present?
       end
     else
-      @date_start = Time.zone.now.to_date << 1
-      @date_end = Time.zone.now.to_date
+      @start_date = Time.zone.now.to_date << 1
+      @end_date = Time.zone.now.to_date
     end
   end
 end

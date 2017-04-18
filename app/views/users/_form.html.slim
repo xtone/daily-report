@@ -22,7 +22,10 @@
   .form-group
     label.col-sm-2.control-label= t('user.began_on')
     .col-sm-10.form-inline
-      = (f.date_select :began_on, {use_month_numbers: true, start_year: 2011, end_year: Time.zone.now.year, date_separator: '%s'}, { class: 'form-control' }) % ['年', '月'] + '日'
+      .input-group.date
+        = f.text_field :began_on, class: 'form-control'
+        span.input-group-addon
+          span.glyphicon.glyphicon-calendar
       = error_message user, :began_on
   .form-group
     label.col-sm-2.control-label= t('user.role')
@@ -34,3 +37,11 @@
   .form-group
     .col-sm-offset-2.col-sm-10
       = f.submit user.new_record? ? '登録' : '更新', class: 'btn btn-default'
+
+javascript:
+  $('.input-group.date').datetimepicker({
+    format: 'YYYY-MM-DD',
+    dayViewHeaderFormat: 'YYYY年MMMM',
+    locale: moment.locale('ja'),
+    showClose: true
+  });

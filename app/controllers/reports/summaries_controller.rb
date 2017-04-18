@@ -8,33 +8,33 @@ class Reports::SummariesController < ApplicationController
     respond_to do |format|
       format.csv do
         raise ActiveRecord::RecordNotFoundunless unless params[:reports].present?
-        @date_start = params_to_date(:reports, :start)
-        @date_end = params_to_date(:reports, :end)
-        if @date_start > @date_end
+        @start_date = Date.parse(params[:reports][:start])
+        @end_date = Date.parse(params[:reports][:end])
+        if @start_date > @end_date
           redirect_to summary_path, alert: '集計開始日が集計終了日より後になっています。'
           return
         end
-        @sum = Operation.summary(@date_start, @date_end)
+        @sum = Operation.summary(@start_date, @end_date)
         @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
-        @users = Report.submitted_users(@date_start, @date_end).order(:id)
+        @users = Report.submitted_users(@start_date, @end_date).order(:id)
         send_data render_to_string,
-                  filename: "summary_#{@date_start.strftime('%Y%m%d')}-#{@date_end.strftime('%Y%m%d')}.csv",
+                  filename: "summary_#{@start_date.strftime('%Y%m%d')}-#{@end_date.strftime('%Y%m%d')}.csv",
                   type: :csv
       end
       format.any do
         if params[:reports].present?
-          @date_start = params_to_date(:reports, :start)
-          @date_end = params_to_date(:reports, :end)
-          if @date_start > @date_end
+          @start_date = Date.parse(params[:reports][:start])
+          @end_date = Date.parse(params[:reports][:end])
+          if @start_date > @end_date
             flash.now[:alert] = '集計開始日が集計終了日より後になっています。'
             return
           end
-          @sum = Operation.summary(@date_start, @date_end)
+          @sum = Operation.summary(@start_date, @end_date)
           @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
-          @users = Report.submitted_users(@date_start, @date_end).order(:id)
+          @users = Report.submitted_users(@start_date, @end_date).order(:id)
         else
-          @date_end = Time.zone.now.to_date
-          @date_start = @date_end << 1
+          @end_date = Time.zone.now.to_date
+          @start_date = @end_date << 1
         end
       end
     end

@@ -6,14 +6,20 @@ h1 日報未提出一覧
 
 = form_tag unsubmitted_path, method: :get, class: 'form-inline' do
   .form-group
-    = date_select_ja :reports, :start, default: @date_start
-    | 〜
-    = date_select_ja :reports, :end, default: @date_end
+    .input-group.date
+      input.form-control.date-input type="text" name="reports[start]" placeholder="集計開始日" value="#{@start_date.strftime('%Y-%m-%d')}"
+      span.input-group-addon
+        span.glyphicon.glyphicon-calendar
+    span.separator 〜
+    .input-group.date
+      input.form-control.date-input type="text" name="reports[end]" placeholder="集計終了日" value="#{@end_date.strftime('%Y-%m-%d')}"
+      span.input-group-addon
+        span.glyphicon.glyphicon-calendar
     | の未提出一覧を
   = submit_tag '表示', class: 'btn btn-default'
 
 - if @data.present?
-  .well= "集計期間：#{@date_start.strftime('%Y年%-m月%-d日')} 〜 #{@date_end.strftime('%Y年%-m月%-d日')}"
+  .well= "集計期間：#{@start_date.strftime('%Y年%-m月%-d日')} 〜 #{@end_date.strftime('%Y年%-m月%-d日')}"
 
   - @data.each do |data|
     h2= data[:user].name
@@ -22,3 +28,11 @@ h1 日報未提出一覧
       - data[:dates].each do |date|
         = date.strftime('%Y-%m-%d')
         br
+
+javascript:
+  $('.input-group.date').datetimepicker({
+    format: 'YYYY-MM-DD',
+    dayViewHeaderFormat: 'YYYY年MMMM',
+    locale: moment.locale('ja'),
+    showClose: true
+  });
