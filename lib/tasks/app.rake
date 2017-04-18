@@ -6,6 +6,7 @@ namespace :app do
     begin
       ApplicationRecord.transaction do
         # user.csv -> User
+        user_count = 0
         CSV.table(Rails.root.join('tmp', 'user.csv')).each do |row|
           user = User.new(
             id: row[:id],
@@ -13,6 +14,7 @@ namespace :app do
             encrypted_password: row[:password]
           )
           user.save(validate: false)
+          user_count += 1
         end
 
         # profile.csv -> User
@@ -28,9 +30,10 @@ namespace :app do
           user.began_on = row[:starting_date]
           user.save(validate: false)
         end
-        puts 'Users imported.'
+        puts "#{user_count} Users are imported."
 
         # projects.csv -> Project
+        project_count = 0
         CSV.table(Rails.root.join('tmp', 'projects.csv')).each do |row|
           project = Project.new(
             id: row[:id],
@@ -44,8 +47,12 @@ namespace :app do
           # codeはuniqueness制約があるが、既存projectのcodeにUniqueでないものがあるため
           # ここではvalidationをスキップする。
           project.save(validate: false)
+          project_count += 1
+
+          print "#{project_count} Projects are imported.\r"
+          $stdout.flush
         end
-        puts 'Projects imported.'
+        puts ''
 
         # user_projects.csv -> UserProject
         CSV.table(Rails.root.join('tmp', 'user_projects.csv')).each do |row|
@@ -60,6 +67,7 @@ namespace :app do
         puts 'UserProjects imported.'
 
         # daily_reports.csv -> Report
+        report_count = 0
         CSV.table(Rails.root.join('tmp', 'daily_reports.csv')).each do |row|
           Report.create!(
             id: row[:id],
@@ -68,10 +76,14 @@ namespace :app do
             created_at: row[:created],
             updated_at: row[:modified]
           )
+          report_count += 1
+          print "#{report_count} Reports are imported\r"
+          $stdout.flush
         end
-        puts 'Reports imported.'
+        puts ''
 
         # contents.csv -> Operation
+        operation_count = 0
         CSV.table(Rails.root.join('tmp', 'contents.csv')).each do |row|
           Operation.create!(
             id: row[:id],
@@ -81,8 +93,11 @@ namespace :app do
             created_at: row[:created],
             updated_at: row[:modified]
           )
+          operation_count += 1
+          print "#{operation_count} Operations are imported.\r"
+          $stdout.flush
         end
-        puts 'Operations imported.'
+        puts ''
       end
     rescue ActiveRecord::RecordInvalid => e
       puts "#{e.class}: #{e.message}"
