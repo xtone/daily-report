@@ -19,18 +19,20 @@ h1 稼働集計
   .well= "集計期間：#{@date_start.strftime('%Y年%-m月%-d日')} 〜 #{@date_end.strftime('%Y年%-m月%-d日')}"
 
   - if @sum.present?
-    table.table.table-bordered.table-striped
-      tr
-        th PJコード
-        th プロジェクト名
-        - @users.each do |user|
-          th= user.name
-      - @sum.each do |sum|
+    table.table.table-bordered.table-striped.table-hover.table-responsive.reports-summary
+      thead
         tr
-          th= @projects[sum[0]].code
-          th= @projects[sum[0]].name
+          th PJコード
+          th プロジェクト名
           - @users.each do |user|
-            td= sum[1][user.id] if sum[1].has_key?(user.id)
+            th.user= user.name
+      tbody
+        - @sum.each do |sum|
+          tr
+            th= @projects[sum[0]].code
+            th.project= @projects[sum[0]].name
+            - @users.each do |user|
+              td= sum[1][user.id] if sum[1].has_key?(user.id)
   - else
     .alert.alert-info
       | 期間内の稼働データがありません。
