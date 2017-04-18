@@ -36,21 +36,22 @@ class ReportSummary
       event.preventDefault()
       @download(event.target)
     )
-    for select in @renderForm.getElementsByTagName('select')
-      select.addEventListener('change', (event) =>
+    for button in @renderForm.getElementsByClassName('input-group-addon')
+      button.addEventListener('click', (event) =>
         @enable(@downloadForm)
       )
 
   download: (form) ->
     attrs = []
-    selects = @renderForm.getElementsByTagName('select')
-    for i in [0..selects.length-1]
-      select = selects[i]
-      attrs.push(select.name + '=' + select.value)
+    inputs = @renderForm.getElementsByClassName('date-input')
+    for i in [0..inputs.length-1]
+      input = inputs[i]
+      attrs.push(input.name + '=' + input.value)
     window.location.href = form.action + '?' + attrs.join('&')
 
   enable: (form) ->
-    form.getElementsByClassName('btn')[0].removeAttribute('disabled')
+    for button in form.getElementsByClassName('btn')
+      button.removeAttribute('disabled')
 
 window.Report = Report
 window.ReportSummary = ReportSummary
