@@ -42,9 +42,9 @@ class User < ApplicationRecord
   end
 
   # ensure user account is active
-  def active_for_authentication?
-    super && !self.deleted_at
-  end
+  #def active_for_authentication?
+  #  super && !self.deleted_at
+  #end
 
   # 管理者権限を持っている？
   # @return [TrueClass | FalseClass]
