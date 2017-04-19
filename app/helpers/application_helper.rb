@@ -1,4 +1,17 @@
 module ApplicationHelper
+  def title
+    if content_for?(:title)
+      "#{content_for :title} | #{t(:site_name)}"
+    else
+      key = "#{controller_path.tr('/', '.')}.#{action_name}.title"
+      if I18n.exists?(key)
+        "#{t(key)} | #{t(:site_name)}"
+      else
+        t(:site_name)
+      end
+    end
+  end
+
   # ActiveRecordのエラーメッセージを表示する
   # @param [ActiveRecord] resource
   # @param [Symbol] attribute

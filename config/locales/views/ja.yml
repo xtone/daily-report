@@ -1,0 +1,40 @@
+ja:
+  site_name: 日報システム
+
+  admin:
+    index:
+      title: 管理画面
+    csvs:
+      index:
+        title: CSV出力
+  users:
+    index:
+      title: ユーザー一覧
+    edit:
+      title: ユーザー「%{name}」詳細
+  projects:
+    index:
+      title: プロジェクト管理
+    new:
+      title: プロジェクト新規登録
+    show:
+      title: プロジェクト「%{name}」詳細
+    edit:
+      title: プロジェクト「%{name}」編集
+    members:
+      index:
+        title: プロジェクト「%{name}」メンバー設定
+  reports:
+    summaries:
+      show:
+        title: 稼働集計
+    unsubmitteds:
+      show:
+        title: 日報未提出一覧
+  settings:
+    projects:
+      index:
+        title: 参加プロジェクト設定
+    password:
+      show:
+        title: パスワード変更
