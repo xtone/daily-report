@@ -35,6 +35,6 @@ ja:
     projects:
       index:
         title: 参加プロジェクト設定
-    password:
+    passwords:
       show:
         title: パスワード変更
