@@ -4,6 +4,7 @@ class UsersController < ApplicationController
 
   layout 'admin'
 
+  # ユーザー一覧
   def index
     authorize User.new
     respond_to do |format|
@@ -21,6 +22,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # ユーザー新規登録
   def new
     @user = User.new
     authorize @user
@@ -41,6 +43,11 @@ class UsersController < ApplicationController
     render :new
   end
 
+  def show
+    redirect_to edit_user_path(params[:id])
+  end
+
+  # ユーザー編集
   def edit
     authorize @user
     @roles = UserRole.roles
