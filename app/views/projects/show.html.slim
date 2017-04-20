@@ -23,9 +23,9 @@ dl.row
 
 h2 プロジェクトメンバー
 
-- if @project.users.present?
+- if @project.members.present?
   ul.list-inline
-    - @project.users.each do |user|
+    - @project.members.each do |user|
       li.list-inline-item
         span.label.label-default= user.name
 

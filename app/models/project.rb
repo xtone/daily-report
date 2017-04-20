@@ -44,6 +44,16 @@ class Project < ApplicationRecord
     end
   end
 
+  # プロジェクトに(1度でも)関わったユーザーを取得
+  # @return [ActiveRecord::Relation]
+  def members
+    @members ||=
+      user_ids = Report.includes(:operations)
+        .where(operations: { project_id: self.id })
+        .distinct.pluck(:user_id)
+      User.where(id: user_ids)
+  end
+
   def displayed?
     !self.hidden
   end
