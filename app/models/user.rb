@@ -23,6 +23,9 @@ class User < ApplicationRecord
     confirmation: true,
     if: Proc.new { |user| user.new_record? || user.password.present? }
 
+  validates :began_on,
+    presence: true
+
   class << self
     # 該当のプロジェクトに関与しているかの情報を含むリストを取得
     # @param [Integer] project_id

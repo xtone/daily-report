@@ -10,6 +10,8 @@ ja:
   users:
     index:
       title: ユーザー一覧
+    new:
+      title: ユーザー新規登録
     edit:
       title: ユーザー「%{name}」詳細
   projects:
