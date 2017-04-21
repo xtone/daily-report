@@ -27,8 +27,10 @@ h2 プロジェクトメンバー
   ul.list-inline
     - @project.members.each do |user|
       li.list-inline-item
-        span.label.label-default= user.name
-
+        - if user.available?
+          span.label.label-default= user.name
+        - else
+          span.label.label-default-translucent= user.name
 - else
   p このプロジェクトにはメンバーがいません。
 
