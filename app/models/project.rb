@@ -50,7 +50,6 @@ class Project < ApplicationRecord
     @members ||= User.includes(reports: :operations)
                    .references(:operations)
                    .where(operations: { project_id: self.id })
-    end
   end
 
   def displayed?
