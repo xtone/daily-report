@@ -23,4 +23,8 @@ class UserPolicy < ApplicationPolicy
   def revive?
     create?
   end
+
+  def csv?
+    @user.administrator?
+  end
 end
