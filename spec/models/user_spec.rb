@@ -19,24 +19,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#general_affairs?' do
-    subject { user.general_affairs? }
-
-    context 'user is general_affairs' do
-      let(:user) { create :user, :general_affairs }
-      it 'should return true' do
-        is_expected.to eq(true)
-      end
-    end
-
-    context 'user is not general_affairs' do
-      let(:user) { create :user }
-      it 'should return false' do
-        is_expected.to eq(false)
-      end
-    end
-  end
-
   describe '#director?' do
     subject { user.director? }
 
