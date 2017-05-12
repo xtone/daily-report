@@ -50,5 +50,6 @@ test:
 production:
   <<: *default
   database: daily-report_production
-  username: daily-report
-  password: <%= ENV['DAILY-REPORT_DATABASE_PASSWORD'] %>
+  host: <%= ENV['DB_HOST'] %>
+  username: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
