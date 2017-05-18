@@ -6,6 +6,9 @@ services:
     environment:
       RAILS_ENV: development
       MYSQL_HOST: mysql
+      DB_HOST:
+      DB_USERNAME:
+      DB_PASSWORD:
     ports:
       - '3456:3000'
     volumes:
