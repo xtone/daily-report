@@ -5,14 +5,14 @@ dl.dl-horizontal
     = link_to 'プロジェクト管理', projects_path
   dd 日報に登録するプロジェクトを管理します。
   dt
-    = link_to 'ユーザー管理', users_path
+    = link_to_if policy(current_user).index?, 'ユーザー管理', users_path
   dd ユーザーの一覧を表示し、登録や編集を行います。
   dt
-    = link_to 'CSV出力', admin_csvs_path
+    = link_to_if policy(current_user).csv?, 'CSV出力', admin_csvs_path
   dd 各種データをCSV形式でダウンロードします。
   dt
-    = link_to '稼働集計', summary_reports_path
+    = link_to_if policy(Report.new).summary?, '稼働集計', summary_path
   dd 全員の稼働を集計して表示します。
   dt
-    = link_to '日報未提出一覧', unsubmitted_reports_path
+    = link_to_if policy(Report.new).unsubmitted?, '日報未提出一覧', unsubmitted_path
   dd 日報が未提出である日付をユーザーごとに一覧表示します。

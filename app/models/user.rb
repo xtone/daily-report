@@ -23,29 +23,52 @@ class User < ApplicationRecord
     confirmation: true,
     if: Proc.new { |user| user.new_record? || user.password.present? }
 
-  # ensure user account is active
-  def active_for_authentication?
-    super && !self.deleted_at
+  validates :began_on,
+    presence: true
+
+  class << self
+    # 該当のプロジェクトに関与しているかの情報を含むリストを取得
+    # @param [Integer] project_id
+    # @return [Array]
+    def find_in_project(project_id)
+      user_ids = UserProject.where(project_id: project_id).pluck(:user_id)
+      list = []
+      available.each do |user|
+        list << {
+          id: user.id,
+          name: user.name,
+          related: user_ids.include?(user.id)
+        }
+      end
+      list
+    end
   end
 
+  # ensure user account is active
+  #def active_for_authentication?
+  #  super && !self.deleted_at
+  #end
+
+  # 管理者権限を持っている？
+  # @return [TrueClass | FalseClass]
   def administrator?
     user_roles.any?(&:administrator?)
   end
 
+  # 有効な(集計中の)ユーザー？
+  # @return [TrueClass | FalseClass]
   def available?
     self.deleted_at.nil?
   end
 
+  # ディレクター権限を持っている？
+  # @return [TrueClass | FalseClass]
   def director?
     user_roles.any?(&:director?)
   end
 
-  def general_affairs?
-    user_roles.any?(&:general_affairs?)
-  end
-
   # provide a custom message for a deleted account
-  def inative_message
+  def inactive_message
     !self.deleted_at ? super : :deleted_account
   end
 
@@ -57,13 +80,16 @@ class User < ApplicationRecord
   def password_salt=(new_salt)
   end
 
+  # 削除状態を取り消す
   def revive
     update_attribute(:deleted_at, nil)
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
+  # 同時にプロジェクトの関与データも削除する
   # @param [Time] at
   def soft_delete(at = Time.zone.now)
     update_attribute(:deleted_at, at)
+    UserProject.where(user_id: self.id).destroy_all
   end
 end

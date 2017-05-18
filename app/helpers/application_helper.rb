@@ -1,4 +1,17 @@
 module ApplicationHelper
+  def title
+    if content_for?(:title)
+      "#{content_for :title} | #{t(:site_name)}"
+    else
+      key = "#{controller_path.tr('/', '.')}.#{action_name}.title"
+      if I18n.exists?(key)
+        "#{t(key)} | #{t(:site_name)}"
+      else
+        t(:site_name)
+      end
+    end
+  end
+
   # ActiveRecordのエラーメッセージを表示する
   # @param [ActiveRecord] resource
   # @param [Symbol] attribute
@@ -6,6 +19,13 @@ module ApplicationHelper
     return nil unless resource.errors[attribute].present?
     content_tag :div, class: 'alert alert-danger' do
       concat safe_join(resource.errors.full_messages_for(attribute), '<br />'.html_safe)
+    end
+  end
+
+  def render_flash_message
+    capture do
+      concat tag.div(flash[:alert], class: 'alert alert-danger') if flash[:alert].present?
+      concat tag.div(flash[:notice], class: 'alert alert-success') if flash[:notice].present?
     end
   end
 
@@ -55,5 +75,14 @@ module ApplicationHelper
       }.merge(options),
       { class: 'form-control' }.merge(html_options)
     ) % ['年', '月'] + '日'
+  end
+
+  def text_with_ruby(text, ruby)
+    tag.ruby do
+      concat text
+      concat tag.rp('（')
+      concat tag.rt(ruby)
+      concat tag.rp('）')
+    end
   end
 end

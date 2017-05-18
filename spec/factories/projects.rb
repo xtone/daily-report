@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :project do
-    code 16001
+    code nil
     name "プロジェクト"
     name_reading "ぷろじぇくと"
 

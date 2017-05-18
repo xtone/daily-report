@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :get_resource, only: %i(edit update destroy)
+  before_action :get_resource, only: %i(show edit update destroy)
 
   layout 'admin'
 
@@ -13,7 +13,20 @@ class ProjectsController < ApplicationController
         send_data render_to_string, filename: "project_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
       end
       format.any do
-        @projects = Project.order(name_reading: :asc)
+        order_hash = {}
+        if params[:order].present? && params[:order] =~ /\A(.+)_([^_]+)\Z/
+          if %w(code name name_reading displayed).include?($1)
+            order_hash[$1.to_sym] = $2
+            @order = "#{$1}_#{$2}"
+          else
+            order_hash[:name_reading] = 'asc'
+            @order = 'name_reading_asc'
+          end
+        else
+          @order = 'name_reading_asc'
+          order_hash[:name_reading] = 'asc'
+        end
+        @projects = Project.order(order_hash)
         if params[:active].present?
           @projects = @projects.available
         end
@@ -21,6 +34,7 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # プロジェクト新規登録
   def new
     @project = Project.new(code: Project.next_expected_code)
     authorize @project
@@ -38,6 +52,12 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # プロジェクト詳細
+  def show
+    authorize @project
+  end
+
+  # プロジェクト編集
   def edit
     authorize @project
   end
@@ -59,6 +79,6 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name, :name_reading, :hidden)
+    params.require(:project).permit(:name, :code, :name_reading, :hidden)
   end
 end

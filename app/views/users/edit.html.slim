@@ -1,19 +1,12 @@
 - breadcrumb :user, @user
+- content_for :title, t('.title', name: @user.name)
 
 .page-header
   h1 ユーザー編集
 
-= render 'form', user: @user, roles: @roles
+.navbar.navbar-default
+  .collapse.navbar-collapse
+    .nav.navbar-nav
+      = destroy_or_revive_button(@user)
 
-- if @user.available?
-  = form_for @user, method: :delete do |f|
-    .pull-right
-      = f.submit 'このユーザーを集計対象から外す',
-        class: 'btn btn-danger',
-        data: { confirm: 'このユーザーを集計対象から外します。よろしいですか？' }
-- else
-  = form_for @user, url: revive_user_path(@user), method: :patch do |f|
-    .pull-right
-      = f.submit 'このユーザーを集計対象に加える',
-        class: 'btn btn-success',
-        data: { confirm: 'このユーザーを集計対象に加えます。よろしいですか？' }
+= render 'form', user: @user, roles: @roles

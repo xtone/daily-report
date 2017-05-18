@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  namespace :projects do
+    get 'members/edit'
+  end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'reports#index'
 
@@ -17,21 +21,24 @@ Rails.application.routes.draw do
 
   resources :reports do
     collection do
-      get 'summary'
-      get 'unsubmitted'
+      resource :summary, only: %i(show), module: :reports
+      resource :unsubmitted, only: %i(show), module: :reports
     end
   end
-  resources :projects
+  resources :projects do
+    resources :members, only: %i(index update destroy), module: :projects
+  end
 
   namespace :settings do
-    resources :projects, only: [:index, :update, :destroy]
-    resource :password, only: [:show, :update]
+    resources :projects, only: %i(index update destroy)
+    resource :password, only: %i(show update)
   end
 
   scope :admin do
     root to: 'admin#index', as: :admin_root
   end
+
   namespace :admin do
-    resources :csvs, only: [:index]
+    resources :csvs, only: %i(index)
   end
 end

@@ -43,3 +43,21 @@ ul.date-pager {
     }
   }
 }
+
+form#summaryRender {
+  display: inline-block;
+
+  .form-group {
+    position: relative;
+
+    .separator {
+      padding: 0 .5em;
+    }
+  }
+}
+
+table.reports-summary {
+  th.project {
+    white-space: nowrap;
+  }
+}

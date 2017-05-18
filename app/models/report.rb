@@ -16,7 +16,7 @@ class Report < ApplicationRecord
                .where(user_id: user_id, worked_in: [date.beginning_of_month..date.end_of_month])
                .order(worked_in: :asc)
                .to_a
-      output(data, date.beginning_of_month.to_date, date.end_of_month.day)
+      output_calendar(data, date.beginning_of_month.to_date, date.end_of_month.day)
     end
 
     # 日報のデータを7日分取得する
@@ -29,25 +29,7 @@ class Report < ApplicationRecord
                .where(user_id: user_id, worked_in: [base_date..(base_date + 6)])
                .order(worked_in: :asc)
                .to_a
-      output(data, base_date, 7)
-    end
-
-    # start_onの日から数えてdays日数分のReportのデータを返す
-    # @param [Array] data
-    # @param [Date] start_on
-    # @param [Integer] days
-    # @return [Array]
-    def output(data, start_on, days)
-      ary = []
-      days.times do |i|
-        d = start_on + i
-        ary << {
-          date: d,
-          holiday: d.holiday?(:jp),
-          report: data.find{ |report| report.worked_in == d }
-        }
-      end
-      ary
+      output_calendar(data, base_date, 7)
     end
 
     # 指定した期間内に日報を提出したユーザーの配列を返す
@@ -70,6 +52,7 @@ class Report < ApplicationRecord
     def unsubmitted_dates(user_id, start_on = nil, end_on = nil)
       result = []
       user = User.find(user_id)
+      return result if user.began_on.nil?
       # ユーザーの集計開始日より前のデータは無視する
       if start_on.present?
         start_on = [start_on, user.began_on].max
@@ -85,6 +68,26 @@ class Report < ApplicationRecord
         end
       end
       result
+    end
+
+    private
+
+    # start_onの日から数えてdays日数分のReportのデータをカレンダー形式で返す
+    # @param [Array] data
+    # @param [Date] start_on
+    # @param [Integer] days
+    # @return [Array]
+    def output_calendar(data, start_on, days)
+      calendar = []
+      days.times do |i|
+        d = start_on + i
+        calendar << {
+          date: d,
+          holiday: d.holiday?(:jp),
+          report: data.find{ |report| report.worked_in == d }
+        }
+      end
+      calendar
     end
   end
 end

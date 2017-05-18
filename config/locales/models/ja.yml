@@ -28,7 +28,7 @@ ja:
     code: PJコード
     name: プロジェクト名
     name_reading: 読みかな
-    displayed: 表示
+    displayed: 表示ステータス
     hidden: 非表示
     created_at: 作成日
 

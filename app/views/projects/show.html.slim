@@ -1,0 +1,40 @@
+- breadcrumb :project, @project
+- content_for :title, t('.title', name: @project.name)
+
+.page-header
+  h1 プロジェクト詳細
+
+dl.row
+  dt.col-sm-2= t('project.code')
+  dd.col-sm-10= @project.code || '（未設定）'
+
+  dt.col-sm-2= t('project.name')
+  dd.col-sm-10= text_with_ruby(@project.name, @project.name_reading)
+
+  dt.col-sm-2= t('project.displayed')
+  dd.col-sm-10
+    = display_status(@project)
+    = @project.display_status
+
+.navbar.navbar-default
+  .collapse.navbar-collapse
+    .nav.navbar-nav
+      = link_to 'このプロジェクトを編集', edit_project_path(@project.id), class: 'btn btn-primary navbar-btn'
+
+h2 このプロジェクトの日報を投稿したメンバー
+
+- if @project.members.present?
+  ul.list-inline
+    - @project.members.each do |user|
+      li.list-inline-item
+        - if user.available?
+          span.label.label-default= user.name
+        - else
+          span.label.label-default-translucent= user.name
+- else
+  p このプロジェクトにはメンバーがいません。
+
+.navbar.navbar-default
+  .collapse.navbar-collapse
+    .nav.navbar-nav
+      = link_to 'このプロジェクトのメンバーを編集', project_members_path(@project.id), class: 'btn btn-primary navbar-btn'

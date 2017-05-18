@@ -18,15 +18,23 @@ var Calendar = React.createClass({
   componentDidMount: function() {
     $.ajax(this.props.reports_url, {
       dataType: 'json'
-    }).done(function(data) {
-      this.setState({ reports: data });
-    }.bind(this)
-    ).fail(function(xhr, status, err) {
-      console.error(this.props.reports_url, status, err.toString());
-    }.bind(this)
+    }).done(
+      function(data) {
+        this.setState({ reports: data });
+      }.bind(this)
+    ).fail(
+      function(xhr, status, err) {
+        console.error(this.props.reports_url, status, err.toString());
+      }.bind(this)
     );
   },
 
+  /**
+   * 日報データをサーバーに送信し、Stateを書き換える
+   * @param {number} index - this.state.reports の index
+   * @param {object} params - 日報データ
+   * @param {function} callback - データ送信後に実行するコールバック関数
+   */
   sendReport: function(index, params, callback) {
     $.ajax(params.path, {
       method: params.method,
@@ -34,11 +42,12 @@ var Calendar = React.createClass({
       data: params.data,
       processData: false,
       contentType: false
-    }).done(function(response) {
-      var reports = this.state.reports;
-      reports[index] = response;
-      this.setState({ reports: reports });
-    }.bind(this)
+    }).done(
+      function(response) {
+        var reports = this.state.reports;
+        reports[index] = response;
+        this.setState({ reports: reports });
+      }.bind(this)
     ).fail(function() {
 
     }
@@ -100,7 +109,7 @@ var CalendarDay = React.createClass({
 
   /**
    * reportのPropが存在するかチェックする
-   * @returns {boolean}
+   * @return {boolean}
    */
   reportExist: function() {
     return this.props.data.hasOwnProperty('report');
@@ -146,7 +155,7 @@ var CalendarDay = React.createClass({
 
   /**
    * データの更新
-   * @param report {Object}
+   * @param {object} report
    */
   onSubmit: function(report) {
     report.data.append('worked_in', this.props.data.date);
@@ -155,7 +164,7 @@ var CalendarDay = React.createClass({
 
   /**
    * classNameを組み立てて返す
-   * @returns {string}
+   * @return {string}
    */
   dayClassName: function() {
     var dayClass = 'list-group-item day';
@@ -329,16 +338,28 @@ var ReportForm = React.createClass({
     }
   },
 
+  /**
+   * 登録フォームを増やす
+   * @param {Event} event
+   */
   addOperation: function(event) {
     this.props.onAddForm();
   },
 
+  /**
+   * 登録フォームを削除する
+   * @param {number} index - 削除したフォームのindex
+   */
   destroy: function(index) {
     var displayed = this.state.displayed;
     displayed[index] = false;
     this.setState({ displayed: displayed });
   },
 
+  /**
+   * 日報データを親Componentに送信する
+   * @param {Event} event
+   */
   onSubmit: function(event) {
     event.preventDefault();
     var form = this.refs.form;
@@ -356,8 +377,8 @@ var ReportForm = React.createClass({
 
   /**
    * POSTする値が正しいかを調べる
-   * @param data {FormData}
-   * @returns {boolean}
+   * @param {FormData} data
+   * @return {boolean}
    */
   validate: function(data) {
     var total = 0, errors = [];
@@ -440,24 +461,26 @@ var OperationForm = React.createClass({
     return this.props.hasOwnProperty('operation');
   },
 
+  /**
+   * フォームの削除
+   * @param {Event} event
+   */
   destroyOperation: function(event) {
     this.props.onDestroy(this.props.index);
   },
 
   /**
    * プロジェクト変更後、稼働率の入力のためfocusを移動させる
-   * @param event
+   * @param {Event} event
    */
   onChangeProject: function(event) {
     this.refs.workload.focus();
   },
 
   render: function() {
-    var error;
+    var error = null;
     if (typeof this.props.error == 'string') {
       error = <span className="alert alert-danger">{this.props.error}</span>
-    } else {
-      error = null;
     }
     if (this.operationExist()) {
       return (

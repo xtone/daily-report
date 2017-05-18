@@ -1,8 +1,8 @@
 require 'csv'
 
 CSV.generate(encoding: 'Shift_JIS') do |csv|
-  csv << %w{ID 名前 メールアドレス}
+  csv << %w{id 名前 メールアドレス 集計開始日}
   @users.each do |user|
-    csv << [user.id, user.name, user.email]
+    csv << [user.id, user.name, user.email, user.began_on]
   end
 end

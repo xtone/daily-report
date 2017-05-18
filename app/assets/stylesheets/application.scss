@@ -12,6 +12,7 @@
  */
 @import "bootstrap-sprockets";
 @import "honoka";
+@import 'bootstrap-datetimepicker';
 @import "reports";
 @import "projects";
 
@@ -27,4 +28,31 @@ form {
 
 .field_with_errors {
   @extend .has-error;
+}
+
+// Bootstrap 4 alpha Flexbox
+.flex-row {
+  -webkit-box-orient: horizontal!important;
+  -webkit-box-direction: normal!important;
+  -webkit-flex-direction: row!important;
+  flex-direction: row!important;
+}
+.d-flex {
+  display: -webkit-box!important;
+  display: -webkit-flex!important;
+  display: -ms-flexbox!important;
+  display: flex!important;
+}
+.align-items-baseline {
+  -webkit-box-align: baseline!important;
+  -webkit-align-items: baseline!important;
+  -ms-flex-align: baseline!important;
+  align-items: baseline!important;
+}
+.p-2 {
+  padding: .5rem .5rem!important;
+}
+
+.form-group .date input.date-input {
+  width: 7em;
 }

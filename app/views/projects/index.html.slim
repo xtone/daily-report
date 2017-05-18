@@ -15,17 +15,17 @@
         = link_to '新規登録', new_project_path, class: 'btn btn-primary navbar-btn'
 
 
-= content_tag :div, flash[:notice], class: 'alert alert-success' if flash[:notice].present?
+= render_flash_message
 
 table.table.table-hover
   tr
-    th= t('project.code')
-    th= t('project.name')
-    th= t('project.name_reading')
-    th= t('project.displayed')
+    th= index_header(:project, :code, order_by: @order, active: params[:active])
+    th= index_header(:project, :name, order_by: @order, active: params[:active])
+    th= index_header(:project, :name_reading, order_by: @order, active: params[:active])
+    th= index_header(:project, :displayed, order_by: @order, active: params[:active])
   - @projects.each do |project|
     tr
       td= project.code
-      td= link_to project.name, edit_project_path(project.id)
+      td= link_to project.name, project_path(project.id)
       td.small= project.name_reading
       td.text-center= display_status(project)

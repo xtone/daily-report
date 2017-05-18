@@ -1,0 +1,61 @@
+- breadcrumb :summary
+
+h1 稼働集計
+
+= render_flash_message
+
+.d-flex.flex-row.align-items-baseline
+  .p-2
+    = form_tag summary_path, method: :get, class: 'form-inline', id: 'summaryRender' do
+      .form-group
+        .input-group.date
+          input.form-control.date-input type="text" name="reports[start]" placeholder="集計開始日" value="#{@start_date.strftime('%Y-%m-%d')}"
+          span.input-group-addon
+            span.glyphicon.glyphicon-calendar
+        span.separator 〜
+        .input-group.date
+          input.form-control.date-input type="text" name="reports[end]" placeholder="集計終了日" value="#{@end_date.strftime('%Y-%m-%d')}"
+          span.input-group-addon
+            span.glyphicon.glyphicon-calendar
+        | の稼働集計を
+      = submit_tag '表示', class: 'btn btn-default'
+  .p-2
+    | または
+  .p-2
+    = form_tag summary_path(format: :csv), method: :get, id: 'summaryDownload' do
+      = submit_tag 'CSVダウンロード', class: 'btn btn-primary'
+
+- if params[:reports].present?
+  .well= "集計期間：#{@start_date.strftime('%Y年%-m月%-d日')} 〜 #{@end_date.strftime('%Y年%-m月%-d日')}"
+
+  - if @sum.present?
+    table.table.table-bordered.table-striped.table-hover.table-responsive.reports-summary
+      thead
+        tr
+          th PJコード
+          th プロジェクト名
+          - @users.each do |user|
+            th.user= user.name
+      tbody
+        - @sum.each do |sum|
+          tr
+            th= @projects[sum[0]].code
+            th.project= @projects[sum[0]].name
+            - @users.each do |user|
+              td= sum[1][user.id] if sum[1].has_key?(user.id)
+  - else
+    .alert.alert-info
+      | 期間内の稼働データがありません。
+
+javascript:
+  new ReportSummary({
+    renderForm: 'summaryRender',
+    downloadForm: 'summaryDownload'
+  });
+
+  $('.input-group.date').datetimepicker({
+    format: 'YYYY-MM-DD',
+    dayViewHeaderFormat: 'YYYY年MMMM',
+    locale: moment.locale('ja'),
+    showClose: true
+  });

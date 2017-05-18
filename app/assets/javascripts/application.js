@@ -14,6 +14,11 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap-sprockets
+//= require moment
+//= require moment/ja.js
+//= require bootstrap-datetimepicker
 //= require react
 //= require react_ujs
 //= require components
+//= require reports
+//= require csvs

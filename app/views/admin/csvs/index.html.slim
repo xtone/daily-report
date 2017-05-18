@@ -4,11 +4,19 @@ h1 CSV出力
 
 h2 提出済みの日報一覧
 
-= form_tag reports_path(format: :csv), method: :get, class: 'form-inline' do
+= render_flash_message
+
+= form_tag reports_path(format: :csv), method: :get, id: 'reports', class: 'form-inline' do
   .form-group
-    = date_select_ja :reports, :start
-    | 〜
-    = date_select_ja :reports, :end
+    .input-group.date
+      input.form-control.date-input type="text" name="reports[start]" placeholder="集計開始日"
+      span.input-group-addon
+        span.glyphicon.glyphicon-calendar
+    span.separator 〜
+    .input-group.date
+      input.form-control.date-input type="text" name="reports[end]" placeholder="集計終了日"
+      span.input-group-addon
+        span.glyphicon.glyphicon-calendar
     | の日報を
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
 
@@ -21,3 +29,14 @@ h2 ユーザー一覧
 
 = form_tag users_path(format: :csv), method: :get do
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
+
+javascript:
+  new Report({ form: 'reports' });
+  new CsvDownload();
+
+  $('.input-group.date').datetimepicker({
+    format: 'YYYY-MM-DD',
+    dayViewHeaderFormat: 'YYYY年MMMM',
+    locale: moment.locale('ja'),
+    showClose: true
+  });
