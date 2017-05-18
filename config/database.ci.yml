@@ -1,0 +1,17 @@
+test:
+  database: circle_ruby_test
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: ubuntu
+  host: localhost
+  socket: /var/run/mysqld/mysqld.sock
+                
+production:
+  database: daily-report_production  
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  host: <%= ENV['DB_HOST'] %>
+  username: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
