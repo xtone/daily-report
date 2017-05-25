@@ -8,7 +8,7 @@ class ReportPolicy < ApplicationPolicy
   end
 
   def summary?
-    user.administrator?
+    user.administrator? || user.director?
   end
 
   def unsubmitted?
