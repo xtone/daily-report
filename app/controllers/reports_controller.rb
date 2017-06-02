@@ -36,7 +36,7 @@ class ReportsController < ApplicationController
 
       format.any do
         @date = get_date || Time.zone.now.to_date
-        @projects = current_user.projects.available
+        @projects = current_user.projects.available.order_by_reading
         # render view
       end
     end

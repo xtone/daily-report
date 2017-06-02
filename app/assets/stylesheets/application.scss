@@ -56,3 +56,10 @@ form {
 .form-group .date input.date-input {
   width: 7em;
 }
+
+// Bootstrap Datetimepicker
+.bootstrap-datetimepicker-widget table {
+  td.new, td.old {
+    color: #bbbbbb;
+  }
+}
