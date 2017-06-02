@@ -72,6 +72,12 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def destroy
+    authorize @project
+    @project.destroy!
+    redirect_to projects_path, notice: "プロジェクト「#{@project.name}」を削除しました。"
+  end
+
   private
 
   def get_resource
