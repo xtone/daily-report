@@ -388,14 +388,14 @@ var ReportForm = React.createClass({
         return;
       }
       var intval = parseInt(val);
-      if (intval < 0 || 100 < intval) {
-        errors[index] = '稼働率は0〜100の間で設定してください。';
+      if (intval <= 0 || 100 < intval) {
+        errors[index] = '稼働率は1〜100の間で設定してください。';
         return;
       }
       total += intval;
     }, this);
     if (total != 100) {
-      this.setState({ reportError: '稼働率の合計が100になっていません。' });
+      this.setState({ reportError: '稼働率の合計が100になっていません。現在'+ total +'%です。' });
     }
     this.setState({ operationErrors: errors });
     return total == 100 && errors.join('') == '';
