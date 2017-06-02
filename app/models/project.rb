@@ -17,6 +17,8 @@ class Project < ApplicationRecord
 
   scope :available, -> { where(hidden: false) }
 
+  scope :order_by_reading, -> { order(name_reading: :asc) }
+
   class << self
     # 該当のユーザーが関与しているかの情報を含むリストを取得
     # @param [Integer] user_id
