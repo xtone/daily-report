@@ -58,7 +58,7 @@ module ApplicationHelper
   end
 
   def signout_form
-    form_tag destroy_user_session_path, method: 'delete', class: 'navbar-form navbar-right' do
+    form_with url: destroy_user_session_path, method: 'delete', class: 'navbar-form navbar-right' do
       submit_tag 'ログアウト', class: 'btn btn-default'
     end
   end
