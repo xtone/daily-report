@@ -18,3 +18,5 @@
 
 /node_modules
 .rspec
+/public/packs
+/node_modules
