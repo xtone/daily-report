@@ -13,7 +13,12 @@ docker-compose build
 
 bundle install
 ```
-docker-compose exec app bundle install
+docker-compose run app bin/bundle install
+```
+
+コンテナ立ち上げ
+```
+docker-compose start
 ```
 
 DBセットアップ
@@ -27,11 +32,6 @@ docker-compose exec app bin/rails db:migrate
 docker-compose exec app bin/rails app:import_csv
 ```
 
-バックグラウンドでイメージ実行（ポート3456でlocalhostに接続してね）
-```
-docker-compose start
-```
-
 Railsのサーバーログを見る
 ```
 docker-compose logs app
@@ -39,5 +39,7 @@ docker-compose logs app
 
 RSpec実行
 ```
-docker-compose exec app bundle exec rspec
+docker-compose exec app bin/bundle exec rspec
 ```
+
+http://localhost:3456 でアクセスできます。
