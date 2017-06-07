@@ -381,19 +381,21 @@ var ReportForm = React.createClass({
    * @return {boolean}
    */
   validate: function(data) {
-    var total = 0, errors = [];
-    data.getAll('workloads[]').map(function(val, index) {
-      if (val == '') {
+    var total = 0, errors = [], index = -1, intval;
+    for (var key_value of data) {
+      if (key_value[0] != 'workloads[]') continue;
+      index++;
+      if (key_value[1] == '') {
         errors[index] = '稼働率が設定されていません。';
-        return;
+        continue;
       }
-      var intval = parseInt(val);
+      intval = parseInt(key_value[1]);
       if (intval <= 0 || 100 < intval) {
         errors[index] = '稼働率は1〜100の間で設定してください。';
-        return;
+        continue;
       }
       total += intval;
-    }, this);
+    }
     if (total != 100) {
       this.setState({ reportError: '稼働率の合計が100になっていません。現在'+ total +'%です。' });
     }
