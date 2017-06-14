@@ -1,9 +1,10 @@
+- content_for :head do
+  = javascript_pack_tag 'reports', 'data-turbolinks-track': 'reload'
+
 h1 日報
 
 = render_flash_message
 
 = render 'pager', date: @date
 
-= react_component('Calendar',
-    reports_url: reports_path(format: :json, date: params[:date]),
-    projects: @projects)
+#reports
