@@ -16,7 +16,7 @@
 # Ignore Byebug command history file.
 .byebug_history
 
-/node_modules
+vendor/node_modules
 .rspec
 /public/packs
 /node_modules
