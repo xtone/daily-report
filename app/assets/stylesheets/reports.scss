@@ -15,10 +15,13 @@ ul.date-pager {
     align-items: center;
 
     &.sun, &.holiday {
-      background-color: #f9c9c9;
+      background-color: #cccccc;
     }
     &.sat {
-      background-color: #c9c9f9;
+      background-color: #cccccc;
+    }
+    &.today {
+      background-color: #ffffcc;
     }
 
     .date {
