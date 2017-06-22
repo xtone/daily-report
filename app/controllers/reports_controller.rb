@@ -96,6 +96,19 @@ class ReportsController < ApplicationController
 
   def destroy
     authorize @report
+
+    respond_to do |format|
+      format.json do
+        @report.destroy!
+        render partial: 'report', locals: {
+          data: {
+            date: @report.worked_in,
+            holiday: @report.worked_in.holiday?(:jp),
+            report: nil
+          }
+        }
+      end
+    end
   end
 
   private
