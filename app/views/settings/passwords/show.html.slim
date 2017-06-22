@@ -2,7 +2,7 @@ h1 パスワード変更
 
 = render_flash_message
 
-= form_tag settings_password_path, method: :put, class: 'form-horizontal' do
+= form_with url: settings_password_path, method: :put, class: 'form-horizontal' do
   .form-group
     label.col-sm-3.control-label= t('user.new_password')
     .col-sm-9
