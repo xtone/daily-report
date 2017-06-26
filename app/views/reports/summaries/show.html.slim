@@ -6,7 +6,7 @@ h1 稼働集計
 
 .d-flex.flex-row.align-items-baseline
   .p-2
-    = form_tag summary_path, method: :get, class: 'form-inline', id: 'summaryRender' do
+    = form_with url: summary_path, method: :get, class: 'form-inline', id: 'summaryRender' do
       .form-group
         .input-group.date
           input.form-control.date-input type="text" name="reports[start]" placeholder="集計開始日" value="#{@start_date.strftime('%Y-%m-%d')}"
@@ -22,7 +22,7 @@ h1 稼働集計
   .p-2
     | または
   .p-2
-    = form_tag summary_path(format: :csv), method: :get, id: 'summaryDownload' do
+    = form_with url: summary_path(format: :csv), method: :get, id: 'summaryDownload' do
       = submit_tag 'CSVダウンロード', class: 'btn btn-primary'
 
 - if params[:reports].present?

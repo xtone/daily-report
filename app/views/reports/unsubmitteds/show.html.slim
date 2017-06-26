@@ -4,7 +4,7 @@ h1 日報未提出一覧
 
 = render_flash_message
 
-= form_tag unsubmitted_path, method: :get, class: 'form-inline' do
+= form_with url: unsubmitted_path, method: :get, class: 'form-inline' do
   .form-group
     .input-group.date
       input.form-control.date-input type="text" name="reports[start]" placeholder="集計開始日" value="#{@start_date.strftime('%Y-%m-%d')}"

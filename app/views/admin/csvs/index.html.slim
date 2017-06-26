@@ -6,7 +6,7 @@ h2 提出済みの日報一覧
 
 = render_flash_message
 
-= form_tag reports_path(format: :csv), method: :get, id: 'reports', class: 'form-inline' do
+= form_with url: reports_path(format: :csv), method: :get, id: 'reports', class: 'form-inline' do
   .form-group
     .input-group.date
       input.form-control.date-input type="text" name="reports[start]" placeholder="集計開始日"
@@ -22,12 +22,12 @@ h2 提出済みの日報一覧
 
 h2 プロジェクト一覧
 
-= form_tag projects_path(format: :csv), method: :get do
+= form_with url: projects_path(format: :csv), method: :get do
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
 
 h2 ユーザー一覧
 
-= form_tag users_path(format: :csv), method: :get do
+= form_with url: users_path(format: :csv), method: :get do
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
 
 javascript:

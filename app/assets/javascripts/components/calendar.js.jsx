@@ -56,11 +56,26 @@ var Calendar = React.createClass({
     });
   },
 
+  deleteReport: function(index, params, callback) {
+    $.ajax(params.path, {
+      method: 'DELETE'
+    }).done(
+      function(response) {
+        var reports = this.state.reports;
+        reports[index] = response;
+        this.setState({ reports: reports });
+      }.bind(this)
+    ).always(function() {
+      callback();
+    })
+  },
+
   render: function() {
     var days = this.state.reports.map(function (report, index) {
       return <CalendarDay data={report}
                           projects={this.props.projects}
                           onSubmit={this.sendReport}
+                          destroy={this.deleteReport}
                           index={index}
                           key={report.date} />;
     }, this);
@@ -163,23 +178,46 @@ var CalendarDay = React.createClass({
   },
 
   /**
+   * データの削除
+   * @param {object} report
+   */
+  destroy: function(report) {
+    this.props.destroy(this.props.index, report, this.toggleForm);
+  },
+
+  /**
    * classNameを組み立てて返す
    * @return {string}
    */
   dayClassName: function() {
     var dayClass = 'list-group-item day';
-    switch (this.props.data.wday) {
-      case 0:
-        dayClass += ' sun';
-        break;
-      case 6:
-        dayClass += ' sat';
-        break;
+    var today_str = this.dateToString(new Date());
+    if (today_str === this.props.data.date) {
+      dayClass += ' today';
+    } else {
+      switch (this.props.data.wday) {
+        case 0:
+          dayClass += ' sun';
+          break;
+        case 6:
+          dayClass += ' sat';
+          break;
+      }
+      if (this.props.data.holiday) {
+        dayClass += ' holiday';
+      }
     }
-    if (this.props.data.holiday) {
-      dayClass += ' holiday';
-    }
+
     return dayClass;
+  },
+
+  dateToString(date) {
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    if (month < 10) month = '0' + month;
+    if (day < 10) day = '0' + day;
+    return year + '-' + month + '-' + day;
   },
 
   render: function() {
@@ -195,7 +233,8 @@ var CalendarDay = React.createClass({
                       report={this.props.data.report}
                       projects={this.props.projects}
                       onAddForm={this.addOperation}
-                      onSubmit={this.onSubmit} />
+                      onSubmit={this.onSubmit}
+                      destroy={this.destroy}/>
         </li>
       );
     } else {
@@ -376,6 +415,19 @@ var ReportForm = React.createClass({
   },
 
   /**
+   * 日報データを削除する
+   * @param event
+   */
+  destroyReport: function(event) {
+    event.preventDefault();
+    var form = this.refs.form;
+    if (!window.confirm('この日の日報を削除してもよろしいですか？')) return;
+    this.props.destroy({
+      path: form.action
+    });
+  },
+
+  /**
    * POSTする値が正しいかを調べる
    * @param {FormData} data
    * @return {boolean}
@@ -402,7 +454,7 @@ var ReportForm = React.createClass({
   },
 
   render: function() {
-    var action, method, operation = undefined;
+    var action, method, deleteButton, operation = undefined;
     var inputs = [];
     for (var i = 0; i < this.props.formLength; i++) {
       if (this.state.displayed[i] == false) {
@@ -433,6 +485,10 @@ var ReportForm = React.createClass({
     if (this.props.isRegistered) {
       action = '/reports/' + this.props.report.id + '.json';
       method = 'PUT';
+      deleteButton = <input type="button"
+                            className="btn btn-danger pull-right"
+                            onClick={this.destroyReport}
+                            value="削除" />
     } else {
       action = '/reports.json';
       method = 'POST';
@@ -447,6 +503,7 @@ var ReportForm = React.createClass({
         {inputs}
         <button type="button" className="btn btn-info btn-sm" onClick={this.addOperation}>フォームの追加</button>
         <input type="submit" className="btn btn-primary pull-right" value="送信" />
+        {deleteButton}
         {error}
       </form>
     );
