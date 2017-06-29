@@ -21,6 +21,7 @@ class Calendar extends React.Component {
     };
 
     this.sendReport = this.sendReport.bind(this);
+    this.destroyReport = this.destroyReport.bind(this);
   }
 
   componentDidMount() {
@@ -62,11 +63,22 @@ class Calendar extends React.Component {
       });
   }
 
+  destroyReport(index, data) {
+    return fetch(data.path, Object.assign(requestParams, { method: 'DELETE' }))
+      .then(response => response.json())
+      .then(report => {
+        let reports = this.state.reports;
+        reports[index] = report;
+        this.setState({ reports: reports });
+      });
+  }
+
   render() {
     let days = this.state.reports.map((report, index) => {
       return <CalendarDay data={report}
                           projects={this.state.projects}
                           sendReport={this.sendReport}
+                          destroy={this.destroyReport}
                           index={index}
                           key={report.date} />;
     });
@@ -93,6 +105,7 @@ class CalendarDay extends React.Component {
     this.abort = this.abort.bind(this);
     this.addOperation = this.addOperation.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.destroy = this.destroy.bind(this);
   }
 
   componentWillMount() {
@@ -156,23 +169,51 @@ class CalendarDay extends React.Component {
   }
 
   /**
+   * データの削除
+   * @param {object} report
+   */
+  destroy(report) {
+    this.props.destroy(this.props.index, report)
+      .then(this.toggleForm);
+  }
+
+  /**
    * classNameを組み立てて返す
    * @return {string}
    */
   dayClassName() {
     let dayClass = 'list-group-item day';
-    switch (this.props.data.wday) {
-      case 0:
-        dayClass += ' sun';
-        break;
-      case 6:
-        dayClass += ' sat';
-        break;
-    }
-    if (this.props.data.holiday) {
-      dayClass += ' holiday';
+    let today_str = this.dateToString(new Date());
+    if (today_str === this.props.data.date) {
+      dayClass += ' today';
+    } else {
+      switch (this.props.data.wday) {
+        case 0:
+          dayClass += ' sun';
+          break;
+        case 6:
+          dayClass += ' sat';
+          break;
+      }
+      if (this.props.data.holiday) {
+        dayClass += ' holiday';
+      }
     }
     return dayClass;
+  }
+
+  /**
+   * DateをYYYY-MM-DD形式の文字列で出力する
+   * @param {Date} date
+   * @returns {string}
+   */
+  dateToString(date) {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    if (month < 10) month = '0' + month;
+    if (day < 10) day = '0' + day;
+    return year + '-' + month + '-' + day;
   }
 
   render() {
@@ -188,7 +229,8 @@ class CalendarDay extends React.Component {
                       report={this.props.data.report}
                       projects={this.props.projects}
                       addOperation={this.addOperation}
-                      onSubmit={this.onSubmit} />
+                      onSubmit={this.onSubmit}
+                      destroy={this.destroy} />
         </li>
       );
     } else {
@@ -325,6 +367,7 @@ class ReportForm extends React.Component {
     this.addOperation = this.addOperation.bind(this);
     this.destroy = this.destroy.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.destroyReport = this.destroyReport.bind(this);
   }
 
   componentWillMount() {
@@ -378,6 +421,19 @@ class ReportForm extends React.Component {
   }
 
   /**
+   * 日報データを削除する
+   * @param {Event} event
+   */
+  destroyReport(event) {
+    event.preventDefault();
+    let form = this.refs.form;
+    if (!window.confirm('この日の日報を削除してもよろしいですか？')) return;
+    this.props.destroy({
+      path: form.action
+    });
+  }
+
+  /**
    * POSTする値が正しいかを調べる
    * @param {FormData} formdata
    * @return {boolean}
@@ -404,7 +460,7 @@ class ReportForm extends React.Component {
   }
 
   render() {
-    let action, method, operation = undefined, inputs = [], error = null;
+    let action, method, deleteButton, operation = undefined, inputs = [], error = null;
     for (let i = 0; i < this.props.formLength; i++) {
       if (this.state.displayed[i] === false) {
         continue;
@@ -434,6 +490,10 @@ class ReportForm extends React.Component {
     if (this.props.isRegistered) {
       action = `/reports/${this.props.report.id}.json`;
       method = 'PUT';
+      deleteButton = <input type="button"
+                            className="btn btn-danger pull-right"
+                            onClick={this.destroyReport}
+                            value="削除" />;
     } else {
       action = '/reports.json';
       method = 'POST';
@@ -447,6 +507,7 @@ class ReportForm extends React.Component {
         {inputs}
         <button type="button" className="btn btn-info btn-sm" onClick={this.addOperation}>フォームの追加</button>
         <input type="submit" className="btn btn-primary pull-right" value="送信" />
+        {deleteButton}
         {error}
       </form>
     );
