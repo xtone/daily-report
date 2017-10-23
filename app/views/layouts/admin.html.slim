@@ -16,3 +16,7 @@ html
     .container
       == breadcrumbs style: :bootstrap
       = yield
+
+    = javascript_include_tag 'application'
+
+    = content_for(:foot) if content_for?(:foot)
