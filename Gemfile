@@ -49,9 +49,6 @@ gem 'holidays'
 # Use Gretel to make it easy to create breadcrumbs
 gem 'gretel'
 
-# Use react-rails to use React and JSX easily
-gem 'react-rails'
-
 # Use Bootstrap 3 Datepicker
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.14.30'
