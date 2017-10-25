@@ -448,7 +448,6 @@ class ReportForm extends React.Component {
       let intval = parseInt(val);
       if (intval <= 0 || 100 < intval) {
         errors[index] = '稼働率は1〜100の間で設定してください。';
-        return;
       }
       total += intval;
     }, this);
