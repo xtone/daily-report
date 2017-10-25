@@ -1,40 +1,32 @@
 version: '2'
 services:
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    volumes:
+      - ./docker/mysql/volumes:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: daily-report_development
   app:
-    build: .
-    command: ["bin/rails", "server", "-p", "3000", "-b", "0.0.0.0"]
+    build:
+      context: .
+      dockerfile: ./docker/rails/Dockerfile
+    volumes:
+      - .:/daily-report
+    ports:
+      - "3456:3000"
+    depends_on:
+      - db
     environment:
       RAILS_ENV: development
-      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db
       DB_HOST:
       DB_USERNAME:
       DB_PASSWORD:
-    ports:
-      - '3456:3000'
-    volumes:
-      - .:/daily-report
-    depends_on:
-      - mysql
-      - memcached
-    volumes_from:
-      - bundle
-
-  mysql_data:
-    image: busybox
-    volumes:
-      - /var/lib/mysql
-
-  mysql:
-    image: 'mysql:5.7.16'
-    volumes_from:
-      - mysql_data
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-
-  memcached:
-    image: 'memcached:1.4'
-
-  bundle:
-    image: busybox
-    volumes:
-      - /bundle
+      BUGSNAG_API_KEY:
+      BUGSNAG_ENV:
+    command: /bin/bash -c "bin/rails s -b 0.0.0.0 -p 3000"

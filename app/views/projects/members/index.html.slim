@@ -1,8 +1,10 @@
 - breadcrumb :project_members, @project
 - content_for :title, t('.title', name: @project.name)
+- content_for :head do
+  = javascript_pack_tag 'project_members'
 
 h1 プロジェクトメンバー設定
 
 p クリックすると参加状態のOn/Offを切り替えることができます。
 
-= react_component('ProjectMembers', project_id: params[:project_id], resource_url: project_members_path)
+#project_members

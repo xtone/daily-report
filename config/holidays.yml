@@ -9,6 +9,10 @@ months:
     - name: 年末年始休業日
       regions: [jp]
       mday: 4
+  2:
+    - name: 閏年休業日
+      regions: [jp]
+      mday: 29
   12:
     - name: 年末年始休業日
       regions: [jp]

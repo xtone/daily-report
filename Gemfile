@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.1'
+gem 'rails', '~> 5.1.4'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.18', '< 0.5'
 # Use Puma as the app server
@@ -21,6 +21,8 @@ gem 'coffee-rails'
 gem 'data-confirm-modal'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
+
+gem 'webpacker'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -46,9 +48,6 @@ gem 'holidays'
 
 # Use Gretel to make it easy to create breadcrumbs
 gem 'gretel'
-
-# Use react-rails to use React and JSX easily
-gem 'react-rails'
 
 # Use Bootstrap 3 Datepicker
 gem 'momentjs-rails', '>= 2.9.0'
