@@ -1,4 +1,7 @@
 class ReportMailer < ApplicationMailer
+  # 日報未提出者にメールを送信する
+  # @param [User] user
+  # @param [Array] date 日付文字列の配列
   def unsubmitted_notification(user, dates)
     @user = user
     @dates = dates
