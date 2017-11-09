@@ -53,6 +53,9 @@ gem 'gretel'
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.14.30'
 
+# Use Spreadsheet to read xls file
+gem 'spreadsheet'
+
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
