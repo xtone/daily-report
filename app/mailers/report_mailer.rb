@@ -1,7 +1,9 @@
 class ReportMailer < ApplicationMailer
+  default from: '"日報システム" <daily-report@xtone.co.jp>'
+
   # 日報未提出者にメールを送信する
   # @param [User] user
-  # @param [Array] date 日付文字列の配列
+  # @param [Array] dates 日付文字列の配列
   def unsubmitted_notification(user, dates)
     @user = user
     @dates = dates
