@@ -118,8 +118,9 @@ namespace :app do
 
   desc '日報未提出者にメールを送信する'
   task unsubmitted_notification_mail: :environment do
+    start_on = Date.today.months_ago(2)
     User.available.each do |user|
-      dates = Report.unsubmitted_dates(user.id).map(&:to_s)
+      dates = Report.unsubmitted_dates(user.id, start_on: start_on).map(&:to_s)
       next if dates.blank?
       ReportMailer.unsubmitted_notification(user, dates).deliver_later
     end

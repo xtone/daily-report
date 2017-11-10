@@ -49,7 +49,7 @@ class Report < ApplicationRecord
     # @param [Date] start_on
     # @param [Date] end_on
     # @return [Array]
-    def unsubmitted_dates(user_id, start_on = nil, end_on = nil)
+    def unsubmitted_dates(user_id, start_on: nil, end_on: nil)
       result = []
       user = User.find(user_id)
       return result if user.began_on.nil?
