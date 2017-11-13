@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171113040324) do
+ActiveRecord::Schema.define(version: 20171113072354) do
 
   create_table "operations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "report_id"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20171113040324) do
     t.integer "code"
     t.string "name"
     t.string "name_reading"
+    t.integer "category", default: 0, null: false
     t.boolean "hidden", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
