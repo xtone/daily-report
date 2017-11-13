@@ -30,15 +30,18 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    # 新規登録ユーザーはIDがnilのためにencrypted_passwordが生成できない問題があるため、
+    # このタイミングでencrypted_passwordに仮文字列を設定しておく
+    @user = User.new(user_params.merge(encrypted_password: 'tmp'))
     authorize @user
     ApplicationRecord.transaction do
-      @user.save!
+      @user.save
+      @user.update_attributes!(password: user_params[:password])
       @user.user_roles = UserRole.where(role: params[:user_roles])
     end
     redirect_to users_path, notice: "#{@user.name}さんを登録しました。"
   rescue => e
-    flash.now[:alert] = (%w(ユーザーの登録に失敗しました。) << @user.errors.full_messages).join("\n")
+    flash.now[:alert] = %w(ユーザーの登録に失敗しました。).push(@user.errors.full_messages).join("\n")
     @roles = UserRole.roles
     render :new
   end
@@ -61,7 +64,7 @@ class UsersController < ApplicationController
     end
     redirect_to users_path, notice: "#{@user.name}さんの設定を更新しました。"
   rescue => e
-    flash.now[:alert] = (%w(ユーザーの設定の更新に失敗しました。) << @user.errors.full_messages).join("\n")
+    flash.now[:alert] = %w(ユーザーの設定の更新に失敗しました。).push(@user.errors.full_messages).join("\n")
     @roles = UserRole.roles
     render :edit
   end
@@ -85,6 +88,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :began_on)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :began_on, :division)
   end
 end

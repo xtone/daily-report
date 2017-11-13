@@ -53,6 +53,9 @@ gem 'gretel'
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.14.30'
 
+# Use EnumHelp to work fine with I18n
+gem 'enum_help'
+
 # Use Spreadsheet to read xls file
 gem 'spreadsheet'
 
