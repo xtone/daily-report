@@ -21,6 +21,7 @@ table.table.table-hover
     th= t('user.name')
     th= t('user.email')
     th= t('user.began_on')
+    th= t('user.division')
     th= t('user.available')
     th= t('user.role')
   - @users.each do |user|
@@ -29,5 +30,6 @@ table.table.table-hover
       td= link_to user.name, edit_user_path(user.id)
       td= user.email
       td= user.began_on&.strftime('%Y/%m/%d')
+      td= user.division_i18n
       td= available_label(user)
       td= role_labels(user)
