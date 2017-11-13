@@ -11,6 +11,9 @@ dl.row
   dt.col-sm-2= t('project.name')
   dd.col-sm-10= text_with_ruby(@project.name, @project.name_reading)
 
+  dt.col-sm-2= t('project.category')
+  dd.col-sm-10= @project.category_i18n
+
   dt.col-sm-2= t('project.displayed')
   dd.col-sm-10
     = display_status(@project)
