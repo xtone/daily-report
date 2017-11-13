@@ -10,6 +10,7 @@ ja:
     new_password_confirmation: 新しいパスワード(確認)
     available: 集計中
     role: 権限
+    division: 職種
     began_on: 日報集計開始日
     status:
       available: 集計中
@@ -49,3 +50,12 @@ ja:
 
   activemodel:
     <<: *activerecord
+
+  enums:
+    user:
+      division:
+        undefined: 未設定
+        sales_director: 営業＆ディレクター
+        engineer: エンジニア
+        designer: デザイナー
+        other: その他
