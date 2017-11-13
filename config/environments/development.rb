@@ -63,4 +63,7 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   #config.logger = Logger.new('log/development.log', 5, 1 * 1024 * 1024)
+
+  # Make javascript_pack_tag load assets from webpack-dev-server.
+  # config.x.webpacker[:dev_server_host] = 'http://localhost:8080'
 end

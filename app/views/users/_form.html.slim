@@ -38,10 +38,11 @@
     .col-sm-offset-2.col-sm-10
       = f.submit user.new_record? ? '登録' : '更新', class: 'btn btn-default'
 
-javascript:
-  $('.input-group.date').datetimepicker({
-    format: 'YYYY-MM-DD',
-    dayViewHeaderFormat: 'YYYY年MMMM',
-    locale: moment.locale('ja'),
-    showClose: true
-  });
+- content_for :foot do
+  javascript:
+    $('.input-group.date').datetimepicker({
+      format: 'YYYY-MM-DD',
+      dayViewHeaderFormat: 'YYYY年MMMM',
+      locale: moment.locale('ja'),
+      showClose: true
+    });

@@ -1,24 +1,28 @@
 months:
   1:
-    - name: 年末年始休業日
-      regions: [jp]
-      mday: 2
-    - name: 年末年始休業日
-      regions: [jp]
-      mday: 3
-    - name: 年末年始休業日
-      regions: [jp]
-      mday: 4
+  - name: 年末年始休業日
+    regions: [jp]
+    mday: 2
+  - name: 年末年始休業日
+    regions: [jp]
+    mday: 3
+  - name: 年末年始休業日
+    regions: [jp]
+    mday: 4
+  2:
+  - name: 閏年休業日
+    regions: [jp]
+    mday: 29
   12:
-    - name: 年末年始休業日
-      regions: [jp]
-      mday: 28
-    - name: 年末年始休業日
-      regions: [jp]
-      mday: 29
-    - name: 年末年始休業日
-      regions: [jp]
-      mday: 30
-    - name: 年末年始休業日
-      regions: [jp]
-      mday: 31
+  - name: 年末年始休業日
+    regions: [jp]
+    mday: 28
+  - name: 年末年始休業日
+    regions: [jp]
+    mday: 29
+  - name: 年末年始休業日
+    regions: [jp]
+    mday: 30
+  - name: 年末年始休業日
+    regions: [jp]
+    mday: 31

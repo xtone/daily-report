@@ -29,10 +29,11 @@ h1 日報未提出一覧
         = date.strftime('%Y-%m-%d')
         br
 
-javascript:
-  $('.input-group.date').datetimepicker({
-    format: 'YYYY-MM-DD',
-    dayViewHeaderFormat: 'YYYY年MMMM',
-    locale: moment.locale('ja'),
-    showClose: true
-  });
+- content_for :foot do
+  javascript:
+    $('.input-group.date').datetimepicker({
+      format: 'YYYY-MM-DD',
+      dayViewHeaderFormat: 'YYYY年MMMM',
+      locale: moment.locale('ja'),
+      showClose: true
+    });

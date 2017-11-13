@@ -118,10 +118,31 @@ namespace :app do
 
   desc '日報未提出者にメールを送信する'
   task unsubmitted_notification_mail: :environment do
+    start_on = Date.today.months_ago(2)
     User.available.each do |user|
-      dates = Report.unsubmitted_dates(user.id)
+      dates = Report.unsubmitted_dates(user.id, start_on: start_on).map(&:to_s)
       next if dates.blank?
       ReportMailer.unsubmitted_notification(user, dates).deliver_later
     end
+  end
+
+  desc '請求書シート読み取りテスト'
+  task :spreadsheet_test do
+    book = Spreadsheet.open Rails.root.join('tmp', 'bill.xls')
+
+    # 1番目のシート（設定）
+    sheet = book.worksheet(0)
+    # 見積書NO = C8
+    p "見積書NO: #{sheet.cell(7, 2).value}"
+    # 請求書NO = C15
+    p "請求書NO: #{sheet.cell(14, 2).value}"
+    # 請求書日付 = C13
+    p "請求書日付: #{sheet.cell(12, 2)}"
+
+    # 2番目のシート（請求書）
+    sheet  = book.worksheet(1)
+    # 請求金額 = I14
+    p "請求金額: ¥#{sheet.cell(13, 8).value}"
+    p "請求金額（税抜）: ¥#{sheet.cell(13, 8).value / (1.0 + 0.08)}"
   end
 end
