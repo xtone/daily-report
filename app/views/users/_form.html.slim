@@ -1,3 +1,5 @@
+= render_flash_message
+
 = form_with model: user, html: { class: 'form-horizontal' } do |f|
   .form-group
     label.col-sm-2.control-label= t('user.name')
@@ -34,6 +36,14 @@
         label.checkbox-inline
           = check_box_tag 'user_roles[]', value, user.user_roles.any?{ |u| u.send("#{role}?") }
           = t("user_role.#{role}")
+  .form-group
+    label.col-sm-2.control-label= t('user.division')
+    .col-sm-10
+      - User.divisions_i18n.each do |key, value|
+        - next if key == 'undefined'
+        label.radio-inline
+          = f.radio_button :division, key
+          = value
   .form-group
     .col-sm-offset-2.col-sm-10
       = f.submit user.new_record? ? '登録' : '更新', class: 'btn btn-default'
