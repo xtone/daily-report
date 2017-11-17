@@ -29,10 +29,29 @@ ja:
     code: PJコード
     name: プロジェクト名
     name_reading: 読みかな
-    category: 種別
+    category: PJ種別
     displayed: 表示ステータス
     hidden: 非表示
+    estimate:
+      amount: 見積もり金額合計
+      director_manday: 営業・ディレクター想定工数合計
+      engineer_manday: エンジニア想定工数合計
+      designer_manday: デザイナー想定工数合計
+      other_manday: その他想定工数合計
+      cost: 予定原価合計
     created_at: 作成日
+
+  estimate: &estimate_attributes
+    subject: 見積もり件名
+    estimated_on: 見積もり日付
+    serial_no: 見積書NO
+    amount: 見積もり金額
+    director_manday: 営業・ディレクター想定工数
+    engineer_manday: エンジニア想定工数
+    designer_manday: デザイナー想定工数
+    other_manday: その他想定工数
+    cost: 予定原価
+    filename: 見積書ファイル名
 
   activerecord: &activerecord
     models:
@@ -41,6 +60,7 @@ ja:
       project: プロジェクト
       operation: 稼働内容
       report: 日報
+      estimate: 見積書
     attributes:
       user:
         <<: *user_attributes
@@ -48,6 +68,8 @@ ja:
         <<: *user_role_attributes
       project:
         <<: *project_attributes
+      estimate:
+        <<: *estimate_attributes
 
   activemodel:
     <<: *activerecord
