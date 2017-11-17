@@ -15,7 +15,7 @@ class Reports::UnsubmittedsController < ApplicationController
       end
       @data = []
       User.available.each do |user|
-        dates = Report.unsubmitted_dates(user.id, @start_date, @end_date)
+        dates = Report.unsubmitted_dates(user.id, start_on: @start_date, end_on: @end_date)
         @data << { user: user, dates: dates } if dates.present?
       end
     else
