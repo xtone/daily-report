@@ -1,4 +1,6 @@
 class EstimatesController < ApplicationController
+  include SpreadsheetReadable
+
   before_action :authenticate_user!
 
   layout 'admin'
@@ -68,22 +70,5 @@ class EstimatesController < ApplicationController
       *%i(project_id subject estimated_on serial_no amount
           director_manday engineer_manday designer_manday other_manday cost filename)
     )
-  end
-
-  def read(sheet, address, default_value = nil)
-    md = address.match(/\A([A-Z]+)(\d+)\z/)
-    col = md[2].to_i - 1
-    row = 0
-    # 'A'.ord #=> 65
-    md[1].reverse.split('').each_with_index do |c, i|
-      row += (c.ord - 64) * (26 ** i)
-    end
-    row -= 1
-    begin
-      cell = sheet.cell(col, row)
-      cell.respond_to?(:value) ? cell.value : (cell || default_value)
-    rescue => ex
-      default_value
-    end
   end
 end
