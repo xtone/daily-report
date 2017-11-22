@@ -1,0 +1,29 @@
+dl.dl-horizontal.estimate {
+  dt {
+    width: 210px;
+  }
+  dd {
+    margin-left: 225px;
+  }
+}
+
+#estimates {
+  .panel.drop-area {
+    .panel-body {
+      padding-top: 50px;
+      padding-bottom: 50px;
+      text-align: center;
+
+      &.dragover {
+        border: #cccccc 4px dashed;
+      }
+    }
+  }
+  table.confirm {
+    table-layout: fixed;
+    th {
+      text-align: right;
+      width: 14em;
+    }
+  }
+}
