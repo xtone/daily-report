@@ -7,6 +7,10 @@ class ProjectPolicy < ApplicationPolicy
     @user.administrator? || @user.director?
   end
 
+  def show?
+    create?
+  end
+
   def edit?
     create?
   end

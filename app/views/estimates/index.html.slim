@@ -1,0 +1,11 @@
+- breadcrumb :estimates
+
+h1 見積書アップロード
+
+= render_flash_message
+
+#estimates[data-estimates-path=estimates_path(format: :json)
+           data-confirm-estimates-path=confirm_estimates_path(format: :json)]
+
+- content_for :foot do
+  = javascript_pack_tag 'estimates', 'data-turbolinks-track': 'reload'

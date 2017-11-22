@@ -28,6 +28,11 @@ Rails.application.routes.draw do
   resources :projects do
     resources :members, only: %i(index update destroy), module: :projects
   end
+  resources :estimates, only: %i(index create) do
+    collection do
+      post :confirm
+    end
+  end
 
   namespace :settings do
     resources :projects, only: %i(index update destroy)
