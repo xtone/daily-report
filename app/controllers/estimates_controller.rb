@@ -39,7 +39,7 @@ class EstimatesController < ApplicationController
 
     @warnings = []
     if Estimate.exists?(serial_no: @resource.serial_no)
-      @warnings << '見積書NOが重複しています。'
+      @warnings << '見積書NOが重複しています。登録内容は上書きされます。'
     end
     if @resource.too_old?
       @warnings << '見積もり日付が半年以上前です。'
