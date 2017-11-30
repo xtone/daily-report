@@ -2,8 +2,8 @@ class CreateEstimates < ActiveRecord::Migration[5.1]
   def change
     create_table :estimates do |t|
       t.references :project
-      t.string :serial_no
-      t.string :subject
+      t.string :serial_no, null: false
+      t.string :subject, null: false
       t.integer :amount, default: 0
       t.float :director_manday, default: 0.0
       t.float :engineer_manday, default: 0.0
@@ -11,7 +11,7 @@ class CreateEstimates < ActiveRecord::Migration[5.1]
       t.float :other_manday, default: 0.0
       t.integer :cost, default: 0
       t.date :estimated_on
-      t.string :filename
+      t.string :filename, null: false
       t.timestamps
 
       t.index :serial_no, unique: true
