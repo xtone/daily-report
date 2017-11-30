@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 20171122092436) do
   create_table "bills", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "estimate_id"
     t.string "serial_no", null: false
+    t.string "subject", null: false
     t.integer "amount", default: 0
     t.date "claimed_on"
     t.string "filename", null: false
@@ -35,7 +36,7 @@ ActiveRecord::Schema.define(version: 20171122092436) do
     t.float "other_manday", limit: 24, default: 0.0
     t.integer "cost", default: 0
     t.date "estimated_on"
-    t.string "filename"
+    t.string "filename", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_estimates_on_project_id"
