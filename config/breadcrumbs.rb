@@ -49,9 +49,8 @@ crumb :estimates do
   link '見積書アップロード', estimates_path
 end
 
-crumb :estimate_import_confirm do
-  link '見積書アップロードプレビュー', import_confirm_estimates_path
-  parent :estimates
+crumb :bills do
+  link '請求書アップロード', bills_path
 end
 
 # crumb :project_issues do |project|
