@@ -33,12 +33,16 @@ ja:
     displayed: 表示ステータス
     hidden: 非表示
     estimate:
+      count: 見積書件数
       amount: 見積もり金額合計
       director_manday: 営業・ディレクター想定工数合計
       engineer_manday: エンジニア想定工数合計
       designer_manday: デザイナー想定工数合計
       other_manday: その他想定工数合計
       cost: 予定原価合計
+    bill:
+      count: 請求書件数
+      amount: 請求金額合計
     created_at: 作成日
 
   estimate: &estimate_attributes
@@ -52,6 +56,12 @@ ja:
     other_manday: その他想定工数
     cost: 予定原価
     filename: 見積書ファイル名
+
+  bill: &bill_attributes
+    subject: 請求書件名
+    claimed_on: 請求書日付
+    serial_no: 請求書NO
+    amount: 請求金額
 
   activerecord: &activerecord
     models:
@@ -70,6 +80,8 @@ ja:
         <<: *project_attributes
       estimate:
         <<: *estimate_attributes
+      bill:
+        <<: *bill_attributes
 
   activemodel:
     <<: *activerecord
