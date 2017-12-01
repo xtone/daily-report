@@ -15,7 +15,7 @@ h1 ユーザー一覧
 
 = render_flash_message
 
-table.table.table-hover
+table.table.table-hover#users
   tr
     th= t('user.id')
     th= t('user.name')
@@ -30,6 +30,6 @@ table.table.table-hover
       td= link_to user.name, edit_user_path(user.id)
       td= user.email
       td= user.began_on&.strftime('%Y/%m/%d')
-      td= user.division_i18n
+      td= content_tag(:span, user.division_i18n, class: "label label-#{user.division}")
       td= available_label(user)
       td= role_labels(user)
