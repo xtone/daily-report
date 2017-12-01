@@ -10,18 +10,14 @@ module SpreadsheetReadable
   # @return [String | Integer | Float | nil] セルに入っている値
   def read(sheet, address, default_value = nil)
     md = address.match(/\A([A-Z]+)(\d+)\z/)
-    col = md[2].to_i - 1
-    row = 0
-    # 'A'.ord #=> 65
-    md[1].reverse.split('').each_with_index do |c, i|
-      row += (c.ord - 64) * (26 ** i)
-    end
-    row -= 1
+    row, col = md[2].to_i, md[1]
     begin
-      cell = sheet.cell(col, row)
-      cell.respond_to?(:value) ? cell.value : (cell || default_value)
+      logger.debug "value = #{sheet.cell(row, col)}"
+      sheet.cell(row, col) || default_value
     rescue => ex
-      default_value
+      logger.debug ex.message
+      logger.debug ex.backtrace.join("\n")
+      raise ex
     end
   end
 end

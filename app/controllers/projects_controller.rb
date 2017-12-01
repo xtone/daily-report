@@ -56,6 +56,7 @@ class ProjectsController < ApplicationController
   def show
     authorize @project
     @estimates = @project.estimates.to_a
+    @bills = @project.bills.to_a
   end
 
   # プロジェクト編集
