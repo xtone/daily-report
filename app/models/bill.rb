@@ -2,6 +2,7 @@ class Bill < ApplicationRecord
   belongs_to :estimate
 
   validates :serial_no, presence: true
+  validates :subject, presence: true
   validates :amount, numericality: { greater_than: 0 }
   validates :filename, presence: true
 
