@@ -10,12 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171113121205) do
+ActiveRecord::Schema.define(version: 20171122092436) do
+
+  create_table "bills", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "estimate_id"
+    t.string "serial_no", null: false
+    t.string "subject", null: false
+    t.integer "amount", default: 0
+    t.date "claimed_on"
+    t.string "filename", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["estimate_id"], name: "index_bills_on_estimate_id"
+    t.index ["serial_no"], name: "index_bills_on_serial_no", unique: true
+  end
 
   create_table "estimates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "project_id"
-    t.string "serial_no"
-    t.string "subject"
+    t.string "serial_no", null: false
+    t.string "subject", null: false
     t.integer "amount", default: 0
     t.float "director_manday", limit: 24, default: 0.0
     t.float "engineer_manday", limit: 24, default: 0.0
@@ -23,7 +36,7 @@ ActiveRecord::Schema.define(version: 20171113121205) do
     t.float "other_manday", limit: 24, default: 0.0
     t.integer "cost", default: 0
     t.date "estimated_on"
-    t.string "filename"
+    t.string "filename", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_estimates_on_project_id"

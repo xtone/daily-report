@@ -8,6 +8,7 @@ end
 
 class Estimate < ApplicationRecord
   belongs_to :project
+  has_one :bill
 
   validates :subject, presence: true
   validates :serial_no, presence: true

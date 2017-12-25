@@ -12,10 +12,19 @@ class EstimatesController < ApplicationController
     if params[:file].blank?
       fail '見積書ファイルをアップロードしてください。'
     end
-    book = Spreadsheet.open(params[:file].tempfile)
-    sheet = book.worksheets.first
+    #book = Spreadsheet.open(params[:file].tempfile)
+    #sheet = book.worksheets.first
+    book = Roo::Spreadsheet.open(params[:file].tempfile)
+    sheet = book.sheet(0)
 
-    pj_code = read(sheet, 'AA5')
+    begin
+      pj_code = read(sheet, 'AA5')
+    rescue => ex
+      # sheetに問題があり、valueが取得できない
+      @error = 'ファイルの解析に失敗しました。'
+      return
+    end
+
     if pj_code.blank?
       fail 'PJコードが空です。'
     end

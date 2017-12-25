@@ -1,3 +1,12 @@
 // Place all the styles related to the users controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#user, #users {
+  .label {
+    &.label-sales_director { color: #333; background-color: #fffc4d; }
+    &.label-engineer { color: #333; background-color: #88ce61; }
+    &.label-designer { color: #333; background-color: #ffbe39; }
+    &.label-other { color: #333; background-color: #d9d9d9; }
+  }
+}

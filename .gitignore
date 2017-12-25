@@ -23,3 +23,7 @@ vendor/node_modules
 
 /docker/mysql/volumes/*
 !/docker/mysql/volumes/.keep
+
+config/settings.local.yml
+config/settings/*.local.yml
+config/environments/*.local.yml

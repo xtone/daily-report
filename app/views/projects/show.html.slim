@@ -57,8 +57,20 @@ h2 このプロジェクトの日報を投稿したメンバー
       th.text-right style="width:16em"= t('estimate.subject')
       td= @estimates.first.subject
     tr
+      th.text-right= t('estimate.estimated_on')
+      td= @estimates.first.estimated_on
+    tr
       th.text-right= t('project.estimate.amount')
       td= "¥#{@estimates.sum{ |e| e.amount }.to_s(:delimited)}"
+    tr
+      th.text-right= t('project.estimate.count')
+      td= @estimates.size
+    tr
+      th.text-right= t('estimate.filename')
+      td== @estimates.map { |e| e.filename }.join('<br/>')
+    tr
+      th.text-right= t('project.estimate.cost')
+      td= "¥#{@estimates.sum { |e| e.cost }.to_s(:delimited)}"
     tr
       th.text-right= t('project.estimate.director_manday')
       td= "#{@estimates.sum{ |e| e.director_manday }} 人/日"
@@ -71,8 +83,20 @@ h2 このプロジェクトの日報を投稿したメンバー
     tr
       th.text-right= t('project.estimate.other_manday')
       td= "#{@estimates.sum { |e| e.other_manday }} 人/日"
-    tr
-      th.text-right= t('project.estimate.cost')
-      td= "¥#{@estimates.sum { |e| e.cost }.to_s(:delimited)}"
 
-h2 請求情報
+- if @bills.present?
+  h2 請求情報
+
+  table.table style="table-layout:fixed"
+    tr
+      th.text-right style="width:16em"= t('bill.subject')
+      td= @bills.first.subject
+    tr
+      th.text-right= t('bill.claimed_on')
+      td= @bills.first.claimed_on
+    tr
+      th.text-right= t('project.bill.amount')
+      td= "¥#{@bills.sum { |b| b.amount }.to_s(:delimited)}"
+    tr
+      th.text-right= t('project.bill.count')
+      td= @bills.size
