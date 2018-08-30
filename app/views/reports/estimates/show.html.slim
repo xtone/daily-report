@@ -1,0 +1,30 @@
+- breadcrumb :estimate
+
+h1 稼働集計
+
+= render_flash_message
+
+.d-flex.flex-row.align-items-baseline
+  .p-2
+    = form_with url: estimate_path(format: :csv), method: :get, class: 'form-inline', id: 'summaryRender' do
+      .form-group
+        .input-group.date
+          input.form-control.date-input type="text" name="reports[start]" placeholder="集計開始日" value="#{@start_date.strftime('%Y-%m-%d')}"
+          span.input-group-addon
+            span.glyphicon.glyphicon-calendar
+        span.separator 〜
+        .input-group.date
+          input.form-control.date-input type="text" name="reports[end]" placeholder="集計終了日" value="#{@end_date.strftime('%Y-%m-%d')}"
+          span.input-group-addon
+            span.glyphicon.glyphicon-calendar
+        | の稼働集計を
+      = submit_tag 'CSVでダウンロード', class: 'btn btn-default'
+
+- content_for :foot do
+  javascript:
+    $('.input-group.date').datetimepicker({
+      format: 'YYYY-MM-DD',
+      dayViewHeaderFormat: 'YYYY年MMMM',
+      locale: moment.locale('ja'),
+      showClose: true
+    });
