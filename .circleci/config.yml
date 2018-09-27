@@ -1,33 +1,31 @@
 version: 2
 jobs:
-  deploy_production:
+  deploy:
+    working_directory: ~/deployment-archive
     docker:
-      - image: circleci/ruby:2.4-node
-        environment:
-          AWS_CODE_DEPLOY_REGION: ap-northeast-1
-          AWS_CODE_DEPLOY_APPLICATION_NAME: daily-report
-          AWS_CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: daily-report-production
-          AWS_CODE_DEPLOY_S3_BUCKET: deploy.daily-report.xtone.co.jp
+      - image: naughtldy/circleci-node-awscli:8
     steps:
       - checkout
       - run:
-          name: install aws-code-deploy
-          command: sudo npm install aws-code-deploy -g
+          name: zip
+          comamnd: zip -r master ../deployment-archive
       - run:
-          name: setup environment dynamically
+          name: zip upload
+          command: aws s3 cp master.zip s3://deploy.daily-report.xtone.co.jp/daily-report-${CIRCLE_BRANCH}-${CIRCLE_SHA1} --region ap-northeast-1
+      - run:
+          name: deploy production
           command: |
-            echo "export AWS_CODE_DEPLOY_APP_SOURCE=${CIRCLE_WORKING_DIRECTORY}" >> $BASH_ENV
-            echo "export AWS_CODE_DEPLOY_S3_FILENAME=daily-report-${CIRCLE_BUILD_NUM}-${CIRCLE_BRANCH}-${CIRCLE_SHA1}" >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: deploy to production
-          command: aws-code-deploy
+            aws deploy create-deployment \
+              --application-name daily-report \
+              --deployment-group-name daily-report-production \
+              --s3-location bucket="deploy.daily-report.xtone.co.jp",bundleType="zip",eTag=`aws s3api head-object --bucket deploy.daily-report.xtone.co.jp --key daily-report-${CIRCLE_BRANCH}-${CIRCLE_SHA1} | jq .ETag`,key="daily-report-${CIRCLE_BRANCH}-${CIRCLE_SHA1}" \
+              --region ap-northeast-1
 
 workflows:
   version: 2
   deploy:
     jobs:
-      - deploy_production:
+      - deploy:
           filters:
             branches:
               only: master
