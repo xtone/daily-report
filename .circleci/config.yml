@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: zip
-          comamnd: zip -r master ../deployment-archive
+          command: zip -r master ../deployment-archive
       - run:
           name: zip upload
           command: aws s3 cp master.zip s3://deploy.daily-report.xtone.co.jp/daily-report-${CIRCLE_BRANCH}-${CIRCLE_SHA1} --region ap-northeast-1
