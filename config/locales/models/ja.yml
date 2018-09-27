@@ -10,6 +10,7 @@ ja:
     new_password_confirmation: 新しいパスワード(確認)
     available: 集計中
     role: 権限
+    division: 職種
     began_on: 日報集計開始日
     status:
       available: 集計中
@@ -28,9 +29,39 @@ ja:
     code: PJコード
     name: プロジェクト名
     name_reading: 読みかな
+    category: PJ種別
     displayed: 表示ステータス
     hidden: 非表示
+    estimate:
+      count: 見積書件数
+      amount: 見積もり金額合計
+      director_manday: 営業・ディレクター想定工数合計
+      engineer_manday: エンジニア想定工数合計
+      designer_manday: デザイナー想定工数合計
+      other_manday: その他想定工数合計
+      cost: 予定原価合計
+    bill:
+      count: 請求書件数
+      amount: 請求金額合計
     created_at: 作成日
+
+  estimate: &estimate_attributes
+    subject: 見積もり件名
+    estimated_on: 見積もり日付
+    serial_no: 見積書NO
+    amount: 見積もり金額
+    director_manday: 営業・ディレクター想定工数
+    engineer_manday: エンジニア想定工数
+    designer_manday: デザイナー想定工数
+    other_manday: その他想定工数
+    cost: 予定原価
+    filename: 見積書ファイル名
+
+  bill: &bill_attributes
+    subject: 請求書件名
+    claimed_on: 請求書日付
+    serial_no: 請求書NO
+    amount: 請求金額
 
   activerecord: &activerecord
     models:
@@ -39,6 +70,7 @@ ja:
       project: プロジェクト
       operation: 稼働内容
       report: 日報
+      estimate: 見積書
     attributes:
       user:
         <<: *user_attributes
@@ -46,6 +78,27 @@ ja:
         <<: *user_role_attributes
       project:
         <<: *project_attributes
+      estimate:
+        <<: *estimate_attributes
+      bill:
+        <<: *bill_attributes
 
   activemodel:
     <<: *activerecord
+
+  enums:
+    project:
+      category:
+        undefined: 未設定
+        client_shot: 通常PJ
+        client_maintenance: 保守PJ
+        internal: 社内PJ
+        general_affairs: 社内業務
+        other: その他
+    user:
+      division:
+        undefined: 未設定
+        sales_director: 営業・ディレクター
+        engineer: エンジニア
+        designer: デザイナー
+        other: その他

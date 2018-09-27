@@ -1,0 +1,11 @@
+- breadcrumb :bills
+
+h1 請求書アップロード
+
+= render_flash_message
+
+#bills[data-bills-path=bills_path(format: :json)
+       data-confirm-bills-path=confirm_bills_path(format: :json)]
+
+- content_for :foot do
+  = javascript_pack_tag 'bills'

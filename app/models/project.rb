@@ -1,7 +1,11 @@
 class Project < ApplicationRecord
+  enum category: { undefined: 0, client_shot: 1, client_maintenance: 2, internal: 3, general_affairs: 4, other: 5 }
+
   has_many :operations
   has_many :user_projects, dependent: :destroy
   has_many :users, through: :user_projects
+  has_many :estimates
+  has_many :bills, through: :estimates
 
   validates :code,
     allow_blank: true,

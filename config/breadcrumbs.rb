@@ -45,6 +45,14 @@ crumb :unsubmitted do
   link '日報未提出一覧', unsubmitted_path
 end
 
+crumb :estimates do
+  link '見積書アップロード', estimates_path
+end
+
+crumb :bills do
+  link '請求書アップロード', bills_path
+end
+
 # crumb :project_issues do |project|
 #   link "Issues", project_issues_path(project)
 #   parent :project, project

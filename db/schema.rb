@@ -10,7 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161202034233) do
+ActiveRecord::Schema.define(version: 20171122092436) do
+
+  create_table "bills", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "estimate_id"
+    t.string "serial_no", null: false
+    t.string "subject", null: false
+    t.integer "amount", default: 0
+    t.date "claimed_on"
+    t.string "filename", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["estimate_id"], name: "index_bills_on_estimate_id"
+    t.index ["serial_no"], name: "index_bills_on_serial_no", unique: true
+  end
+
+  create_table "estimates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "project_id"
+    t.string "serial_no", null: false
+    t.string "subject", null: false
+    t.integer "amount", default: 0
+    t.float "director_manday", limit: 24, default: 0.0
+    t.float "engineer_manday", limit: 24, default: 0.0
+    t.float "designer_manday", limit: 24, default: 0.0
+    t.float "other_manday", limit: 24, default: 0.0
+    t.integer "cost", default: 0
+    t.date "estimated_on"
+    t.string "filename", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_estimates_on_project_id"
+    t.index ["serial_no"], name: "index_estimates_on_serial_no", unique: true
+  end
 
   create_table "operations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "report_id"
@@ -26,6 +57,7 @@ ActiveRecord::Schema.define(version: 20161202034233) do
     t.integer "code"
     t.string "name"
     t.string "name_reading"
+    t.integer "category", default: 0, null: false
     t.boolean "hidden", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -70,6 +102,7 @@ ActiveRecord::Schema.define(version: 20161202034233) do
     t.string "email"
     t.string "encrypted_password", default: "", null: false
     t.datetime "remember_created_at"
+    t.integer "division", default: 0, null: false
     t.date "began_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

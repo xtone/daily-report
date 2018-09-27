@@ -5,6 +5,12 @@ dl.dl-horizontal
     = link_to 'プロジェクト管理', projects_path
   dd 日報に登録するプロジェクトを管理します。
   dt
+    = link_to '見積書アップロード', estimates_path
+  dd 見積書ファイルをアップロードします。
+  dt
+    = link_to '請求書アップロード', bills_path
+  dd 請求書ファイルをアップロードします。
+  dt
     = link_to_if policy(current_user).index?, 'ユーザー管理', users_path
   dd ユーザーの一覧を表示し、登録や編集を行います。
   dt

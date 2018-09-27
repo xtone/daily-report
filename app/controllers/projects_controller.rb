@@ -55,6 +55,8 @@ class ProjectsController < ApplicationController
   # プロジェクト詳細
   def show
     authorize @project
+    @estimates = @project.estimates.to_a
+    @bills = @project.bills.to_a
   end
 
   # プロジェクト編集
@@ -85,6 +87,6 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name, :code, :name_reading, :hidden)
+    params.require(:project).permit(:name, :code, :name_reading, :category, :hidden)
   end
 end

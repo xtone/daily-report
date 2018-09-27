@@ -4,15 +4,18 @@
 .page-header
   h1 プロジェクト詳細
 
-dl.row
-  dt.col-sm-2= t('project.code')
-  dd.col-sm-10= @project.code || '（未設定）'
+dl.dl-horizontal
+  dt= t('project.code')
+  dd= @project.code || '（未設定）'
 
-  dt.col-sm-2= t('project.name')
-  dd.col-sm-10= text_with_ruby(@project.name, @project.name_reading)
+  dt= t('project.name')
+  dd= text_with_ruby(@project.name, @project.name_reading)
 
-  dt.col-sm-2= t('project.displayed')
-  dd.col-sm-10
+  dt= t('project.category')
+  dd= @project.category_i18n
+
+  dt= t('project.displayed')
+  dd
     = display_status(@project)
     = @project.display_status
 
@@ -45,3 +48,55 @@ h2 このプロジェクトの日報を投稿したメンバー
   .collapse.navbar-collapse
     .nav.navbar-nav
       = link_to 'このプロジェクトのメンバーを編集', project_members_path(@project.id), class: 'btn btn-primary navbar-btn'
+
+- if @estimates.present?
+  h2 見積もり情報
+
+  table.table style="table-layout:fixed"
+    tr
+      th.text-right style="width:16em"= t('estimate.subject')
+      td= @estimates.first.subject
+    tr
+      th.text-right= t('estimate.estimated_on')
+      td= @estimates.first.estimated_on
+    tr
+      th.text-right= t('project.estimate.amount')
+      td= "¥#{@estimates.sum{ |e| e.amount }.to_s(:delimited)}"
+    tr
+      th.text-right= t('project.estimate.count')
+      td= @estimates.size
+    tr
+      th.text-right= t('estimate.filename')
+      td== @estimates.map { |e| e.filename }.join('<br/>')
+    tr
+      th.text-right= t('project.estimate.cost')
+      td= "¥#{@estimates.sum { |e| e.cost }.to_s(:delimited)}"
+    tr
+      th.text-right= t('project.estimate.director_manday')
+      td= "#{@estimates.sum{ |e| e.director_manday }} 人/日"
+    tr
+      th.text-right= t('project.estimate.engineer_manday')
+      td= "#{@estimates.sum { |e| e.engineer_manday }} 人/日"
+    tr
+      th.text-right= t('project.estimate.designer_manday')
+      td= "#{@estimates.sum { |e| e.designer_manday }} 人/日"
+    tr
+      th.text-right= t('project.estimate.other_manday')
+      td= "#{@estimates.sum { |e| e.other_manday }} 人/日"
+
+- if @bills.present?
+  h2 請求情報
+
+  table.table style="table-layout:fixed"
+    tr
+      th.text-right style="width:16em"= t('bill.subject')
+      td= @bills.first.subject
+    tr
+      th.text-right= t('bill.claimed_on')
+      td= @bills.first.claimed_on
+    tr
+      th.text-right= t('project.bill.amount')
+      td= "¥#{@bills.sum { |b| b.amount }.to_s(:delimited)}"
+    tr
+      th.text-right= t('project.bill.count')
+      td= @bills.size
