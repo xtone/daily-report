@@ -5,13 +5,6 @@ import Turbolinks from 'turbolinks'
 import PropTypes from 'prop-types'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
-const requestParams = {
-  credentials: 'same-origin',
-  headers: {
-    'Accept': 'application/json',
-    'X-CSRF-Token': csrfToken
-  }
-};
 
 class Calendar extends React.Component {
   constructor(props) {
@@ -25,12 +18,12 @@ class Calendar extends React.Component {
   }
 
   componentDidMount() {
-    fetch(this.props.projects_path, requestParams)
+    ApiClient.get(this.props.projects_path)
       .then(response => response.json())
       .then(this.setProjects.bind(this));
 
     let searchParams = new URLSearchParams(window.location.search);
-    fetch(`${this.props.reports_path}?date=${searchParams.get('date')}`, requestParams)
+    ApiClient.get(`${this.props.reports_path}?date=${searchParams.get('date')}`)
       .then(response => response.json())
       .then(data => this.setState({ reports: data }))
       .catch(error => console.log(`There has been a problem with your fetch operation: ${error.message}`));
@@ -54,7 +47,7 @@ class Calendar extends React.Component {
    * @return {}
    */
   sendReport(index, data) {
-    return fetch(data.path, Object.assign(requestParams, { method: 'POST', body: data.data }))
+    return ApiClient.post(data.path, { body: data.data })
       .then(response => response.json())
       .then(report => {
         let reports = this.state.reports;
@@ -64,7 +57,7 @@ class Calendar extends React.Component {
   }
 
   destroyReport(index, data) {
-    return fetch(data.path, Object.assign(requestParams, { method: 'DELETE' }))
+    return ApiClient.delete(data.path)
       .then(response => response.json())
       .then(report => {
         let reports = this.state.reports;
@@ -621,6 +614,34 @@ class ProjectSelect extends React.Component {
         {options}
       </select>
     );
+  }
+}
+
+class ApiClient {
+  static get(requestPath, params) {
+    return fetch(requestPath, ApiClient.requestParams('GET', params));
+  }
+
+  static post(requestPath, params) {
+    return fetch(requestPath, ApiClient.requestParams('POST', params));
+  }
+
+  static put(requestPath, params) {
+    return fetch(requestPath, ApiClient.requestParams('PUT', params));
+  }
+
+  static delete(requestPath, params) {
+    return fetch(requestPath, ApiClient.requestParams('DELETE', params));
+  }
+
+  static requestParams(method, params) {
+    return Object.assign({
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json',
+        'X-CSRF-Token': csrfToken
+      }
+    }, params, { method: method });
   }
 }
 
