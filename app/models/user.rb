@@ -88,10 +88,8 @@ class User < ApplicationRecord
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
-  # 同時にプロジェクトの関与データも削除する
   # @param [Time] at
   def soft_delete(at = Time.zone.now)
     update_attribute(:deleted_at, at)
-    UserProject.where(user_id: self.id).destroy_all
   end
 end
