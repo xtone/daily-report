@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Turbolinks from 'turbolinks'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 const requestParams = {
