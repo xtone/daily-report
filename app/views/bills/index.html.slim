@@ -7,5 +7,8 @@ h1 請求書アップロード
 #bills[data-bills-path=bills_path(format: :json)
        data-confirm-bills-path=confirm_bills_path(format: :json)]
 
+div
+  | ※何も表示されなかったらリロードしてみてください。
+
 - content_for :foot do
   = javascript_pack_tag 'bills'

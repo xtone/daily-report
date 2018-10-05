@@ -28,6 +28,7 @@ class ReportsController < ApplicationController
         end
         @reports = Report.includes(:user).joins(:user)
           .where(worked_in: [start_on..end_on])
+          .merge(User.available)
           .order('users.id', worked_in: :asc)
         send_data render_to_string,
                   filename: "dailyreport_#{start_on.strftime('%Y%m%d')}-#{end_on.strftime('%Y%m%d')}.csv",

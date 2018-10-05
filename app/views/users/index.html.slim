@@ -21,7 +21,7 @@ table.table.table-hover#users
     th= t('user.name')
     th= t('user.email')
     th= t('user.began_on')
-    th= t('user.division')
+    / th= t('user.division')
     th= t('user.available')
     th= t('user.role')
   - @users.each do |user|
@@ -30,6 +30,6 @@ table.table.table-hover#users
       td= link_to user.name, edit_user_path(user.id)
       td= user.email
       td= user.began_on&.strftime('%Y/%m/%d')
-      td= content_tag(:span, user.division_i18n, class: "label label-#{user.division}")
+      / td= content_tag(:span, user.division_i18n, class: "label label-#{user.division}")
       td= available_label(user)
       td= role_labels(user)
