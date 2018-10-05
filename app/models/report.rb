@@ -35,13 +35,13 @@ class Report < ApplicationRecord
     # 指定した期間内に日報を提出したユーザーの配列を返す
     # @param [Date] start_on
     # @param [Date] end_on
-    # @return [Array]
+    # @return [Array] users
     def submitted_users(start_on, end_on)
       user_ids = where(worked_in: [start_on..end_on])
                    .select(:user_id)
                    .uniq
                    .pluck(:user_id)
-      User.where(id: user_ids)
+      User.available.where(id: user_ids)
     end
 
     # 該当のユーザーが指定期間内で日報未提出の日付を返す

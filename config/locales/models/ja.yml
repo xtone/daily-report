@@ -14,7 +14,7 @@ ja:
     began_on: 日報集計開始日
     status:
       available: 集計中
-      deleted: 削除済
+      deleted: 対象外
 
   user_role: &user_role_attributes
     administrator: 管理者

@@ -1,4 +1,4 @@
-- breadcrumb :estimates
+g- breadcrumb :estimates
 
 h1 見積書アップロード
 
@@ -6,6 +6,9 @@ h1 見積書アップロード
 
 #estimates[data-estimates-path=estimates_path(format: :json)
            data-confirm-estimates-path=confirm_estimates_path(format: :json)]
+
+div
+  | ※何も表示されなかったらリロードしてみてください。
 
 - content_for :foot do
   = javascript_pack_tag 'estimates'
