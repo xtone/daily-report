@@ -126,6 +126,41 @@ namespace :app do
     end
   end
 
+  desc '日報未提出者の一覧をSlackに送信する。送信先のchannelは引数で設定可'
+  task :unsubmitted_notification_slack, ['channel'] => :environment do |task, args|
+    today = Date.today
+    start_on = today.ago(40.days).to_datetime
+    end_on = today.yesterday.to_datetime
+    if args[:channel].present?
+      notifier = Slack::Notifier.new ENV['SLACK_WEBHOOK_URL'] do
+        defaults channel: args[:channel]
+      end
+    else
+      notifier = Slack::Notifier.new ENV['SLACK_WEBHOOK_URL']
+    end
+
+    text = <<-EOS
+日報が未提出の方がいます。
+以下、ご確認ください。
+※休みの場合も休み明けに「休み」を設定してください。
+
+    EOS
+    User.available.each do |user|
+      dates = Report.unsubmitted_dates(user.id, start_on: start_on, end_on: end_on).map(&:to_s)
+      next if dates.blank?
+      text << "・#{user.name}\n"
+      dates.each do |date|
+        if date.is_a?(Date)
+          text << date.strftime('%Y-%m-%d')
+        else
+          text << "#{date.split('T').first}\n"
+        end
+      end
+      text << "\n"
+    end
+    notifier.ping text
+  end
+
   desc '請求書シート読み取りテスト'
   task :spreadsheet_test do
     book = Spreadsheet.open Rails.root.join('tmp', 'bill.xls')
