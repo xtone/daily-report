@@ -138,13 +138,18 @@ namespace :app do
 日報が未提出の方がいます。
 以下、ご確認ください。
 ※休みの場合も休み明けに「休み」を設定してください。
+
     EOS
     User.available.each do |user|
       dates = Report.unsubmitted_dates(user.id, start_on: start_on, end_on: end_on).map(&:to_s)
       next if dates.blank?
       text << "・#{user.name}\n"
       dates.each do |date|
-        text << "#{date}\n"
+        if date.is_a?(Date)
+          text << date.strftime('%Y-%m-%d')
+        else
+          text << "#{date.split('T').first}\n"
+        end
       end
       text << "\n"
     end
