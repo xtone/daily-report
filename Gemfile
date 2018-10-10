@@ -63,6 +63,9 @@ gem 'enum_help'
 gem 'spreadsheet'
 gem 'roo-xls'
 
+# Use slack-notifier to send notifications to Slack webhooks
+gem 'slack-notifier'
+
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
