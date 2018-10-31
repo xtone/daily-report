@@ -1,4 +1,4 @@
-FROM mysql:latest
+FROM mysql:5.7
 
 # Set debian default locale to ja_JP.UTF-8
 RUN apt-get update -qq && \
