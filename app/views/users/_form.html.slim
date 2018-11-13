@@ -34,7 +34,7 @@
     .col-sm-10
       - roles.each do |role, value|
         label.checkbox-inline
-          = check_box_tag 'user_roles[]', value, user.user_roles.any?{ |u| u.send("#{role}?") }
+          = check_box_tag 'user_roles[]', value, user.user_roles.any?{ |u| u.send("#{role}?") }, id: "user_roles_#{role}"
           span.label.label-primary= t("user_role.#{role}")
   /
     .form-group
