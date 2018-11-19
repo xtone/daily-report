@@ -5,8 +5,8 @@ RUN sed -i.bak -e "s%http://deb.debian.org/debian%http://ftp.jp.debian.org/debia
     apt-get update -qq && \
     apt-get install -y apt-transport-https apt-utils build-essential mysql-client nodejs npm
 
-# Install latest Node.js
-RUN npm cache clean && npm install n -g && n stable && \
+# Install Node.js
+RUN npm cache clean && npm install n -g && n 8.12.0 && \
     ln -sf /usr/local/bin/node /usr/bin/node && \
     apt-get purge -y nodejs npm
 
