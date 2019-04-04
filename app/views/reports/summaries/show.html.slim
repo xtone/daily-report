@@ -39,8 +39,8 @@ h1 稼働集計
       tbody
         - @sum.each do |sum|
           tr
-            th= @projects[sum[0]].code
-            th.project= @projects[sum[0]].name
+            th= @projects[sum[0]]&.code
+            th.project= @projects[sum[0]]&.name
             - @users.each do |user|
               td= sum[1][user.id] if sum[1].has_key?(user.id)
   - else

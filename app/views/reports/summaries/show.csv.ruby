@@ -8,7 +8,7 @@ CSV.generate(encoding: 'SJIS') do |csv|
   csv << header
 
   @sum.each do |sum|
-    row = [@projects[sum[0]].code, @projects[sum[0]].name]
+    row = [@projects[sum[0]]&.code, @projects[sum[0]]&.name]
     @users.each do |user|
       row << sum[1][user.id]
     end
