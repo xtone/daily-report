@@ -2,6 +2,8 @@ FROM ruby:2.4.2
 ENV LANG C.UTF-8
 
 RUN sed -i.bak -e "s%http://deb.debian.org/debian%http://ftp.jp.debian.org/debian%g" /etc/apt/sources.list && \
+    echo "deb http://ftp.jp.debian.org/debian jessie main" > /etc/apt/sources.list && \
+    echo "deb http://ftp.jp.debian.org/debian stable-updates main" >> /etc/apt/sources.list && \
     apt-get update -qq && \
     apt-get install -y apt-transport-https apt-utils build-essential mysql-client nodejs npm
 
