@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./docker/mysql/Dockerfile
     volumes:
-      - ./docker/mysql/volumes:/var/lib/mysql
+      - mysql-db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: daily-report_development
@@ -15,6 +15,7 @@ services:
       dockerfile: ./docker/rails/Dockerfile
     volumes:
       - .:/daily-report
+      - rubygems:/usr/local/bundle
     ports:
       - "3456:3000"
     depends_on:
@@ -31,3 +32,9 @@ services:
       BUGSNAG_ENV:
       SLACK_WEBHOOK_URL:
     command: /bin/bash -c "bin/rails s -b 0.0.0.0 -p 3000"
+
+volumes:
+  rubygems:
+    driver: 'local'
+  mysql-db:
+    driver: 'local'
