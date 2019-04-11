@@ -5,9 +5,7 @@ RSpec.describe ProjectsController, type: :controller do
 
   describe "delete #destroy" do
     before do
-      @request.env["devise.mapping"] = Devise.mappings[:user]
-      @user = user
-      sign_in @user
+      sign_in user
     end
 
     context 'UNABLE to delete project registerd' do
