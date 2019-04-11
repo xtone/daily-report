@@ -1,28 +1,30 @@
 RSpec.describe ProjectsController, type: :controller do
-  let(:user){create(:user, :administrator)}
+  let!(:user) {create(:user, :administrator)}
+  let!(:project) {create(:project)}
 
   describe "delete #destroy" do
     before do
       sign_in user
     end
 
-    context 'UNABLE to delete project registerd' do
-      let!(:project){create(:project)}
-      let!(:user_project){create(:user_project,user_id: user.id, project_id: project.id)}
+    context 'project registerd to user_project table' do
+      before do
+        create(:user_project, user_id: user.id, project_id: project.id)
+        delete :destroy, params: {id: project.id}
+      end
 
-      it "not delete the project " do
-        expect do
-          delete :destroy, params: { id: project.id}
-        end.to change(Project,:count).by(0)
-      end
+      subject {Project.find_by(id: project.id)}
+      it {is_expected.to be_present}
+
     end
-    context 'ABLE to delete the project NOT registered' do
-      let!(:project){create(:project)}
-      it "delete the project " do
-        expect do
-          delete :destroy, params: { id: project.id}
-        end.to change(Project,:count).by(-1)
+
+    context 'project Not registerd to user_project table' do
+      before do
+        delete :destroy, params: {id: project.id}
       end
+
+      subject {Project.find_by(id: project.id)}
+      it {is_expected.not_to be_present}
     end
   end
 end
