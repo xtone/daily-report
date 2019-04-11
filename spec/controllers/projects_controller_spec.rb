@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.describe ProjectsController, type: :controller do
   let(:user){create(:user, :administrator)}
 
