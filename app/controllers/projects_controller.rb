@@ -76,8 +76,6 @@ class ProjectsController < ApplicationController
 
   def destroy
     authorize @project
-
-
     #日報が1つでも登録されているプロジェクトに関しては、プロジェクト削除できないようにする。
 
     if UserProject.find_by(project_id: @project.id )
