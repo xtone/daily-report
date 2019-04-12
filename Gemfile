@@ -47,7 +47,7 @@ gem 'devise'
 gem 'devise-encryptable'
 
 # Use Holidays to deal holidays
-gem 'holidays'
+gem 'holidays', '>= 7.1.0'
 
 # Use Gretel to make it easy to create breadcrumbs
 gem 'gretel'
