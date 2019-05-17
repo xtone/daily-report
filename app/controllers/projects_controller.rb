@@ -76,8 +76,14 @@ class ProjectsController < ApplicationController
 
   def destroy
     authorize @project
-    @project.destroy!
-    redirect_to projects_path, notice: "プロジェクト「#{@project.name}」を削除しました。"
+    #日報が1つでも登録されているプロジェクトに関しては、プロジェクト削除できないようにする。
+    unless UserProject.where(project: @project).exists?
+      @project.destroy!
+      redirect_to projects_path, notice: "プロジェクト「#{@project.name}」を削除しました。" and return
+    end
+
+    flash.now[:alert] = (%w(日報に登録されているプロジェクトは削除できません。) << @project.errors.full_messages).join("\n")
+    render :show
   end
 
   private

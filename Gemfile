@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.4'
+gem 'rails', '~> 5.1'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.18', '< 0.5'
 # Use Puma as the app server
@@ -43,11 +43,11 @@ gem 'capistrano-rails', group: :development
 
 # Use Pundit and Devise to provide authorization system
 gem 'pundit'
-gem 'devise'
+gem "devise", ">= 4.6.0"
 gem 'devise-encryptable'
 
 # Use Holidays to deal holidays
-gem 'holidays'
+gem 'holidays', '>= 7.1.0'
 
 # Use Gretel to make it easy to create breadcrumbs
 gem 'gretel'
@@ -61,7 +61,7 @@ gem 'enum_help'
 
 # Use Spreadsheet to read xls file
 gem 'spreadsheet'
-gem 'roo-xls'
+gem 'roo-xls', '~> 1.2.0'
 
 # Use slack-notifier to send notifications to Slack webhooks
 gem 'slack-notifier'
@@ -79,7 +79,7 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console'
-  gem 'listen', '~> 3.0.5'
+  gem 'listen', '~> 3.1.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
