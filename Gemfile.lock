@@ -127,7 +127,7 @@ GEM
       activesupport (>= 4.2.0)
     gretel (3.0.9)
       rails (>= 3.1.0)
-    holidays (7.1.0)
+    holidays (8.4.1)
     honoka-rails (3.3.7)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
@@ -329,7 +329,7 @@ DEPENDENCIES
   enum_help
   factory_girl_rails
   gretel
-  holidays (>= 7.1.0)
+  holidays
   honoka-rails
   jbuilder
   jquery-rails
