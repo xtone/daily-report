@@ -31,7 +31,8 @@ services:
       BUGSNAG_API_KEY:
       BUGSNAG_ENV:
       SLACK_WEBHOOK_URL:
-    command: /bin/bash -c "bin/rails s -b 0.0.0.0 -p 3000"
+      BUNDLER_VERSION: 2.3.18
+    command: tail -f /dev/null
 
 volumes:
   rubygems:
