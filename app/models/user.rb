@@ -92,4 +92,19 @@ class User < ApplicationRecord
   def soft_delete(at = Time.zone.now)
     update_attribute(:deleted_at, at)
   end
+
+  def fill_absent(date_range)
+    if date_range.class != Range
+      return nil
+    end
+    
+    absent_project = Project.find_by(name: "休み")
+    date_range.each do |date|
+      if date.wday == 0 || date.wday == 6
+        next
+      end
+      report = user.reports.create(worked_in: date)
+      report.operations.create(project: absent_project, workload: 100)
+    end
+  end
 end
