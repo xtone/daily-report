@@ -1,0 +1,9 @@
+# Apple Silicon Mac (M1/M2/M3) 用の設定例
+# このファイルを docker-compose.override.yml にコピーして使用してください
+# cp docker-compose.override.yml.example docker-compose.override.yml
+
+services:
+  db:
+    platform: linux/amd64
+  app:
+    platform: linux/amd64 
