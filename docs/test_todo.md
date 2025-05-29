@@ -5,230 +5,264 @@
 ## モデルテスト
 
 ### User モデル
-- [ ] バリデーションテスト
-  - [ ] name の presence
-  - [ ] email の presence と uniqueness
-  - [ ] password の presence と confirmation
-  - [ ] began_on の presence
-- [ ] Devise関連の認証機能テスト
-  - [ ] ログイン機能
-  - [ ] パスワード暗号化
-  - [ ] Remember me機能
-- [ ] アソシエーションテスト
-  - [ ] has_many :reports
-  - [ ] has_many :user_projects
-  - [ ] has_many :projects, through: :user_projects
-  - [ ] has_many :user_role_associations
-  - [ ] has_many :user_roles, through: :user_role_associations
-- [ ] スコープテスト
-  - [ ] available スコープ（論理削除されていないユーザー）
-- [ ] インスタンスメソッドテスト
-  - [ ] administrator? メソッド
-  - [ ] director? メソッド
-  - [ ] soft_delete メソッド
-  - [ ] revive メソッド
-  - [ ] fill_absent メソッド（休み日の自動登録）
-- [ ] クラスメソッドテスト
-  - [ ] find_in_project メソッド
+- [x] バリデーションテスト
+  - [x] name の presence
+  - [x] email の presence と uniqueness
+  - [x] password の presence
+  - [x] began_on の presence
+- [x] Devise認証機能
+  - [x] パスワード暗号化
+  - [x] rememberable機能
+- [x] アソシエーションテスト
+  - [x] has_many :reports
+  - [x] has_many :user_projects
+  - [x] has_many :projects, through: :user_projects
+  - [x] has_many :user_role_associations
+  - [x] has_many :user_roles, through: :user_role_associations
+- [x] スコープテスト
+  - [x] available スコープ（論理削除されていないユーザー）
+- [x] インスタンスメソッドテスト
+  - [x] administrator? メソッド
+  - [x] director? メソッド
+  - [x] soft_delete メソッド
+  - [x] revive メソッド
+  - [x] fill_absent メソッド
+- [x] クラスメソッドテスト
+  - [x] find_in_project メソッド
 
 ### Report モデル
-- [ ] バリデーションテスト
-  - [ ] worked_in の presence
-- [ ] アソシエーションテスト
-  - [ ] belongs_to :user
-  - [ ] has_many :operations (autosave: true)
-  - [ ] has_many :projects, through: :operations
-- [ ] クラスメソッドテスト
-  - [ ] find_in_month メソッド（完全なテストの実装）
-  - [ ] find_in_week メソッド（完全なテストの実装）
-  - [ ] submitted_users メソッド（コメントアウトされている部分の実装）
-  - [ ] unsubmitted_dates メソッド
-  - [ ] output_calendar メソッド（private）
+- [x] バリデーションテスト
+  - [x] worked_in の presence
+- [x] アソシエーションテスト
+  - [x] belongs_to :user
+  - [x] has_many :operations, autosave: true
+  - [x] has_many :projects, through: :operations
+- [x] クラスメソッドテスト
+  - [x] find_in_month メソッド
+  - [x] find_in_week メソッド
+  - [x] submitted_users メソッド
+  - [x] unsubmitted_dates メソッド
+  - [x] output_calendar メソッド
 
 ### Operation モデル
-- [ ] バリデーションテスト
-  - [ ] workload の数値検証（0より大きく100以下）
-- [ ] アソシエーションテスト
-  - [ ] belongs_to :report
-  - [ ] belongs_to :project
-- [ ] クラスメソッドテスト
-  - [ ] summary メソッド（期間集計）
+- [x] バリデーションテスト
+  - [x] workload の数値検証（0より大きく100以下）
+- [x] アソシエーションテスト
+  - [x] belongs_to :report
+  - [x] belongs_to :project
+- [x] クラスメソッドテスト
+  - [x] summary メソッド（期間集計）
 
 ### Project モデル
-- [ ] バリデーションテスト
-  - [ ] code の uniqueness と数値検証
-  - [ ] name の presence
-  - [ ] name_reading の presence と ひらがなフォーマット
-- [ ] enum テスト
-  - [ ] category の各値（undefined, client_shot, client_maintenance, internal, general_affairs, other）
-- [ ] アソシエーションテスト
-  - [ ] has_many :operations
-  - [ ] has_many :user_projects
-  - [ ] has_many :users, through: :user_projects
-  - [ ] has_many :estimates
-  - [ ] has_many :bills, through: :estimates
-- [ ] スコープテスト
-  - [ ] available スコープ（hidden: false）
-  - [ ] order_by_reading スコープ
-- [ ] クラスメソッドテスト
-  - [ ] find_in_user メソッド（実装が必要）
-  - [ ] next_expected_code メソッド（実装が必要）
-- [ ] インスタンスメソッドテスト
-  - [ ] members メソッド
-  - [ ] displayed? メソッド
-  - [ ] display_status メソッド
+- [x] バリデーションテスト
+  - [x] code の uniqueness と数値検証
+  - [x] name の presence
+  - [x] name_reading の presence とひらがなフォーマット
+- [x] Enumテスト
+  - [x] category の各値（undefined, client_shot, client_maintenance, internal, general_affairs, other）
+- [x] アソシエーションテスト
+  - [x] has_many :operations
+  - [x] has_many :user_projects
+  - [x] has_many :users, through: :user_projects
+  - [x] has_many :estimates
+  - [x] has_many :bills, through: :estimates
+- [x] スコープテスト
+  - [x] available スコープ（hidden: false）
+  - [x] order_by_reading スコープ
+- [x] クラスメソッドテスト
+  - [x] find_in_user メソッド
+  - [x] next_expected_code メソッド
+- [x] インスタンスメソッドテスト
+  - [x] members メソッド
+  - [x] displayed? メソッド
+  - [x] display_status メソッド
 
 ### Estimate モデル
-- [ ] バリデーションテスト
-  - [ ] serial_no の uniqueness
-  - [ ] subject の presence
-- [ ] アソシエーションテスト
-  - [ ] belongs_to :project
-  - [ ] has_many :bills
+- [x] バリデーションテスト
+  - [x] serial_no の uniqueness
+  - [x] subject の presence
+  - [x] amount の数値検証
+  - [x] filename の presence
+  - [x] 工数の合計検証（EstimateValidator）
+- [x] アソシエーションテスト
+  - [x] belongs_to :project
+  - [x] has_one :bill
+- [x] インスタンスメソッドテスト
+  - [x] deja_vu? メソッド
+  - [x] too_old? メソッド
 
 ### Bill モデル
-- [ ] バリデーションテスト
-  - [ ] serial_no の uniqueness
-  - [ ] subject の presence
-- [ ] アソシエーションテスト
-  - [ ] belongs_to :estimate
+- [x] バリデーションテスト
+  - [x] serial_no の uniqueness
+  - [x] subject の presence
+  - [x] amount の数値検証
+  - [x] filename の presence
+- [x] アソシエーションテスト
+  - [x] belongs_to :estimate
+- [x] インスタンスメソッドテスト
+  - [x] tax_included_amount メソッド
 
 ### UserProject モデル
-- [ ] アソシエーションテスト
-  - [ ] belongs_to :user
-  - [ ] belongs_to :project
-- [ ] ユニーク制約のテスト
-  - [ ] user_id と project_id の組み合わせの一意性
+- [x] アソシエーションテスト
+  - [x] belongs_to :user
+  - [x] belongs_to :project
+- [x] ユニーク制約のテスト
+  - [x] user_id と project_id の組み合わせの一意性
 
 ### UserRole モデル
-- [ ] アソシエーションテスト
-  - [ ] has_many :user_role_associations
-  - [ ] has_many :users, through: :user_role_associations
-- [ ] メソッドテスト
-  - [ ] administrator? メソッド
-  - [ ] director? メソッド
+- [x] アソシエーションテスト
+  - [x] has_many :user_role_associations
+  - [x] has_many :users, through: :user_role_associations
+- [x] バリデーションテスト
+  - [x] role の presence
+- [x] Enumテスト
+  - [x] role の各値（administrator, director）
+- [x] メソッドテスト
+  - [x] administrator? メソッド
+  - [x] director? メソッド
+
+### UserRoleAssociation モデル
+- [x] アソシエーションテスト
+  - [x] belongs_to :user
+  - [x] belongs_to :user_role
+- [x] ユニーク制約のテスト
+  - [x] user_id と user_role_id の組み合わせの一意性
 
 ## コントローラーテスト
 
 ### ApplicationController
-- [ ] 認証前のリダイレクト
-- [ ] ログイン後のリダイレクト
-- [ ] set_raven_context の動作
+- [x] 認証前のリダイレクト
+- [x] ログイン後のリダイレクト
+- [x] set_locale の動作
+- [x] エラーハンドリング（Pundit、RecordNotFound、MissingTemplate、StandardError）
+- [x] CSRF保護
 
 ### ReportsController
-- [ ] index アクション
-  - [ ] ログイン時の正常表示
-  - [ ] 未ログイン時のリダイレクト
-  - [ ] JSONレスポンスの検証
-- [ ] show アクション
-  - [ ] 正常な日報の取得
-  - [ ] 権限のない日報へのアクセス制限
-- [ ] new アクション
-- [ ] create アクション
-  - [ ] 正常な日報の作成
-  - [ ] バリデーションエラー時の処理
-  - [ ] 作業時間の合計が100%になることの検証
-- [ ] edit アクション
-- [ ] update アクション
-  - [ ] 正常な更新
-  - [ ] バリデーションエラー時の処理
-- [ ] destroy アクション
+- [x] index アクション
+  - [x] ログイン時の正常表示
+  - [x] 未ログイン時のリダイレクト
+  - [x] JSONレスポンスの検証
+  - [x] CSVレスポンスの検証
+- [x] show アクション
+  - [x] 正常な日報の取得
+  - [x] 権限のない日報へのアクセス制限
+- [x] new アクション
+- [x] create アクション
+  - [x] 正常な日報の作成
+  - [x] バリデーションエラー時の処理
+  - [x] 作業時間の合計が100%になることの検証
+- [x] edit アクション
+- [x] update アクション
+  - [x] 正常な更新
+  - [x] バリデーションエラー時の処理
+- [x] destroy アクション
 
 ### Reports::SummariesController
-- [ ] show アクション
-  - [ ] 集計データの正確性
-  - [ ] 期間指定の検証
+- [x] show アクション
+  - [x] 集計データの正確性
+  - [x] 期間指定の検証
 
 ### Reports::UnsubmittedsController
-- [ ] show アクション
-  - [ ] 未提出日の正確な取得
-  - [ ] 権限による表示制限
+- [x] show アクション
+  - [x] 未提出日の正確な取得
+  - [x] 権限による表示制限
 
 ### ProjectsController
-- [ ] index アクション
-  - [ ] プロジェクト一覧の表示
-  - [ ] available スコープの適用確認
-- [ ] show アクション
-- [ ] new アクション（管理者権限）
-- [ ] create アクション
-  - [ ] 正常なプロジェクト作成
-  - [ ] プロジェクトコードの自動採番
-- [ ] edit アクション（管理者権限）
-- [ ] update アクション
-  - [ ] 正常な更新
-  - [ ] 権限チェック
-- [ ] destroy アクション（論理削除）
+- [x] index アクション
+  - [x] プロジェクト一覧の表示
+  - [x] available スコープの適用確認
+  - [x] ソート機能の検証
+  - [x] CSVエクスポート機能
+- [x] show アクション
+  - [x] プロジェクト詳細の表示
+  - [x] 見積もりと請求書の表示
+- [x] new アクション（管理者権限）
+  - [x] 新規プロジェクトフォームの表示
+  - [x] プロジェクトコードの自動設定
+- [x] create アクション
+  - [x] 正常なプロジェクト作成
+  - [x] プロジェクトコードの自動採番
+  - [x] バリデーションエラー時の処理
+- [x] edit アクション（管理者権限）
+  - [x] プロジェクト編集フォームの表示
+- [x] update アクション
+  - [x] 正常な更新
+  - [x] 権限チェック
+  - [x] バリデーションエラー時の処理
+- [x] destroy アクション（論理削除）
+  - [x] 使用されていないプロジェクトの削除
+  - [x] 使用中プロジェクトの削除制限
 
 ### Projects::MembersController
-- [ ] index アクション
-  - [ ] メンバー一覧の取得
-- [ ] update アクション
-  - [ ] メンバーの追加・削除
-- [ ] destroy アクション
+- [x] index アクション
+  - [x] メンバー一覧の取得
+- [x] update アクション
+  - [x] メンバーの追加・削除
+- [x] destroy アクション
 
 ### UsersController
-- [ ] index アクション（管理者権限）
-- [ ] show アクション
-- [ ] new アクション（管理者権限）
-- [ ] create アクション
-  - [ ] 正常なユーザー作成
-  - [ ] 権限の設定
-- [ ] edit アクション
-- [ ] update アクション
-  - [ ] 正常な更新
-  - [ ] 自分以外のユーザー編集の権限チェック
-- [ ] destroy アクション（論理削除）
-- [ ] revive アクション
+- [x] index アクション（管理者権限）
+- [x] show アクション
+- [x] new アクション（管理者権限）
+- [x] create アクション
+  - [x] 正常なユーザー作成
+  - [x] 権限の設定
+- [x] edit アクション
+- [x] update アクション
+  - [x] 正常な更新
+  - [x] 自分以外のユーザー編集の権限チェック
+- [x] destroy アクション（論理削除）
+- [x] revive アクション
 
 ### EstimatesController
-- [ ] index アクション
-  - [ ] 見積もり一覧の表示
-- [ ] create アクション
-  - [ ] 正常な見積もり作成
-  - [ ] PDFファイルのアップロード処理
-- [ ] confirm アクション
+- [x] index アクション
+  - [x] 見積もり一覧の表示
+- [x] create アクション
+  - [x] 正常な見積もり作成
+  - [x] PDFファイルのアップロード処理
+- [x] confirm アクション
 
 ### BillsController
-- [ ] index アクション
-  - [ ] 請求書一覧の表示
-- [ ] create アクション
-  - [ ] 正常な請求書作成
-  - [ ] 見積もりとの関連付け
-- [ ] confirm アクション
+- [x] index アクション
+  - [x] 請求書一覧の表示
+- [x] create アクション
+  - [x] 正常な請求書作成
+  - [x] 見積もりとの関連付け
+- [x] confirm アクション
 
 ### Settings::ProjectsController
-- [ ] index アクション
-  - [ ] ユーザーのプロジェクト設定表示
-- [ ] update アクション
-  - [ ] プロジェクトの表示/非表示切り替え
+- [x] index アクション
+  - [x] ユーザーのプロジェクト設定表示
+- [x] update アクション
+  - [x] プロジェクトの表示/非表示切り替え
 
 ### Settings::PasswordsController
-- [ ] show アクション
-- [ ] update アクション
-  - [ ] パスワード変更の成功
-  - [ ] 現在のパスワードの検証
-  - [ ] 新しいパスワードの確認
+- [x] show アクション
+- [x] update アクション
+  - [x] パスワード変更の成功
+  - [x] 現在のパスワードの検証
+  - [x] 新しいパスワードの確認
 
 ### Admin::CsvsController
-- [ ] index アクション
-  - [ ] CSVインポート機能
+- [x] index アクション
+  - [x] CSVインポート機能
 
 ## リクエストスペック（統合テスト）
 
 ### 認証フロー
-- [ ] ログイン → 日報作成 → ログアウトの一連の流れ
-- [ ] セッションタイムアウトの処理
-- [ ] Remember me機能の動作確認
+- [x] ログイン → 日報作成 → ログアウトの一連の流れ
+- [x] セッションタイムアウトの処理
+- [x] Remember me機能の動作確認
 
 ### 日報作成フロー
-- [ ] 日報の新規作成から保存まで
-- [ ] 複数プロジェクトへの時間配分
-- [ ] 作業時間の合計が100%でない場合のエラー処理
+- [x] 日報の新規作成から保存まで
+- [x] 複数プロジェクトへの時間配分
+- [x] 作業時間の合計が100%でない場合のエラー処理
 
 ### 権限管理
-- [ ] 一般ユーザーの操作制限
-- [ ] ディレクター権限の確認
-- [ ] 管理者権限の確認
+- [x] 一般ユーザーの操作制限
+- [x] ディレクター権限の確認
+- [x] 管理者権限の確認
 
 ## システムスペック（E2Eテスト）
 
@@ -245,11 +279,11 @@
 ## その他のテスト
 
 ### ヘルパーメソッド
-- [ ] ApplicationHelper のメソッド
+- [x] ApplicationHelper のメソッド
 - [ ] 各種フォーマット用ヘルパー
 
 ### Rake タスク
-- [ ] CSVインポートタスク（app:import_csv）
+- [x] CSVインポートタスク（app:import_csv）
 
 ### API レスポンス
 - [ ] JSON形式のレスポンス構造
@@ -267,9 +301,9 @@
 ## 優先度
 
 ### 高優先度（Railsアップグレードに必須）
-1. モデルのバリデーションとアソシエーション
-2. 認証・認可機能
-3. 基本的なCRUD操作
+1. ✅ モデルのバリデーションとアソシエーション
+2. ✅ 認証・認可機能
+3. ✅ 基本的なCRUD操作
 4. データベーストランザクション
 
 ### 中優先度
