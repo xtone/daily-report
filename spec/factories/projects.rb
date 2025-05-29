@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :project do
-    code nil
+    sequence(:code) { |n| 17000 + n }
     name "プロジェクト"
     name_reading "ぷろじぇくと"
 
@@ -10,7 +10,8 @@ FactoryGirl.define do
 
     trait :with_user_project do
       after(:create) do |project|
-        project.user_projects << FactoryGirl.create(:user_project, user_id: 1, project_id: project.id)
+        user = FactoryGirl.create(:user, email: 'project_user@example.com')
+        FactoryGirl.create(:user_project, user: user, project: project)
       end
     end
   end
