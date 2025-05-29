@@ -1,17 +1,17 @@
-FROM ruby:2.4.2
+FROM ruby:2.5.9
 ENV LANG C.UTF-8
 
 # aptの設定を更新してGPGチェックを無効化
 RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/90ignore-release-date && \
     echo 'APT::Get::AllowUnauthenticated "true";' > /etc/apt/apt.conf.d/99verify-peer && \
-    echo "deb [trusted=yes] http://archive.debian.org/debian jessie main" > /etc/apt/sources.list && \
-    echo "deb-src [trusted=yes] http://archive.debian.org/debian jessie main" >> /etc/apt/sources.list && \
+    echo "deb [trusted=yes] http://archive.debian.org/debian stretch main" > /etc/apt/sources.list && \
+    echo "deb-src [trusted=yes] http://archive.debian.org/debian stretch main" >> /etc/apt/sources.list && \
     apt-get update -o Acquire::Check-Valid-Until=false -qq || true && \
     apt-get install -y --allow-unauthenticated --no-install-recommends \
         build-essential \
         curl \
         ca-certificates \
-        libmysqlclient-dev && \
+        libmariadb-dev-compat && \
     rm -rf /var/lib/apt/lists/*
 
 # Node.js 8.12.0を直接バイナリからインストール
@@ -38,9 +38,9 @@ ENV BUNDLE_GEMFILE=$APP_ROOT/Gemfile \
   BUNDLE_JOBS=2 \
   BUNDLE_PATH=/bundle
 
-# Gemfile.lockのBUNDLED WITHセクションを更新してからbundle install
+# Gemfile.lockのBUNDLED WITHセクションを更新してからbundle update
 RUN sed -i 's/BUNDLED WITH.*/BUNDLED WITH/' Gemfile.lock && \
     echo "   2.0.2" >> Gemfile.lock && \
-    bundle _2.0.2_ install
+    bundle _2.0.2_ update rails
 
 COPY . $APP_ROOT

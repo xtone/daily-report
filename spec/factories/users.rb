@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     name "苗字名前"
     email "user@example.com"
@@ -9,13 +9,13 @@ FactoryGirl.define do
 
     trait :administrator do
       after(:create) do |user, evaluator|
-        user.user_roles << FactoryGirl.create(:user_role, :administrator)
+        user.user_roles << FactoryBot.create(:user_role, :administrator)
       end
     end
 
     trait :director do
       after(:create) do |user, evaluator|
-        user.user_roles << FactoryGirl.create(:user_role, :director)
+        user.user_roles << FactoryBot.create(:user_role, :director)
       end
     end
 
