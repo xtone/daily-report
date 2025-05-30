@@ -1,4 +1,4 @@
-FROM ruby:2.5.9
+FROM public.ecr.aws/docker/library/ruby:2.5.9
 ENV LANG C.UTF-8
 
 # aptの設定を更新してGPGチェックを無効化
