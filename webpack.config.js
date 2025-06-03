@@ -1,5 +1,4 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -14,9 +13,9 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, 'public/packs'),
-    filename: '[name]-[hash].js',
-    publicPath: '/packs/'
+    path: path.resolve(__dirname, 'app/assets/builds'),
+    filename: '[name].js',
+    publicPath: '/assets/'
   },
 
   resolve: {
@@ -32,31 +31,9 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['env', 'react'],
-            plugins: ['transform-class-properties', 'syntax-dynamic-import']
+            plugins: ['transform-class-properties']
           }
         }
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            {
-              loader: 'sass-loader',
-              options: {
-                implementation: require('sass')
-              }
-            }
-          ]
-        })
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
       },
       {
         test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i,
@@ -72,21 +49,9 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin({
-      filename: '[name]-[hash].css',
-      disable: !isProduction
-    }),
-    // webpack 3.x用の本番環境設定
-    ...(isProduction ? [
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('production')
-      }),
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: false
-        }
-      })
-    ] : [])
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
+    })
   ],
 
   devtool: isProduction ? false : 'eval-cheap-module-source-map'
