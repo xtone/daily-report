@@ -60,22 +60,22 @@
 ### Phase 3: Rails 6.0 → Rails 6.1
 
 #### 準備
-- [ ] Rails 6.1のアップグレードガイドを読む
-- [ ] Ruby 2.5.0以上を維持
+- [x] Rails 6.1のアップグレードガイドを読む
+- [x] Ruby 2.5.0以上を維持
 
 #### 実装
-- [ ] Gemfileで`gem 'rails', '~> 6.1.0'`に変更
-- [ ] `bundle update rails`を実行
-- [ ] `rails app:update`を実行
-- [ ] ActiveModel::Errorクラスの変更に対応
-- [ ] ActiveSupport::Callbacksの変更に対応
-- [ ] リダイレクトステータスコード308への対応
-- [ ] Image Processing gemを追加（Active Storage使用時）
-- [ ] config_forの戻り値の変更に対応
+- [x] Gemfileで`gem 'rails', '~> 6.1.0'`に変更
+- [x] `bundle update rails`を実行
+- [x] `rails app:update`を実行
+- [x] ActiveModel::Errorクラスの変更に対応
+- [x] ActiveSupport::Callbacksの変更に対応
+- [x] リダイレクトステータスコード308への対応
+- [x] Image Processing gemを追加（Active Storage使用時）
+- [x] config_forの戻り値の変更に対応
 
 #### テスト・検証
-- [ ] 全てのテストが通ることを確認
-- [ ] エラーハンドリングが正しく動作することを確認
+- [x] 全てのテストが通ることを確認
+- [x] エラーハンドリングが正しく動作することを確認
 
 ### Phase 4: Rails 6.1 → Rails 7.0
 
@@ -156,7 +156,7 @@
 
 ### 必須の更新
 - [x] factory_girl_rails → factory_bot_railsへ移行
-- [ ] mysql2を最新版に更新
+- [x] mysql2を最新版に更新
 - [ ] devise を Rails 8対応版に更新
 - [ ] pundit を最新版に更新
 - [ ] rspec-rails を最新版に更新
