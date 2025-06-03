@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include WebpackHelper
+
   def title
     if content_for?(:title)
       "#{content_for :title} | #{t(:site_name)}"
