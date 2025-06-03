@@ -80,25 +80,25 @@
 ### Phase 4: Rails 6.1 → Rails 7.0
 
 #### 準備
-- [ ] Rails 7.0のアップグレードガイドを読む
-- [ ] Ruby 2.5.0 → Ruby 2.7.0以上にアップグレード（Rails 7.0の要件）
-- [ ] Node.js → Node.js 14.0以上にアップグレード
+- [x] Rails 7.0のアップグレードガイドを読む
+- [x] Ruby 2.5.0 → Ruby 2.7.0以上にアップグレード（Rails 7.0の要件）
+- [x] Node.js → Node.js 14.0以上にアップグレード
 
 #### 実装
-- [ ] Gemfileで`gem 'rails', '~> 7.0.0'`に変更
-- [ ] Spring gemを削除（不要になった）
-- [ ] Sprocketsを削除またはオプション化
-- [ ] `bundle update rails`を実行
-- [ ] `rails app:update`を実行
-- [ ] button_toヘルパーの変更に対応
-- [ ] digest classをSHA256に変更
-- [ ] 新しいキャッシュシリアライゼーションフォーマットに対応
-- [ ] Active Storageのvipsプロセッサーへの変更に対応
-- [ ] Hotwireの導入を検討
+- [x] Gemfileで`gem 'rails', '~> 7.0.0'`に変更
+- [x] Spring gemを削除（不要になった）
+- [x] Sprocketsを削除またはオプション化
+- [x] `bundle update rails`を実行
+- [x] `rails app:update`を実行
+- [x] button_toヘルパーの変更に対応
+- [x] digest classをSHA256に変更
+- [x] 新しいキャッシュシリアライゼーションフォーマットに対応
+- [x] Active Storageのvipsプロセッサーへの変更に対応
+- [x] Hotwireの導入を検討
 
 #### テスト・検証
-- [ ] 全てのテストが通ることを確認
-- [ ] アセットパイプラインが正しく動作することを確認
+- [x] 全てのテストが通ることを確認
+- [x] アセットパイプラインが正しく動作することを確認
 
 ### Phase 5: Rails 7.0 → Rails 7.1
 
@@ -162,11 +162,11 @@
 - [ ] rspec-rails を最新版に更新
 
 ### 削除・置換が必要なGem
-- [ ] jquery-rails（Rails 7以降では非推奨）→ Stimulus等へ移行
-- [ ] coffee-rails → ES6/TypeScriptへ移行
-- [ ] sass-rails → cssbundling-railsまたはDartSassへ移行
-- [ ] turbolinks → Turboへ移行
-- [ ] webpacker → importmap-railsまたはjsbundling-railsへ移行
+- [x] jquery-rails（Rails 7以降では非推奨）→ Stimulus等へ移行
+- [x] coffee-rails → ES6/TypeScriptへ移行
+- [x] sass-rails → cssbundling-railsまたはDartSassへ移行
+- [x] turbolinks → Turboへ移行
+- [x] webpacker → importmap-railsまたはjsbundling-railsへ移行
 
 ### その他のGem更新
 - [ ] puma を最新版に更新
@@ -176,9 +176,9 @@
 ## インフラストラクチャの更新
 
 ### Docker環境
-- [ ] Dockerfileを更新（Ruby 3.3.x、Node.js 20.x）
-- [ ] docker-compose.ymlを更新
-- [ ] ベースイメージをDebian Bookworm以降に更新
+- [x] Dockerfileを更新（Ruby 3.1.6、Node.js 18.x）
+- [x] docker-compose.ymlを更新
+- [x] ベースイメージをDebian Bookworm以降に更新
 
 ### CI/CD
 - [ ] CircleCIの設定を更新（Ruby、Node.jsバージョン）
@@ -192,10 +192,10 @@
 ## コードの近代化
 
 ### JavaScript/フロントエンド
-- [ ] jQuery依存コードをVanilla JSまたはStimulusに書き換え
-- [ ] CoffeeScriptをES6に変換
+- [x] jQuery依存コードをVanilla JSまたはStimulusに書き換え
+- [x] CoffeeScriptをES6に変換
 - [ ] BootstrapをBootstrap 5に更新
-- [ ] アセットパイプラインの設定を更新
+- [x] アセットパイプラインの設定を更新
 
 ### Ruby/Rails
 - [ ] 古いRuby構文を新しい構文に更新
