@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 6.0.0'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.18', '< 0.5'
 # Use Puma as the app server
@@ -10,7 +10,7 @@ gem 'puma', '~> 3.0'
 # Bootsnap for faster boot times
 gem 'bootsnap', '>= 1.1.0', require: false
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '>= 6'
 # Use honoka-rails (Bootstrap Theme for Japanese)
 gem 'honoka-rails'
 # Use Slim for templating engine
@@ -24,7 +24,7 @@ gem 'data-confirm-modal'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-gem 'webpacker'
+gem 'webpacker', '~> 5.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -45,7 +45,7 @@ gem 'capistrano-rails', group: :development
 
 # Use Pundit and Devise to provide authorization system
 gem 'pundit'
-gem "devise", ">= 4.6.0"
+gem "devise", ">= 4.7.0"
 gem 'devise-encryptable'
 
 # Use Holidays to deal holidays
@@ -63,7 +63,7 @@ gem 'enum_help'
 
 # Use Spreadsheet to read xls file
 gem 'spreadsheet'
-gem 'roo-xls', '~> 1.2.0'
+gem 'roo-xls', '~> 1.1.0'
 
 # Use slack-notifier to send notifications to Slack webhooks
 gem 'slack-notifier'
