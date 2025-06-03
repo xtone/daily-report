@@ -2,15 +2,13 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1.0'
+gem 'rails', '~> 7.0.8'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
-# Use logger for Rails 6.1 compatibility
-gem 'logger'
 # Bootsnap for faster boot times
-gem 'bootsnap', '>= 1.1.0', require: false
+gem 'bootsnap', '1.16.0', require: false
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Use honoka-rails (Bootstrap Theme for Japanese)
@@ -26,12 +24,16 @@ gem 'data-confirm-modal'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-gem 'webpacker', '~> 5.0'
+# gem 'webpacker', '~> 5.0'  # Rails 7.0では非推奨のため削除
+gem 'jsbundling-rails'  # Rails 7.0でのJavaScript bundling
+gem 'cssbundling-rails'  # Rails 7.0でのCSS bundling
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
+# gem 'turbolinks', '~> 5'  # Rails 7.0ではTurboに置き換え
+gem 'turbo-rails'  # Rails 7.0でのTurbo
+gem 'stimulus-rails'  # Rails 7.0でのStimulus
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
@@ -88,11 +90,9 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console'
-  gem 'listen', '~> 3.1.5'
+  gem 'listen', '~> 3.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-
+  # gem 'spring'  # Rails 7.0では不要になったため削除
   gem 'rubocop', require: false
 end
 
