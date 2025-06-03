@@ -120,12 +120,13 @@ GEM
     factory_bot_rails (4.11.1)
       factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
-    ffi (1.17.2)
+    ffi (1.17.2-aarch64-linux-gnu)
+    ffi (1.17.2-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    gretel (5.0.0)
-      actionview (>= 5.1, < 7.2)
-      railties (>= 5.1, < 7.2)
+    gretel (5.0.1)
+      actionview (>= 6.1)
+      railties (>= 6.1)
     holidays (8.8.0)
     honoka-rails (3.3.7)
     i18n (1.14.7)
@@ -162,7 +163,6 @@ GEM
       benchmark
       logger
     mini_mime (1.1.5)
-    mini_portile2 (2.8.9)
     minitest (5.25.5)
     momentjs-rails (2.29.4.1)
       railties (>= 3.1)
@@ -183,8 +183,9 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     nio4r (2.7.4)
-    nokogiri (1.15.7)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.15.7-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.15.7-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.6.1)
@@ -193,12 +194,12 @@ GEM
       ast (~> 2.4.1)
       racc
     prism (1.4.0)
-    pry (0.14.2)
+    pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-byebug (3.10.1)
+    pry-byebug (3.8.0)
       byebug (~> 11.0)
-      pry (>= 0.13, < 0.15)
+      pry (~> 0.10)
     pry-rails (0.3.11)
       pry (>= 0.13.0)
     puma (3.12.6)
@@ -266,14 +267,14 @@ GEM
     rspec-mocks (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-rails (5.1.2)
-      actionpack (>= 5.2)
-      activesupport (>= 5.2)
-      railties (>= 5.2)
-      rspec-core (~> 3.10)
-      rspec-expectations (~> 3.10)
-      rspec-mocks (~> 3.10)
-      rspec-support (~> 3.10)
+    rspec-rails (6.1.5)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
+      railties (>= 6.1)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
     rspec-support (3.13.4)
     rubocop (1.75.8)
       json (~> 2.3)
@@ -373,7 +374,8 @@ GEM
     zeitwerk (2.6.18)
 
 PLATFORMS
-  ruby
+  aarch64-linux
+  x86_64-linux
 
 DEPENDENCIES
   awesome_print
@@ -421,4 +423,4 @@ DEPENDENCIES
   webpacker (~> 5.0)
 
 BUNDLED WITH
-   2.0.2
+   2.4.22

@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "build": "NODE_ENV=production webpack -p",
+    "build:dev": "NODE_ENV=development webpack",
+    "watch": "NODE_ENV=development webpack --watch",
+    "postbuild": "node scripts/generate-manifest.js"
+  },
   "dependencies": {
     "autoprefixer": "^7.1.5",
     "babel-core": "^6.26.0",
@@ -18,7 +24,7 @@
     "formdata-polyfill": "^1.0.7",
     "glob": "^7.1.2",
     "js-yaml": "^3.10.0",
-    "node-sass": "^4.14.1",
+    "sass": "^1.32.0",
     "path-complete-extname": "^0.1.0",
     "postcss-loader": "^2.0.8",
     "postcss-smart-import": "^0.7.5",
