@@ -32,5 +32,5 @@ WORKDIR $APP_ROOT
 EXPOSE 3000
 
 COPY . $APP_ROOT
-RUN bundle install
+RUN bundle install && npm install
 RUN bin/rake assets:precompile
