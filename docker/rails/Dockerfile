@@ -1,17 +1,16 @@
-FROM ruby:2.6.10
+FROM ruby:2.7.8
 ENV LANG C.UTF-8
 
-# aptの設定を更新してGPGチェックを無効化
-RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/90ignore-release-date && \
-    echo 'APT::Get::AllowUnauthenticated "true";' > /etc/apt/apt.conf.d/99verify-peer && \
-    echo "deb [trusted=yes] http://archive.debian.org/debian stretch main" > /etc/apt/sources.list && \
-    echo "deb-src [trusted=yes] http://archive.debian.org/debian stretch main" >> /etc/apt/sources.list && \
-    apt-get update -o Acquire::Check-Valid-Until=false -qq || true && \
-    apt-get install -y --allow-unauthenticated --no-install-recommends \
+# 必要なパッケージをインストール
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         build-essential \
         curl \
         ca-certificates \
-        libmariadb-dev-compat && \
+        libmariadb-dev-compat \
+        python \
+        make \
+        g++ && \
     rm -rf /var/lib/apt/lists/*
 
 # Node.js 12.22.12を直接バイナリからインストール
