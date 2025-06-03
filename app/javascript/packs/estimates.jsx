@@ -249,7 +249,7 @@ class EstimateHiddenFields extends React.Component {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeEstimates() {
   let container = document.getElementById('estimates');
   if (!container) return;
   ReactDOM.render(
@@ -257,10 +257,15 @@ document.addEventListener('DOMContentLoaded', () => {
               confirmEstimatesPath={container.dataset.confirmEstimatesPath} />,
     container
   );
-});
+}
 
-document.addEventListener('turbo:before-render', () => {
+function cleanupEstimates() {
   let container = document.getElementById('estimates');
   if (!container) return;
   ReactDOM.unmountComponentAtNode(container);
-});
+}
+
+// DOMContentLoadedとturbo:loadの両方に対応
+document.addEventListener('DOMContentLoaded', initializeEstimates);
+document.addEventListener('turbo:load', initializeEstimates);
+document.addEventListener('turbo:before-render', cleanupEstimates);

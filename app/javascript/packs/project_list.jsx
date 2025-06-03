@@ -173,17 +173,22 @@ class ProjectCode extends React.Component {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeProjectList() {
   let container = document.getElementById('project_list');
   if (!container) return;
   ReactDOM.render(
-    <ProjectList projectsPath={container.dataset.projectsPath} />,
+    <ProjectListRoot projects_path={container.dataset.projectsPath} />,
     container
   );
-});
+}
 
-document.addEventListener('turbo:before-render', () => {
+function cleanupProjectList() {
   let container = document.getElementById('project_list');
   if (!container) return;
   ReactDOM.unmountComponentAtNode(container);
-});
+}
+
+// DOMContentLoadedとturbo:loadの両方に対応
+document.addEventListener('DOMContentLoaded', initializeProjectList);
+document.addEventListener('turbo:load', initializeProjectList);
+document.addEventListener('turbo:before-render', cleanupProjectList);

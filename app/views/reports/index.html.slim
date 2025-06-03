@@ -1,5 +1,5 @@
 - content_for :head do
-  = javascript_pack_tag 'reports', 'data-turbolinks-track': 'reload'
+  = javascript_include_tag 'reports', 'data-turbolinks-track': 'reload'
 
 h1 日報
 
@@ -7,4 +7,5 @@ h1 日報
 
 = render 'pager', date: @date
 
-#reports
+#reports[data-reports-path=reports_path(format: :json)
+         data-projects-path=settings_projects_path(format: :json)]

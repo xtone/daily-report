@@ -1,7 +1,7 @@
 module WebpackHelper
   def webpack_asset_path(name)
-    manifest = load_manifest
-    manifest[name] || "/packs/#{name}"
+    # Rails 7.0のjsbundling-railsでは/assets/パスを使用
+    "/assets/#{name}"
   end
 
   def javascript_pack_tag(name, **options)

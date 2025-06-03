@@ -1,8 +1,8 @@
 - content_for :head do
-  = javascript_pack_tag 'project_list'
+  = javascript_include_tag 'project_list'
 
 h1 参加プロジェクト設定
 
 p クリックすると参加状態のOn/Offを切り替えることができます。
 
-#project_list
+#project_list[data-projects-path=settings_projects_path]

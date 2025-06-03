@@ -226,7 +226,7 @@ class BillHiddenFields extends React.Component {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeBills() {
   let container = document.getElementById('bills');
   if (!container) return;
   ReactDOM.render(
@@ -234,10 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
           confirmBillsPath={container.dataset.confirmBillsPath} />,
     container
   );
-});
+}
 
-document.addEventListener('turbo:before-render', () => {
+function cleanupBills() {
   let container = document.getElementById('bills');
   if (!container) return;
   ReactDOM.unmountComponentAtNode(container);
-});
+}
+
+// DOMContentLoadedとturbo:loadの両方に対応
+document.addEventListener('DOMContentLoaded', initializeBills);
+document.addEventListener('turbo:load', initializeBills);
+document.addEventListener('turbo:before-render', cleanupBills);

@@ -644,17 +644,23 @@ class ApiClient {
   }
 }
 
-document.addEventListener('turbo:load', () => {
+function initializeReports() {
   let container = document.getElementById('reports');
   if (!container) return;
   ReactDOM.render(
-    <Reports reportsPath={container.dataset.reportsPath} />,
+    <Calendar reports_path={container.dataset.reportsPath}
+              projects_path={container.dataset.projectsPath} />,
     container
   );
-});
+}
 
-document.addEventListener('turbo:before-render', () => {
+function cleanupReports() {
   let container = document.getElementById('reports');
   if (!container) return;
   ReactDOM.unmountComponentAtNode(container);
-});
+}
+
+// DOMContentLoadedとturbo:loadの両方に対応
+document.addEventListener('DOMContentLoaded', initializeReports);
+document.addEventListener('turbo:load', initializeReports);
+document.addEventListener('turbo:before-render', cleanupReports);

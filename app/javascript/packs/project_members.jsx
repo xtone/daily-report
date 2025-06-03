@@ -81,17 +81,22 @@ class ProjectMember extends React.Component {
   }
 }
 
-document.addEventListener('turbo:load', () => {
+function initializeProjectMembers() {
   let container = document.getElementById('project_members');
   if (!container) return;
   ReactDOM.render(
-    <ProjectMembers projectMembersPath={container.dataset.projectMembersPath} />,
+    <ProjectMembers project_members_path={container.dataset.projectMembersPath} />,
     container
   );
-});
+}
 
-document.addEventListener('turbo:before-render', () => {
+function cleanupProjectMembers() {
   let container = document.getElementById('project_members');
   if (!container) return;
   ReactDOM.unmountComponentAtNode(container);
-});
+}
+
+// DOMContentLoadedとturbo:loadの両方に対応
+document.addEventListener('DOMContentLoaded', initializeProjectMembers);
+document.addEventListener('turbo:load', initializeProjectMembers);
+document.addEventListener('turbo:before-render', cleanupProjectMembers);
