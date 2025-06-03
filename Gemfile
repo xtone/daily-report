@@ -26,6 +26,9 @@ gem 'data-confirm-modal'
 
 gem 'webpacker', '~> 5.0'
 
+# Logger gem for webpacker compatibility
+gem 'logger'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
