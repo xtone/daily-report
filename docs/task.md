@@ -35,25 +35,26 @@
 ### Phase 2: Rails 5.2 → Rails 6.0
 
 #### 準備
-- [ ] Rails 6.0のアップグレードガイドを読む
-- [ ] Ruby 2.5.0 → Ruby 2.5.0以上を維持（Rails 6.0の要件）
-- [ ] Node.js 8.12.0 → Node.js 12.0以上にアップグレード
+- [x] Rails 6.0のアップグレードガイドを読む
+- [x] Ruby 2.5.0 → Ruby 2.6.10にアップグレード（Rails 6.0の要件）
+- [x] Node.js 8.12.0 → Node.js 12.22.12にアップグレード
 
 #### 実装
-- [ ] Gemfileで`gem 'rails', '~> 6.0.0'`に変更
-- [ ] Webpackerを最新版にアップグレード
-- [ ] `bundle update rails`を実行
-- [ ] `rails app:update`を実行
-- [ ] Zeitwerkモードへの移行（autoloading）
-- [ ] config.hosts設定を追加
+- [x] Gemfileで`gem 'rails', '~> 6.0.0'`に変更
+- [x] Webpackerを最新版にアップグレード
+- [x] `bundle update rails`を実行
+- [x] `rails app:update`を実行
+- [x] Zeitwerkモードへの移行（autoloading）
+- [x] config.hosts設定を追加
 - [ ] Force SSLの設定を確認・更新
 - [ ] Action Cable JavaScriptの変更に対応
 - [ ] Active Storageの変更に対応
 - [x] factory_girl_rails → factory_bot_railsへ移行
 
 #### テスト・検証
-- [ ] 全てのテストが通ることを確認
-- [ ] autoloadingが正しく動作することを確認
+- [x] 全てのテストが通ることを確認
+- [x] autoloadingが正しく動作することを確認
+- [x] アプリケーションが正常に起動することを確認
 - [ ] JavaScript関連の機能をテスト
 
 ### Phase 3: Rails 6.0 → Rails 6.1
