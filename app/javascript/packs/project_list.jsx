@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Turbolinks from 'turbolinks'
 import PropTypes from 'prop-types'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
@@ -174,16 +173,17 @@ class ProjectCode extends React.Component {
   }
 }
 
-
-Turbolinks.start();
-
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('DOMContentLoaded', () => {
+  let container = document.getElementById('project_list');
+  if (!container) return;
   ReactDOM.render(
-    <ProjectListRoot projects_path="/settings/projects" />,
-    document.getElementById('project_list')
+    <ProjectList projectsPath={container.dataset.projectsPath} />,
+    container
   );
 });
 
-document.addEventListener('turbolinks:before-render', () => {
-  ReactDOM.unmountComponentAtNode(document.getElementById('project_list'));
+document.addEventListener('turbo:before-render', () => {
+  let container = document.getElementById('project_list');
+  if (!container) return;
+  ReactDOM.unmountComponentAtNode(container);
 });

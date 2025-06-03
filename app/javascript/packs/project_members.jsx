@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Turbolinks from 'turbolinks'
 import PropTypes from 'prop-types'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
@@ -82,16 +81,17 @@ class ProjectMember extends React.Component {
   }
 }
 
-
-
-Turbolinks.start();
-
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('turbo:load', () => {
+  let container = document.getElementById('project_members');
+  if (!container) return;
   ReactDOM.render(
-    <ProjectMembers project_members_path={window.location.pathname} />,
-    document.getElementById('project_members'));
+    <ProjectMembers projectMembersPath={container.dataset.projectMembersPath} />,
+    container
+  );
 });
 
-document.addEventListener('turbolinks:before-render', () => {
-  ReactDOM.unmountComponentAtNode(document.getElementById('project_members'));
+document.addEventListener('turbo:before-render', () => {
+  let container = document.getElementById('project_members');
+  if (!container) return;
+  ReactDOM.unmountComponentAtNode(container);
 });
