@@ -1,4 +1,4 @@
-FROM ruby:2.7.8
+FROM ruby:3.1.6
 ENV LANG C.UTF-8
 
 # 必要なパッケージをインストール
@@ -8,21 +8,21 @@ RUN apt-get update && \
         curl \
         ca-certificates \
         libmariadb-dev-compat \
-        python \
+        python3 \
         make \
         g++ && \
     rm -rf /var/lib/apt/lists/*
 
-# Node.js 12.22.12を直接バイナリからインストール
-RUN curl -fsSL https://nodejs.org/dist/v12.22.12/node-v12.22.12-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1 && \
+# Node.js 14.21.3を直接バイナリからインストール
+RUN curl -fsSL https://nodejs.org/dist/v14.21.3/node-v14.21.3-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1 && \
     node --version && \
     npm --version
 
 # Yarnをnpmでインストール
 RUN npm install -g yarn@1.22.19
 
-# Ruby 2.7で使用可能な最新のBundler 2.4.22をインストール
-RUN gem update --system 3.4.22 && gem install bundler -v 2.4.22
+# Ruby 3.1.6に適したBundler 2.5.23をインストール
+RUN gem update --system && gem install bundler -v 2.5.23
 
 ENV APP_ROOT /daily-report
 RUN mkdir -p $APP_ROOT
@@ -40,10 +40,10 @@ ENV BUNDLE_GEMFILE=$APP_ROOT/Gemfile \
 # Gemfile.lockが空の場合はbundle install、そうでなければbundle update
 RUN if [ -s Gemfile.lock ]; then \
         sed -i 's/BUNDLED WITH.*/BUNDLED WITH/' Gemfile.lock && \
-        echo "   2.4.22" >> Gemfile.lock && \
-        bundle _2.4.22_ update; \
+        echo "   2.5.23" >> Gemfile.lock && \
+        bundle _2.5.23_ update; \
     else \
-        bundle _2.4.22_ install; \
+        bundle _2.5.23_ install; \
     fi
 
 COPY . $APP_ROOT

@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/ruby:2.7.8
+FROM ruby:3.1.6
 ENV LANG=C.UTF-8
 
 # 必要なパッケージをインストール
@@ -8,13 +8,13 @@ RUN apt-get update && \
         curl \
         ca-certificates \
         libmariadb-dev-compat \
-        python \
+        python3 \
         make \
         g++ && \
     rm -rf /var/lib/apt/lists/*
 
-# Node.js 14.x をNodeSourceリポジトリからインストール（node-sass 4.14.1との互換性確保）
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
+# Node.js 18.x をインストール（npmも含まれる）
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs && \
     node --version && \
     npm --version
@@ -22,31 +22,21 @@ RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
 # Yarnをnpmでインストール
 RUN npm install -g yarn@1.22.19
 
-# Ruby 2.7で使用可能な最新のBundler 2.4.22をインストール
-RUN gem update --system 3.4.22 && gem install bundler -v 2.4.22
+# Ruby 3.1.6に適したBundler 2.5.23をインストール
+RUN gem update --system && gem install bundler -v 2.5.23
 
 ENV APP_ROOT=/daily-report
 RUN mkdir -p $APP_ROOT
 WORKDIR $APP_ROOT
 
-# package.jsonとyarn.lockを先にコピー（キャッシュ効率化）
-COPY package.json yarn.lock $APP_ROOT/
-
-# node-sassの代わりにsass（Dart Sass）を使用するための設定
-# 既存のnode-sassを削除してsassをインストール
-RUN yarn remove node-sass || true && \
-    yarn add sass@^1.32.0 --dev && \
-    yarn install --frozen-lockfile
-
-# GemfileとGemfile.lockを先にコピー（キャッシュ効率化）
-COPY Gemfile Gemfile.lock $APP_ROOT/
-
-RUN bundle config set --local deployment 'true' && \
-    bundle config set --local without 'development test' && \
-    bundle _2.4.22_ install --jobs 4 --retry 3
-
 # アプリケーションコードをコピー
 COPY . $APP_ROOT
+
+# webpackerの代わりにwebpackを直接使用
+RUN yarn install
+
+RUN bundle config set --local without 'development test' && \
+    bundle _2.5.23_ install --jobs 4 --retry 3
 
 # 本番環境用の環境変数を設定
 ENV RAILS_ENV=production
@@ -54,27 +44,22 @@ ENV NODE_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_LOG_TO_STDOUT=true
 
-# webpacker用の環境変数を追加
+# Rails 7.0のjsbundling-rails用の環境変数を追加
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
-# webpackerのキャッシュディレクトリを作成
-RUN mkdir -p tmp/cache/webpacker public/packs scripts
+# Rails 7.0のアセットビルド用ディレクトリを作成
+RUN mkdir -p tmp/cache public/assets app/assets/builds
 
-# scriptsディレクトリを作成してマニフェスト生成スクリプトをコピー
-COPY scripts/generate-manifest.js scripts/
+# Rails 7.0のjsbundling-railsでJavaScriptをビルド
+RUN yarn build:js
 
-# 古いwebpackerファイルを削除してからビルド
-RUN rm -rf public/packs/* && \
-    NODE_ENV=production yarn run build
-
-# Railsのassets:precompileでCSSなどの残りのアセットを処理
-# webpackerは無効化してRailsの標準アセットパイプラインのみ使用
+# Rails 7.0のアセットパイプラインでCSSとその他のアセットを処理（cssbundling-railsを無効化）
 RUN RAILS_ENV=production \
     SECRET_KEY_BASE=dummy \
     DISABLE_SPRING=1 \
     RAILS_LOG_LEVEL=error \
     DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
-    WEBPACKER_PRECOMPILE=false \
+    SKIP_CSS_BUILD=1 \
     bundle exec rails assets:precompile
 
 # 本番環境では不要なdevDependenciesを削除してイメージサイズを削減
