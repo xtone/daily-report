@@ -29,24 +29,14 @@ ENV APP_ROOT=/daily-report
 RUN mkdir -p $APP_ROOT
 WORKDIR $APP_ROOT
 
-# package.jsonとyarn.lockを先にコピー（キャッシュ効率化）
-COPY package.json yarn.lock $APP_ROOT/
+# アプリケーションコードをコピー
+COPY . $APP_ROOT
 
-# node-sassの代わりにsass（Dart Sass）を使用するための設定
-# 既存のnode-sassを削除してsassをインストール
-RUN yarn remove node-sass || true && \
-    yarn add sass@^1.32.0 --dev && \
-    yarn install --frozen-lockfile
-
-# GemfileとGemfile.lockを先にコピー（キャッシュ効率化）
-COPY Gemfile Gemfile.lock $APP_ROOT/
+RUN yarn install --frozen-lockfile
 
 RUN bundle config set --local deployment 'true' && \
     bundle config set --local without 'development test' && \
     bundle _2.4.22_ install --jobs 4 --retry 3
-
-# アプリケーションコードをコピー
-COPY . $APP_ROOT
 
 # 本番環境用の環境変数を設定
 ENV RAILS_ENV=production
@@ -63,19 +53,22 @@ RUN mkdir -p tmp/cache/webpacker public/packs scripts
 # scriptsディレクトリを作成してマニフェスト生成スクリプトをコピー
 COPY scripts/generate-manifest.js scripts/
 
-# 古いwebpackerファイルを削除してからビルド
-RUN rm -rf public/packs/* && \
-    NODE_ENV=production yarn run build
+# 古いwebpackerファイルを削除
+RUN rm -rf public/packs/*
 
-# Railsのassets:precompileでCSSなどの残りのアセットを処理
-# webpackerは無効化してRailsの標準アセットパイプラインのみ使用
+# Railsのassets:precompileでCSSなどの残りのアセットを処理（webpackerファイルは除く）
 RUN RAILS_ENV=production \
     SECRET_KEY_BASE=dummy \
     DISABLE_SPRING=1 \
     RAILS_LOG_LEVEL=error \
     DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
-    WEBPACKER_PRECOMPILE=false \
     bundle exec rails assets:precompile
+
+# 本番環境用のwebpackビルドを実行（Railsアセットプリコンパイル後）
+RUN NODE_ENV=production npm run build
+
+# マニフェストファイルを再生成（webpackとRailsアセットの両方を含む）
+RUN npm run postbuild
 
 # 本番環境では不要なdevDependenciesを削除してイメージサイズを削減
 RUN yarn install --production && yarn cache clean
