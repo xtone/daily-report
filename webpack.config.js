@@ -1,16 +1,34 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
+const { execSync } = require('child_process');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+// カスタムプラグイン：ビルド後にマニフェストを生成
+class GenerateManifestPlugin {
+  apply(compiler) {
+    compiler.plugin('done', () => {
+      try {
+        execSync('node scripts/generate-manifest.js', { stdio: 'inherit' });
+      } catch (error) {
+        console.error('Failed to generate manifest:', error);
+      }
+    });
+  }
+}
+
 module.exports = {
   entry: {
+    admin: './app/javascript/packs/admin.jsx',
     bills: './app/javascript/packs/bills.jsx',
     estimates: './app/javascript/packs/estimates.jsx',
+    forms: './app/javascript/packs/forms.jsx',
     project_list: './app/javascript/packs/project_list.jsx',
     project_members: './app/javascript/packs/project_members.jsx',
-    reports: './app/javascript/packs/reports.jsx'
+    reports: './app/javascript/packs/reports.jsx',
+    reports_summary: './app/javascript/packs/reports_summary.jsx',
+    unsubmitted: './app/javascript/packs/unsubmitted.jsx'
   },
 
   output: {
@@ -76,6 +94,7 @@ module.exports = {
       filename: '[name]-[hash].css',
       disable: !isProduction
     }),
+    new GenerateManifestPlugin(),
     // webpack 3.x用の本番環境設定
     ...(isProduction ? [
       new webpack.DefinePlugin({

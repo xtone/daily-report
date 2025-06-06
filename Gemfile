@@ -19,7 +19,7 @@ gem 'honoka-rails'
 gem 'slim-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
+# CoffeeScript support - 一時的に追加（アセットパイプライン互換性のため）
 gem 'coffee-rails'
 # Use Data-Confirm Modal
 gem 'data-confirm-modal'
@@ -72,6 +72,8 @@ gem 'slack-notifier'
 
 # Use image_processing for Active Storage (Rails 6.1 requirement)
 gem 'image_processing', '~> 1.2'
+
+gem 'concurrent-ruby', '1.3.4'
 
 group :development, :test do
   gem 'rspec-rails'
