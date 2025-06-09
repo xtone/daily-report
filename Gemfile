@@ -2,12 +2,12 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1.0'
+gem 'rails', '~> 7.0.0'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server
-gem 'puma', '~> 3.0'
-# Use logger for Rails 6.1 compatibility
+gem 'puma', '~> 5.0'
+# Use logger for Rails compatibility
 gem 'logger'
 # Bootsnap for faster boot times
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -26,7 +26,11 @@ gem 'data-confirm-modal'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-gem 'webpacker', '~> 5.0'
+# jsbundling-rails for modern JavaScript bundling
+gem 'jsbundling-rails'
+
+# cssbundling-rails for modern CSS bundling
+gem 'cssbundling-rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -70,15 +74,15 @@ gem 'roo-xls', '~> 1.1.0'
 # Use slack-notifier to send notifications to Slack webhooks
 gem 'slack-notifier'
 
-# Use image_processing for Active Storage (Rails 6.1 requirement)
+# Use image_processing for Active Storage
 gem 'image_processing', '~> 1.2'
 
 gem 'concurrent-ruby', '1.3.4'
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'factory_bot_rails', '~> 4.11'
-  gem 'shoulda-matchers', '~> 4.0'
+  gem 'factory_bot_rails', '~> 6.0'
+  gem 'shoulda-matchers', '~> 5.0'
   gem 'rails-controller-testing'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
@@ -90,10 +94,8 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console'
-  gem 'listen', '~> 3.1.5'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'listen', '~> 3.7'
+  # Spring is removed in Rails 7.0 as it's no longer needed
 
   gem 'rubocop', require: false
 end
