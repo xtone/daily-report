@@ -1,7 +1,7 @@
 - breadcrumb :project_members, @project
 - content_for :title, t('.title', name: @project.name)
 - content_for :head do
-  = javascript_pack_tag 'project_members'
+  = javascript_include_tag 'project_members', 'data-turbo-track': 'reload'
 
 h1 プロジェクトメンバー設定
 

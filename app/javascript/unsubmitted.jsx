@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import DatePicker from '../components/DatePicker';
+import DatePicker from './components/DatePicker';
 
 // 未提出一覧用の日付ピッカーコンポーネント
 class UnsubmittedDatePicker extends React.Component {

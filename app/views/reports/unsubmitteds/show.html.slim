@@ -29,7 +29,7 @@ h1 日報未提出一覧
         = date.strftime('%Y-%m-%d')
         br
 
-= javascript_pack_tag 'unsubmitted'
+= javascript_include_tag 'unsubmitted', 'data-turbo-track': 'reload'
 
 - content_for :foot do
   javascript:

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import DatePicker from '../components/DatePicker';
+import DatePicker from './components/DatePicker';
 
 // CsvDownload機能のReactコンポーネント
 class CsvDownloadManager extends React.Component {

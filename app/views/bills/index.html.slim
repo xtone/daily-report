@@ -10,5 +10,5 @@ h1 請求書アップロード
 div
   | ※何も表示されなかったらリロードしてみてください。
 
-- content_for :foot do
-  = javascript_pack_tag 'bills'
+- content_for :head do
+  = javascript_include_tag 'bills', 'data-turbo-track': 'reload'
