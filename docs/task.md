@@ -86,49 +86,90 @@
 ### Phase 4: Rails 6.1 → Rails 7.0
 
 #### 準備
-- [ ] Rails 7.0のアップグレードガイドを読む
-- [ ] Ruby 2.5.0 → Ruby 2.7.0以上にアップグレード（Rails 7.0の要件）
-- [ ] Node.js → Node.js 14.0以上にアップグレード
+- [x] Rails 7.0のアップグレードガイドを読む
+- [x] Ruby 2.5.0 → Ruby 2.7.0以上にアップグレード（Rails 7.0の要件）
+- [x] Node.js → Node.js 14.0以上にアップグレード
 
 #### 実装
-- [ ] Gemfileで`gem 'rails', '~> 7.0.0'`に変更
-- [ ] Spring gemを削除（不要になった）
-- [ ] `bundle update rails`を実行
-- [ ] `rails app:update`を実行
-- [ ] button_toヘルパーの変更に対応
-- [ ] digest classをSHA256に変更
-- [ ] 新しいキャッシュシリアライゼーションフォーマットに対応
-- [ ] Active Storageのvipsプロセッサーへの変更に対応
+- [x] Gemfileで`gem 'rails', '~> 7.0.0'`に変更
+- [x] Spring gemを削除（不要になった）
+- [x] `bundle update rails`を実行
+- [x] `rails app:update`を実行
+- [x] button_toヘルパーの変更に対応
+- [x] digest classをSHA256に変更
+- [x] 新しいキャッシュシリアライゼーションフォーマットに対応
+- [x] Active Storageのvipsプロセッサーへの変更に対応
 
-#### フロントエンド移行（重要な引き継ぎ事項）
-- [ ] **Webpackerの廃止**: Rails 7.0ではWebpackerが削除されました
-- [ ] **importmap-railsの導入**: `gem 'importmap-rails'`を追加
-- [ ] **Hotwireの導入**: `gem 'hotwire-rails'`を追加（Turbo + Stimulus）
-- [ ] **Turbolinksの削除**: Turboに置き換え
-- [ ] **JavaScriptの移行**: 
-  - [ ] webpackerで管理していたJSファイルをimportmapに移行
-  - [ ] `app/javascript/packs/application.js` → `app/javascript/application.js`
-  - [ ] Stimulusコントローラーの設定
-- [ ] **CSSの移行**:
-  - [ ] `gem 'cssbundling-rails'`または`gem 'dartsass-rails'`の導入を検討
-  - [ ] Sassファイルの移行
-- [ ] **package.jsonの整理**: 不要なnpmパッケージの削除
-- [ ] **bin/dev**スクリプトの設定（開発環境用）
+#### フロントエンド移行（jsbundling-railsへの段階的移行）
+**注意**: いきなりimportmapやHotwireへの移行は変更箇所が大きいため、まずjsbundling-railsへの移行を行う
 
-#### 設定ファイルの更新
-- [ ] `config/importmap.rb`の設定
-- [ ] `app/views/layouts/application.html.erb`のヘルパー更新
-  - [ ] `javascript_pack_tag` → `javascript_importmap_tags`
-  - [ ] `stylesheet_pack_tag` → `stylesheet_link_tag`
-- [ ] Procfile.devの作成（必要に応じて）
+##### Step 1: jsbundling-railsの導入
+- [x] **jsbundling-railsの追加**: `gem 'jsbundling-rails'`をGemfileに追加
+- [x] **バンドラーの選択**: esbuild、rollup、webpackから選択（推奨: esbuild）
+- [x] **インストール**: `bundle install && bin/rails javascript:install:esbuild`を実行
+
+##### Step 2: 既存のWebpackerからの移行
+- [x] **JavaScriptファイルの移動**: `app/javascript/packs/application.js`の内容を`app/javascript/application.js`に移動
+- [x] **package.jsonの更新**: webpacker関連の依存関係を削除
+- [x] **ビューファイルの更新**: `javascript_pack_tag`を`javascript_include_tag`に変更
+- [x] **Webpackerの削除**: `gem 'webpacker'`をGemfileから削除、設定ファイルを削除
+
+##### Step 3: cssbundling-railsの導入（推奨）
+- [x] **cssbundling-railsの追加**: `gem 'cssbundling-rails'`をGemfileに追加
+- [x] **Sassの設定**: `bin/rails css:install:sass`を実行
+- [x] **既存SCSSファイルの移行**: 既存のスタイルシートを新しい構造に移行
+
+##### Step 4: 開発環境の設定
+- [x] **Procfile.devの作成**:
+  ```
+  web: bin/rails server -p 3000
+  js: yarn build --watch
+  css: yarn build:css --watch
+  ```
+- [x] **bin/devスクリプトの設定**: 開発時の自動ビルド用
+- [x] **package.jsonのscriptsセクション更新**:
+  ```json
+  {
+    "scripts": {
+      "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",
+      "build:css": "sass ./app/assets/stylesheets/application.scss ./app/assets/builds/application.css"
+    }
+  }
+  ```
+
+##### Step 5: Webpackerの削除
+- [x] **Gemfileからwebpackerを削除**
+- [x] **webpacker関連ファイルの削除**:
+  - [x] `config/webpack/`ディレクトリ
+  - [x] `config/webpacker.yml`
+  - [x] `bin/webpack`、`bin/webpack-dev-server`
+- [x] **yarn.lockの更新**: `yarn install`を実行
+
+##### Step 6: Turbolinksの段階的移行（オプション）
+- [ ] **Turbolinksの継続使用**: 当面はそのまま使用可能
+- [ ] **将来的なTurbo移行の準備**:
+  - [ ] Turbolinks固有のイベントハンドラーを確認
+  - [ ] 段階的にTurboに移行する計画を策定
 
 #### テスト・検証
-- [ ] 全てのテストが通ることを確認
-- [ ] アセットパイプラインが正しく動作することを確認
-- [ ] JavaScript機能が正しく動作することを確認
-- [ ] Stimulusコントローラーの動作確認
-- [ ] Turboの動作確認（ページ遷移、フォーム送信等）
-- [ ] CSSの読み込み確認
+- [x] 全てのテストが通ることを確認
+- [x] **jsbundling-railsの動作確認**:
+  - [ ] `yarn build`でJavaScriptが正しくビルドされることを確認
+  - [ ] `yarn build:css`でCSSが正しくビルドされることを確認
+  - [ ] 開発環境で`bin/dev`が正常に動作することを確認
+- [ ] **アセットの読み込み確認**:
+  - [ ] JavaScriptファイルが正しく読み込まれることを確認
+  - [ ] CSSファイルが正しく読み込まれることを確認
+  - [ ] ソースマップが正しく生成されることを確認
+- [ ] **既存JavaScript機能の動作確認**:
+  - [ ] jQuery依存のコードが正常に動作することを確認
+  - [ ] Turbolinks（継続使用時）の動作確認
+  - [ ] フォーム送信、Ajax処理の動作確認
+  - [ ] 既存のJavaScriptライブラリの動作確認
+- [ ] **パフォーマンス確認**:
+  - [ ] バンドルサイズの確認
+  - [ ] ページ読み込み速度の確認
+  - [ ] 開発時のビルド速度の確認
 
 ### Phase 5: Rails 7.0 → Rails 7.1
 
@@ -236,11 +277,11 @@
 - [ ] rspec-rails を最新版に更新
 
 ### 削除・置換が必要なGem
-- [ ] jquery-rails（Rails 7以降では非推奨）→ Stimulus等へ移行
-- [ ] coffee-rails → ES6/TypeScriptへ移行
-- [ ] sass-rails → cssbundling-railsまたはDartSassへ移行
-- [ ] turbolinks → Turboへ移行
-- [ ] webpacker → importmap-railsまたはjsbundling-railsへ移行
+- [ ] **webpacker → jsbundling-railsへ移行**（Phase 4で実施）
+- [ ] **sass-rails → cssbundling-railsへ移行**（Phase 4で実施、オプション）
+- [ ] coffee-rails → ES6/TypeScriptへ移行（jsbundling-rails移行後に実施）
+- [ ] jquery-rails（当面継続使用可能、将来的にStimulus等への移行を検討）
+- [ ] turbolinks（当面継続使用可能、将来的にTurboへの移行を検討）
 
 ### その他のGem更新
 - [ ] puma を最新版に更新
@@ -266,10 +307,16 @@
 ## コードの近代化
 
 ### JavaScript/フロントエンド
-- [ ] jQuery依存コードをVanilla JSまたはStimulusに書き換え
-- [ ] CoffeeScriptをES6に変換
-- [ ] BootstrapをBootstrap 5に更新
-- [ ] アセットパイプラインの設定を更新
+- [ ] **jsbundling-railsへの移行完了後の最適化**:
+  - [ ] CoffeeScriptをES6に変換
+  - [ ] 不要なJavaScriptライブラリの削除
+  - [ ] バンドルサイズの最適化
+- [ ] **将来的な移行の検討**:
+  - [ ] jQuery依存コードをVanilla JSまたはStimulusに書き換え（段階的に実施）
+  - [ ] TurbolinksからTurboへの移行（段階的に実施）
+- [ ] **UI/UXの更新**:
+  - [ ] BootstrapをBootstrap 5に更新
+  - [ ] レスポンシブデザインの改善
 
 ### Ruby/Rails
 - [ ] 古いRuby構文を新しい構文に更新
