@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  db-test:
+    image: mysql:5.7
+    command: --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: daily_report_test
+      MYSQL_USER: daily_report
+      MYSQL_PASSWORD: password
+    tmpfs:
+      - /var/lib/mysql  # テスト用にメモリ上にデータベースを構築
+
+  app-test:
+    build:
+      context: .
+      dockerfile: ./docker/rails/Dockerfile.dev
+    volumes:
+      - .:/daily-report
+      - rubygems-test:/usr/local/bundle
+    depends_on:
+      - db-test
+    environment:
+      RAILS_ENV: test
+      NODE_ENV: test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db-test
+      MYSQL_PORT: 3306
+      DB_HOST: db-test
+      DB_USERNAME: root
+      DB_PASSWORD: password
+      DB_PORT: 3306
+      BUNDLER_VERSION: 2.4.22
+      DISABLE_SPRING: 1
+    command: >
+      bash -c "
+        bundle install &&
+        yarn install &&
+        bundle exec rails db:create db:migrate &&
+        bundle exec rspec
+      "
+
+volumes:
+  rubygems-test:
+    driver: 'local'

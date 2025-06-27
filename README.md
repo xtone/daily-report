@@ -6,6 +6,18 @@
 
 [Docker](https://www.docker.com/)と[Docker Compose](https://docs.docker.com/compose/)を利用しています。
 
+### 🚀 クイックスタート（推奨）
+
+開発環境を簡単にセットアップできるスクリプトを用意しています：
+
+```bash
+./scripts/setup-dev.sh
+```
+
+詳細な手順については[開発環境セットアップガイド](docs/development-setup.md)を参照してください。
+
+### 従来の手動セットアップ
+
 ### 初回セットアップ
 
 1. イメージのビルド
