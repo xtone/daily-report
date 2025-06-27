@@ -38,8 +38,7 @@ config/environments/*.local.yml
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-/public/packs
-/public/packs-test
+# Webpacker artifacts (removed)
 /node_modules
 /yarn-error.log
 yarn-debug.log*
