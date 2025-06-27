@@ -30,7 +30,7 @@ h2 ユーザー一覧
 = form_with url: users_path(format: :csv), method: :get do
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
 
-= javascript_pack_tag 'admin'
+= javascript_include_tag 'admin'
 
 - content_for :foot do
   javascript:
