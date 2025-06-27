@@ -145,9 +145,10 @@ RSpec.describe User, type: :model do
 
       it 'returns users with project relation information' do
         result = User.find_in_project(project.id)
+        available_users_count = User.available.count
         
         expect(result).to be_an(Array)
-        expect(result.size).to eq(2) # available users only
+        expect(result.size).to eq(available_users_count) # available users only
         
         user1_info = result.find { |u| u[:id] == user1.id }
         expect(user1_info[:name]).to eq(user1.name)

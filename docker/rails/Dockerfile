@@ -1,21 +1,20 @@
-FROM ruby:2.5.9
+FROM ruby:2.7.8
 ENV LANG C.UTF-8
 
-# aptの設定を更新してGPGチェックを無効化
-RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/90ignore-release-date && \
-    echo 'APT::Get::AllowUnauthenticated "true";' > /etc/apt/apt.conf.d/99verify-peer && \
-    echo "deb [trusted=yes] http://archive.debian.org/debian stretch main" > /etc/apt/sources.list && \
-    echo "deb-src [trusted=yes] http://archive.debian.org/debian stretch main" >> /etc/apt/sources.list && \
-    apt-get update -o Acquire::Check-Valid-Until=false -qq || true && \
-    apt-get install -y --allow-unauthenticated --no-install-recommends \
+# 必要なパッケージをインストール
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         build-essential \
         curl \
         ca-certificates \
-        libmariadb-dev-compat && \
+        libmariadb-dev-compat \
+        python \
+        make \
+        g++ && \
     rm -rf /var/lib/apt/lists/*
 
-# Node.js 8.12.0を直接バイナリからインストール
-RUN curl -fsSL https://nodejs.org/dist/v8.12.0/node-v8.12.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1 && \
+# Node.js 12.22.12を直接バイナリからインストール
+RUN curl -fsSL https://nodejs.org/dist/v12.22.12/node-v12.22.12-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1 && \
     node --version && \
     npm --version
 
@@ -23,7 +22,7 @@ RUN curl -fsSL https://nodejs.org/dist/v8.12.0/node-v8.12.0-linux-x64.tar.xz | t
 RUN npm install -g yarn@1.22.19
 
 # Bundler 2.0.2をインストール（Ruby 2.4.2と互換性があり、Bundler 2形式のlockfileを読める）
-RUN gem update --system 3.0.8 && gem install bundler -v 2.0.2
+RUN gem update --system 3.3.22 && gem install bundler -v 2.0.2
 
 ENV APP_ROOT /daily-report
 RUN mkdir -p $APP_ROOT
@@ -41,6 +40,6 @@ ENV BUNDLE_GEMFILE=$APP_ROOT/Gemfile \
 # Gemfile.lockのBUNDLED WITHセクションを更新してからbundle update
 RUN sed -i 's/BUNDLED WITH.*/BUNDLED WITH/' Gemfile.lock && \
     echo "   2.0.2" >> Gemfile.lock && \
-    bundle _2.0.2_ update rails
+    bundle _2.0.2_ update
 
 COPY . $APP_ROOT

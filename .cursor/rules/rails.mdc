@@ -1,0 +1,260 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Rails Docker開発環境ルール
+
+## Docker環境の基本原則
+
+### 1. 開発環境の統一
+- 全ての開発者はDocker環境を使用すること
+- ローカル環境への直接インストールは避ける
+- 環境の差異による問題を防ぐため、必ずdocker-composeを使用する
+
+### 2. Apple Silicon Mac対応
+- M1/M2/M3 Macを使用する場合は、必ず以下を実行する：
+  ```bash
+  cp docker-compose.override.yml.example docker-compose.override.yml
+  ```
+- Intel MacやWindows環境では、override設定は不要
+
+## 必須のセットアップ手順
+
+### 初回環境構築
+1. **イメージビルド（キャッシュなし）**
+   ```bash
+   docker-compose build --no-cache
+   ```
+
+2. **コンテナ起動**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **データベースセットアップ**
+   ```bash
+   docker-compose exec app bundle exec rails db:create
+   docker-compose exec app bundle exec rails db:migrate
+   ```
+
+### 日常的な開発作業
+
+#### アプリケーション起動
+```bash
+# Railsサーバー起動
+docker-compose exec app bundle exec rails server -b 0.0.0.0
+```
+- アクセスURL: http://localhost:3456
+
+#### コンテナ操作
+```bash
+# アプリケーションコンテナに入る
+docker-compose exec app bash
+
+# データベースに接続
+docker-compose exec db mysql -u root -ppassword daily-report_development
+```
+
+#### ログ確認
+```bash
+# 全サービスのログ
+docker-compose logs -f
+
+# 特定サービスのログ
+docker-compose logs -f app
+```
+
+## テスト実行ルール
+
+### RSpecテスト
+```bash
+# 全テスト実行
+docker-compose exec app bundle exec rspec
+
+# 特定ファイルのテスト
+docker-compose exec app bundle exec rspec spec/models/user_spec.rb
+
+# 特定行のテスト
+docker-compose exec app bundle exec rspec spec/models/user_spec.rb:10
+```
+
+### テスト環境準備
+```bash
+# テスト用DB作成・マイグレーション
+docker-compose exec app bundle exec rails db:create RAILS_ENV=test
+docker-compose exec app bundle exec rails db:migrate RAILS_ENV=test
+```
+
+## 環境管理ルール
+
+### 環境の停止・削除
+```bash
+# 停止のみ
+docker-compose stop
+
+# 停止と削除
+docker-compose down
+
+# データも含めて完全削除（注意：データベースデータも削除される）
+docker-compose down -v
+```
+### ボリューム管理
+- **mysql-db**: データベースデータの永続化
+- **rubygems**: Gemキャッシュの永続化
+- データベースバックアップ：
+  ```bash
+  docker-compose exec db mysqldump -u root -ppassword daily-report_development > backup.sql
+  ```
+
+## トラブルシューティングガイド
+
+### よくある問題と解決方法
+
+#### 1. ポート競合エラー
+```bash
+# ポート使用状況確認
+lsof -i :3456
+
+# docker-compose.ymlでポート変更
+ports:
+  - "3457:3000"  # 別のポートに変更
+```
+
+#### 2. MySQL接続エラー
+```bash
+# MySQLコンテナ状態確認
+docker-compose ps db
+
+# MySQLログ確認
+docker-compose logs db
+
+# データベース再作成
+docker-compose down -v
+docker-compose up -d
+docker-compose exec app bundle exec rails db:create db:migrate
+```
+
+#### 3. Gemインストールエラー
+```bash
+# Gemキャッシュクリア
+docker-compose down
+docker volume rm daily-report_rubygems
+docker-compose build --no-cache
+```
+
+#### 4. ディスク容量不足
+```bash
+# 未使用リソースクリーンアップ
+docker system prune -a
+
+# 未使用ボリューム削除
+docker volume prune
+```
+
+## 禁止事項
+
+### 1. 本番環境での使用禁止
+- 開発環境用設定のため、本番環境では使用しない
+- パスワードがハードコードされているため、セキュリティリスクあり
+
+### 2. 直接的なファイル編集禁止
+- docker-compose.ymlの直接編集は避ける
+- 環境固有の設定は docker-compose.override.yml を使用
+
+### 3. 不適切なボリューム操作禁止
+- `docker-compose down -v` は慎重に使用（データ消失リスク）
+- 本番データのボリュームマウントは禁止
+
+## パフォーマンス最適化
+
+### macOS環境での最適化
+```yaml
+# docker-compose.override.yml での設定例
+services:
+  app:
+    volumes:
+      - .:/daily-report:cached  # cachedオプションでパフォーマンス向上
+```
+
+### 並列処理の活用
+- Gemインストール時の並列処理は既に設定済み（BUNDLE_JOBS=2）
+- 必要に応じて値を調整可能
+
+## 環境変数管理
+
+### 必須環境変数
+| 変数名 | 値 | 説明 |
+|--------|-----|------|
+| RAILS_ENV | development | Rails環境 |
+| MYSQL_USER | root | MySQLユーザー名 |
+| MYSQL_PASSWORD | password | MySQLパスワード |
+| MYSQL_HOST | db | MySQLホスト名 |
+
+### オプション環境変数
+| 変数名 | 説明 |
+|--------|------|
+| BUGSNAG_API_KEY | Bugsnagエラー監視APIキー |
+| SLACK_WEBHOOK_URL | Slack通知用WebhookURL |
+
+## 将来のアップグレード対応
+
+### 現在の技術スタック
+- Ruby 2.5.9
+- Rails 5.1.7
+- Node.js 8.12.0
+- MySQL 5.7
+
+### 予定されているアップグレード
+- Ruby 3.3.x
+- Rails 8.0
+- Node.js 20.x
+- MySQL 8.0
+
+詳細は `docs/task.md` を参照
+
+## コード品質維持
+
+### 1. テスト実行の徹底
+- 新機能開発前に既存テストが通ることを確認
+- 新機能にはテストを必ず追加
+- CI/CDパイプラインでのテスト自動実行
+
+### 2. 環境の一貫性
+- 全開発者が同じDocker環境を使用
+- 環境差異による問題の早期発見
+
+### 3. ドキュメント更新
+- Docker設定変更時は必ずドキュメント更新
+- 新しいトラブルシューティング情報の追加
+
+## 緊急時対応
+
+### 1. 環境復旧手順
+```bash
+# 完全リセット
+docker-compose down -v
+docker system prune -a
+docker-compose build --no-cache
+docker-compose up -d
+docker-compose exec app bundle exec rails db:create db:migrate
+```
+
+### 2. データバックアップ
+```bash
+# 定期的なデータベースバックアップ
+docker-compose exec db mysqldump -u root -ppassword daily-report_development > "backup_$(date +%Y%m%d_%H%M%S).sql"
+```
+
+### 3. ログ収集
+```bash
+# 問題調査用ログ収集
+docker-compose logs --no-color > docker_logs_$(date +%Y%m%d_%H%M%S).log
+```
+
+## 参考資料
+
+- [Docker公式ドキュメント](mdc:https:/docs.docker.com)
+- [Docker Compose公式ドキュメント](mdc:https:/docs.docker.com/compose)
+- [Rails on Docker ベストプラクティス](mdc:https:/docs.docker.com/samples/rails)
+- プロジェクト内ドキュメント: `README.md` 
