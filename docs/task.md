@@ -1,0 +1,222 @@
+# Ruby on Rails アップグレードタスクリスト
+
+このドキュメントは、Ruby 2.4.2/Rails 5.1.7から最新版（Ruby 3.3.x/Rails 8.0）へのアップグレードに必要なタスクを記載しています。
+
+## 前提条件
+
+- [ ] プロジェクトのバックアップを作成する
+- [ ] 既存のテストスイートが全て通ることを確認する
+- [ ] Gitで全ての変更をコミットし、新しいブランチを作成する
+- [ ] 本番環境のデータベースのバックアップを作成する
+
+## 段階的アップグレード
+
+### Phase 1: Rails 5.1 → Rails 5.2
+
+#### 準備
+- [ ] Rails 5.2のアップグレードガイドを読む
+- [ ] Ruby 2.4.2 → Ruby 2.5.0以上にアップグレード（Rails 5.2の要件）
+
+#### 実装
+- [ ] Gemfileで`gem 'rails', '~> 5.2.0'`に変更
+- [ ] Bootsnap gemを追加（パフォーマンス向上のため推奨）
+- [ ] `bundle update rails`を実行
+- [ ] `rails app:update`を実行し、設定ファイルを更新
+- [ ] credentialsへの移行（secrets.ymlから）
+- [ ] Active Storageの設定を確認（既に使用している場合）
+- [ ] Content Security Policy（CSP）の設定を追加
+- [ ] deprecation warningを確認・修正
+
+#### テスト・検証
+- [ ] 全てのテストが通ることを確認
+- [ ] アプリケーションが正常に起動することを確認
+- [ ] 主要な機能を手動でテスト
+
+### Phase 2: Rails 5.2 → Rails 6.0
+
+#### 準備
+- [ ] Rails 6.0のアップグレードガイドを読む
+- [ ] Ruby 2.5.0 → Ruby 2.5.0以上を維持（Rails 6.0の要件）
+- [ ] Node.js 8.12.0 → Node.js 12.0以上にアップグレード
+
+#### 実装
+- [ ] Gemfileで`gem 'rails', '~> 6.0.0'`に変更
+- [ ] Webpackerを最新版にアップグレード
+- [ ] `bundle update rails`を実行
+- [ ] `rails app:update`を実行
+- [ ] Zeitwerkモードへの移行（autoloading）
+- [ ] config.hosts設定を追加
+- [ ] Force SSLの設定を確認・更新
+- [ ] Action Cable JavaScriptの変更に対応
+- [ ] Active Storageの変更に対応
+- [ ] factory_girl_rails → factory_bot_railsへ移行
+
+#### テスト・検証
+- [ ] 全てのテストが通ることを確認
+- [ ] autoloadingが正しく動作することを確認
+- [ ] JavaScript関連の機能をテスト
+
+### Phase 3: Rails 6.0 → Rails 6.1
+
+#### 準備
+- [ ] Rails 6.1のアップグレードガイドを読む
+- [ ] Ruby 2.5.0以上を維持
+
+#### 実装
+- [ ] Gemfileで`gem 'rails', '~> 6.1.0'`に変更
+- [ ] `bundle update rails`を実行
+- [ ] `rails app:update`を実行
+- [ ] ActiveModel::Errorクラスの変更に対応
+- [ ] ActiveSupport::Callbacksの変更に対応
+- [ ] リダイレクトステータスコード308への対応
+- [ ] Image Processing gemを追加（Active Storage使用時）
+- [ ] config_forの戻り値の変更に対応
+
+#### テスト・検証
+- [ ] 全てのテストが通ることを確認
+- [ ] エラーハンドリングが正しく動作することを確認
+
+### Phase 4: Rails 6.1 → Rails 7.0
+
+#### 準備
+- [ ] Rails 7.0のアップグレードガイドを読む
+- [ ] Ruby 2.5.0 → Ruby 2.7.0以上にアップグレード（Rails 7.0の要件）
+- [ ] Node.js → Node.js 14.0以上にアップグレード
+
+#### 実装
+- [ ] Gemfileで`gem 'rails', '~> 7.0.0'`に変更
+- [ ] Spring gemを削除（不要になった）
+- [ ] Sprocketsを削除またはオプション化
+- [ ] `bundle update rails`を実行
+- [ ] `rails app:update`を実行
+- [ ] button_toヘルパーの変更に対応
+- [ ] digest classをSHA256に変更
+- [ ] 新しいキャッシュシリアライゼーションフォーマットに対応
+- [ ] Active Storageのvipsプロセッサーへの変更に対応
+- [ ] Hotwireの導入を検討
+
+#### テスト・検証
+- [ ] 全てのテストが通ることを確認
+- [ ] アセットパイプラインが正しく動作することを確認
+
+### Phase 5: Rails 7.0 → Rails 7.1
+
+#### 準備
+- [ ] Rails 7.1のアップグレードガイドを読む
+- [ ] Ruby 2.7.0以上を維持
+
+#### 実装
+- [ ] Gemfileで`gem 'rails', '~> 7.1.0'`に変更
+- [ ] `bundle update rails`を実行
+- [ ] `rails app:update`を実行
+- [ ] secret_key_baseファイルの変更に対応
+- [ ] config.autoload_libの設定を追加
+- [ ] MemCacheStore/RedisCacheStoreの接続プーリングに対応
+- [ ] SQLite3の厳密モードに対応
+- [ ] Rails.loggerのBroadcastLogger変更に対応
+- [ ] Active Record暗号化アルゴリズムの変更に対応
+
+#### テスト・検証
+- [ ] 全てのテストが通ることを確認
+- [ ] ログ出力が正しく動作することを確認
+
+### Phase 6: Rails 7.1 → Rails 7.2
+
+#### 準備
+- [ ] Rails 7.2のアップグレードガイドを読む
+- [ ] Ruby 3.0.0以上にアップグレード（Rails 7.2の推奨）
+
+#### 実装
+- [ ] Gemfileで`gem 'rails', '~> 7.2.0'`に変更
+- [ ] `bundle update rails`を実行
+- [ ] `rails app:update`を実行
+- [ ] active_job.queue_adapterの設定を確認
+
+#### テスト・検証
+- [ ] 全てのテストが通ることを確認
+
+### Phase 7: Rails 7.2 → Rails 8.0
+
+#### 準備
+- [ ] Rails 8.0のアップグレードガイドを読む
+- [ ] Ruby 3.1.0 → Ruby 3.3.0以上にアップグレード（Rails 8.0の推奨）
+
+#### 実装
+- [ ] Gemfileで`gem 'rails', '~> 8.0.0'`に変更
+- [ ] `bundle update rails`を実行
+- [ ] `rails app:update`を実行
+- [ ] 新しい機能や変更点に対応
+
+#### テスト・検証
+- [ ] 全てのテストが通ることを確認
+- [ ] パフォーマンステストを実施
+
+## Gem依存関係の更新
+
+### 必須の更新
+- [ ] factory_girl_rails → factory_bot_railsへ移行
+- [ ] mysql2を最新版に更新
+- [ ] devise を Rails 8対応版に更新
+- [ ] pundit を最新版に更新
+- [ ] rspec-rails を最新版に更新
+
+### 削除・置換が必要なGem
+- [ ] jquery-rails（Rails 7以降では非推奨）→ Stimulus等へ移行
+- [ ] coffee-rails → ES6/TypeScriptへ移行
+- [ ] sass-rails → cssbundling-railsまたはDartSassへ移行
+- [ ] turbolinks → Turboへ移行
+- [ ] webpacker → importmap-railsまたはjsbundling-railsへ移行
+
+### その他のGem更新
+- [ ] puma を最新版に更新
+- [ ] rubocop を最新版に更新し、新しいRubyの構文に対応
+- [ ] その他の依存関係を更新
+
+## インフラストラクチャの更新
+
+### Docker環境
+- [ ] Dockerfileを更新（Ruby 3.3.x、Node.js 20.x）
+- [ ] docker-compose.ymlを更新
+- [ ] ベースイメージをDebian Bookworm以降に更新
+
+### CI/CD
+- [ ] CircleCIの設定を更新（Ruby、Node.jsバージョン）
+- [ ] テスト環境の設定を更新
+
+### デプロイメント
+- [ ] Capistrano設定を更新
+- [ ] 本番環境のRubyバージョンを更新
+- [ ] 本番環境のNode.jsバージョンを更新
+
+## コードの近代化
+
+### JavaScript/フロントエンド
+- [ ] jQuery依存コードをVanilla JSまたはStimulusに書き換え
+- [ ] CoffeeScriptをES6に変換
+- [ ] BootstrapをBootstrap 5に更新
+- [ ] アセットパイプラインの設定を更新
+
+### Ruby/Rails
+- [ ] 古いRuby構文を新しい構文に更新
+- [ ] 非推奨のRails APIを置き換え
+- [ ] Strong Parametersの確認・更新
+- [ ] Active Recordクエリの最適化
+
+## 最終確認
+
+- [ ] 全てのテストが通ること
+- [ ] 開発環境で全機能が動作すること
+- [ ] ステージング環境でのテスト
+- [ ] パフォーマンステストの実施
+- [ ] セキュリティ監査の実施
+- [ ] ドキュメントの更新
+- [ ] チームメンバーへの変更点の共有
+- [ ] 本番環境へのデプロイ計画の策定
+
+## 注意事項
+
+1. 各フェーズごとに必ずテストを実行し、問題がないことを確認してから次のフェーズに進む
+2. 大きな変更は段階的に実施し、各段階でコミットを作成する
+3. 本番環境へのデプロイは慎重に計画し、ロールバック手順を準備する
+4. データベースのマイグレーションは事前にバックアップを取る
+5. 外部サービスとの連携部分は特に注意深くテストする 
