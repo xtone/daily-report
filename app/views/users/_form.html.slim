@@ -49,9 +49,12 @@
     .col-sm-offset-2.col-sm-10
       = f.submit user.new_record? ? '登録' : '更新', class: 'btn btn-default'
 
+= javascript_pack_tag 'forms'
+
 - content_for :foot do
   javascript:
-    $('.input-group.date').datetimepicker({
+    // 既存の日付ピッカーの初期化（React化されていない場合のフォールバック）
+    $('.input-group.date:not([data-react-mounted])').datetimepicker({
       format: 'YYYY-MM-DD',
       dayViewHeaderFormat: 'YYYY年MMMM',
       locale: moment.locale('ja'),

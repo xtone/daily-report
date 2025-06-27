@@ -47,13 +47,10 @@ h1 稼働集計
     .alert.alert-info
       | 期間内の稼働データがありません。
 
+= javascript_pack_tag 'reports_summary'
+
 - content_for :foot do
   javascript:
-    new ReportSummary({
-      renderForm: 'summaryRender',
-      downloadForm: 'summaryDownload'
-    });
-
     $('.input-group.date').datetimepicker({
       format: 'YYYY-MM-DD',
       dayViewHeaderFormat: 'YYYY年MMMM',

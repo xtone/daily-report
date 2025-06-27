@@ -1,11 +1,12 @@
 {
   "scripts": {
     "build": "NODE_ENV=production webpack -p",
-    "build:dev": "NODE_ENV=development webpack",
+    "build:dev": "NODE_ENV=development webpack && npm run postbuild",
     "watch": "NODE_ENV=development webpack --watch",
     "postbuild": "node scripts/generate-manifest.js"
   },
   "dependencies": {
+    "@rails/webpacker": "^3.0",
     "autoprefixer": "^7.1.5",
     "babel-core": "^6.26.0",
     "babel-loader": "7.x",
@@ -14,8 +15,6 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "coffee-loader": "^0.8.0",
-    "coffee-script": "^1.12.7",
     "compression-webpack-plugin": "^1.0.1",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.1",

@@ -29,9 +29,12 @@ h1 日報未提出一覧
         = date.strftime('%Y-%m-%d')
         br
 
+= javascript_pack_tag 'unsubmitted'
+
 - content_for :foot do
   javascript:
-    $('.input-group.date').datetimepicker({
+    // 既存の日付ピッカーの初期化（React化されていない場合のフォールバック）
+    $('.input-group.date:not([data-react-mounted])').datetimepicker({
       format: 'YYYY-MM-DD',
       dayViewHeaderFormat: 'YYYY年MMMM',
       locale: moment.locale('ja'),

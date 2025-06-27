@@ -12,7 +12,18 @@ function generateManifest() {
   }
 
   const files = fs.readdirSync(packsDir);
-  const manifest = {};
+  let manifest = {};
+
+  // 既存のマニフェストファイルがあれば読み込む（Railsアセットを保持するため）
+  if (fs.existsSync(manifestPath)) {
+    try {
+      const existingManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+      manifest = { ...existingManifest };
+      console.log('Loaded existing manifest:', Object.keys(manifest));
+    } catch (error) {
+      console.log('Failed to load existing manifest, starting fresh');
+    }
+  }
 
   // まずハッシュ付きファイルを処理
   files.forEach(file => {
