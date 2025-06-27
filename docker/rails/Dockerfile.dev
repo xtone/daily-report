@@ -14,7 +14,7 @@ RUN apt-get update && \
         vim \
         git \
         less \
-        mysql-client && \
+        default-mysql-client && \
     rm -rf /var/lib/apt/lists/*
 
 # Node.js 14.x をNodeSourceリポジトリからインストール（node-sass 4.14.1との互換性確保）
