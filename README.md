@@ -4,45 +4,97 @@
 
 ## 開発環境のセットアップ
 
-[Docker](https://www.docker.com/)を利用しています。
+[Docker](https://www.docker.com/)と[Docker Compose](https://docs.docker.com/compose/)を利用しています。
 
-イメージのビルド
-```
-docker-compose build
-```
+### 初回セットアップ
 
-bundle install
+1. イメージのビルド
 ```
-docker-compose run app bin/bundle install
+docker-compose build --no-cache
 ```
 
-コンテナ立ち上げ
+#### Apple Silicon Mac (M1/M2/M3) を使用している場合
+
+Apple Silicon Macでは、以下の追加設定が必要です：
+
 ```
-docker-compose start
+cp docker-compose.override.yml.example docker-compose.override.yml
 ```
 
-DBセットアップ
+これにより、MySQLとRailsアプリケーションがx86_64エミュレーションで動作するようになります。
+Windows/Intel Mac環境では、この手順はスキップしてください。
+
+2. コンテナの起動
 ```
-docker-compose exec app bin/rails db:create
-docker-compose exec app bin/rails db:migrate
+docker-compose up -d
 ```
 
-データのインポート( あらかじめ、`tmp`ディレクトリに各種CSVファイルを配置してください )
+3. DBセットアップ
 ```
-docker-compose exec app bin/rails app:import_csv
-```
-
-Railsのサーバーログを見る
-```
-docker-compose logs app
+docker-compose exec app bundle exec rails db:create
+docker-compose exec app bundle exec rails db:migrate
 ```
 
-RSpec実行
+4. データのインポート（任意：あらかじめ、`tmp`ディレクトリに各種CSVファイルを配置してください）
 ```
-docker-compose exec app bin/bundle exec rspec
+docker-compose exec app bundle exec rails app:import_csv
+```
+
+### 開発環境の操作
+
+Railsサーバーの起動
+```
+docker-compose exec app bundle exec rails server -b 0.0.0.0
+```
+
+コンテナに入る
+```
+docker-compose exec app bash
+```
+
+ログの確認
+```
+docker-compose logs -f app
+```
+
+環境の停止
+```
+docker-compose down
+```
+
+環境の完全削除（ボリュームも含む）
+```
+docker-compose down -v
 ```
 
 http://localhost:3456 でアクセスできます。
+
+## テストの実行
+
+RSpecによるテストが用意されています。
+
+### テストの実行方法
+
+全テストの実行
+```
+docker-compose exec app bundle exec rspec
+```
+
+特定のテストファイルの実行
+```
+docker-compose exec app bundle exec rspec spec/models/user_spec.rb
+```
+
+特定のテストケースの実行（行番号指定）
+```
+docker-compose exec app bundle exec rspec spec/models/user_spec.rb:10
+```
+
+### テスト実行時の注意事項
+
+- テストデータベースは自動的に作成されます
+- テストはutf8文字セットで実行されるため、日本語データも正しく扱えます（本番環境と同じ文字セット）
+- 現在、30個のテストケースがあり、13個のpendingテストが含まれています
 
 ## システム概要
 

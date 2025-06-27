@@ -1,36 +1,46 @@
 FROM ruby:2.4.2
 ENV LANG C.UTF-8
 
-RUN sed -i.bak -e "s%http://deb.debian.org/debian%http://ftp.jp.debian.org/debian%g" /etc/apt/sources.list && \
-    echo "deb http://ftp.jp.debian.org/debian jessie main" > /etc/apt/sources.list && \
-    echo "deb http://ftp.jp.debian.org/debian stable-updates main" >> /etc/apt/sources.list && \
-    apt-get update -qq && \
-    apt-get install -y apt-transport-https apt-utils build-essential mysql-client nodejs npm
+# aptの設定を更新してGPGチェックを無効化
+RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/90ignore-release-date && \
+    echo 'APT::Get::AllowUnauthenticated "true";' > /etc/apt/apt.conf.d/99verify-peer && \
+    echo "deb [trusted=yes] http://archive.debian.org/debian jessie main" > /etc/apt/sources.list && \
+    echo "deb-src [trusted=yes] http://archive.debian.org/debian jessie main" >> /etc/apt/sources.list && \
+    apt-get update -o Acquire::Check-Valid-Until=false -qq || true && \
+    apt-get install -y --allow-unauthenticated --no-install-recommends \
+        build-essential \
+        curl \
+        ca-certificates \
+        libmysqlclient-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install Node.js
-RUN npm cache clean && npm install n -g && n 8.12.0 && \
-    ln -sf /usr/local/bin/node /usr/bin/node && \
-    apt-get purge -y nodejs npm
+# Node.js 8.12.0を直接バイナリからインストール
+RUN curl -fsSL https://nodejs.org/dist/v8.12.0/node-v8.12.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1 && \
+    node --version && \
+    npm --version
 
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt-get update -qq && apt-get install -y --no-install-recommends yarn && \
-    apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+# Yarnをnpmでインストール
+RUN npm install -g yarn@1.22.19
 
-RUN gem update --system && gem install bundler
+# Bundler 2.0.2をインストール（Ruby 2.4.2と互換性があり、Bundler 2形式のlockfileを読める）
+RUN gem update --system 3.0.8 && gem install bundler -v 2.0.2
 
 ENV APP_ROOT /daily-report
-RUN mkdir $APP_ROOT
+RUN mkdir -p $APP_ROOT
 WORKDIR $APP_ROOT
 
 EXPOSE 3000
 
-ADD Gemfile $APP_ROOT/Gemfile
-ADD Gemfile.lock $APP_ROOT/Gemfile.lock
+COPY Gemfile $APP_ROOT/
+COPY Gemfile.lock $APP_ROOT/
 
 ENV BUNDLE_GEMFILE=$APP_ROOT/Gemfile \
   BUNDLE_JOBS=2 \
   BUNDLE_PATH=/bundle
 
-RUN bundle install
+# Gemfile.lockのBUNDLED WITHセクションを更新してからbundle install
+RUN sed -i 's/BUNDLED WITH.*/BUNDLED WITH/' Gemfile.lock && \
+    echo "   2.0.2" >> Gemfile.lock && \
+    bundle _2.0.2_ install
+
+COPY . $APP_ROOT

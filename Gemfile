@@ -69,6 +69,8 @@ gem 'slack-notifier'
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'shoulda-matchers', '~> 4.0'
+  gem 'rails-controller-testing'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
   gem 'awesome_print'
