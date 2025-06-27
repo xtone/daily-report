@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :estimate do
     association :project
     sequence(:serial_no) { |n| "EST-#{n.to_s.rjust(4, '0')}" }

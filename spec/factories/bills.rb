@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :bill do
     association :estimate
     sequence(:serial_no) { |n| "BILL-#{n.to_s.rjust(4, '0')}" }

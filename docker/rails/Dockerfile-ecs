@@ -1,4 +1,4 @@
-FROM ruby:2.5.9
+FROM public.ecr.aws/docker/library/ruby:2.5.9
 ENV LANG C.UTF-8
 
 # aptの設定を更新してGPGチェックを無効化
@@ -23,7 +23,7 @@ RUN curl -fsSL https://nodejs.org/dist/v8.12.0/node-v8.12.0-linux-x64.tar.xz | t
 RUN npm install -g yarn@1.22.19
 
 # Bundler 2.0.2をインストール（Ruby 2.4.2と互換性があり、Bundler 2形式のlockfileを読める）
-RUN gem update --system 3.0.8 && gem install bundler -v 2.0.2
+RUN gem update --system 3.0.8 && gem install bundler -v 2.3.18
 
 ENV APP_ROOT /daily-report
 RUN mkdir -p $APP_ROOT
@@ -31,16 +31,6 @@ WORKDIR $APP_ROOT
 
 EXPOSE 3000
 
-COPY Gemfile $APP_ROOT/
-COPY Gemfile.lock $APP_ROOT/
-
-ENV BUNDLE_GEMFILE=$APP_ROOT/Gemfile \
-  BUNDLE_JOBS=2 \
-  BUNDLE_PATH=/bundle
-
-# Gemfile.lockのBUNDLED WITHセクションを更新してからbundle update
-RUN sed -i 's/BUNDLED WITH.*/BUNDLED WITH/' Gemfile.lock && \
-    echo "   2.0.2" >> Gemfile.lock && \
-    bundle _2.0.2_ update rails
-
 COPY . $APP_ROOT
+RUN bundle install && npm install
+RUN bin/rake assets:precompile

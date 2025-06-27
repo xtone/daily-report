@@ -14,22 +14,22 @@
 ### Phase 1: Rails 5.1 → Rails 5.2
 
 #### 準備
-- [ ] Rails 5.2のアップグレードガイドを読む
-- [ ] Ruby 2.4.2 → Ruby 2.5.0以上にアップグレード（Rails 5.2の要件）
+- [x] Rails 5.2のアップグレードガイドを読む
+- [x] Ruby 2.4.2 → Ruby 2.5.0以上にアップグレード（Rails 5.2の要件）
 
 #### 実装
-- [ ] Gemfileで`gem 'rails', '~> 5.2.0'`に変更
-- [ ] Bootsnap gemを追加（パフォーマンス向上のため推奨）
-- [ ] `bundle update rails`を実行
-- [ ] `rails app:update`を実行し、設定ファイルを更新
-- [ ] credentialsへの移行（secrets.ymlから）
+- [x] Gemfileで`gem 'rails', '~> 5.2.0'`に変更
+- [x] Bootsnap gemを追加（パフォーマンス向上のため推奨）
+- [x] `bundle update rails`を実行
+- [x] `rails app:update`を実行し、設定ファイルを更新
+- [x] credentialsへの移行（secrets.ymlから）
 - [ ] Active Storageの設定を確認（既に使用している場合）
-- [ ] Content Security Policy（CSP）の設定を追加
-- [ ] deprecation warningを確認・修正
+- [x] Content Security Policy（CSP）の設定を追加
+- [x] deprecation warningを確認・修正
 
 #### テスト・検証
-- [ ] 全てのテストが通ることを確認
-- [ ] アプリケーションが正常に起動することを確認
+- [x] 全てのテストが通ることを確認
+- [x] アプリケーションが正常に起動することを確認
 - [ ] 主要な機能を手動でテスト
 
 ### Phase 2: Rails 5.2 → Rails 6.0
@@ -49,7 +49,7 @@
 - [ ] Force SSLの設定を確認・更新
 - [ ] Action Cable JavaScriptの変更に対応
 - [ ] Active Storageの変更に対応
-- [ ] factory_girl_rails → factory_bot_railsへ移行
+- [x] factory_girl_rails → factory_bot_railsへ移行
 
 #### テスト・検証
 - [ ] 全てのテストが通ることを確認
@@ -154,7 +154,7 @@
 ## Gem依存関係の更新
 
 ### 必須の更新
-- [ ] factory_girl_rails → factory_bot_railsへ移行
+- [x] factory_girl_rails → factory_bot_railsへ移行
 - [ ] mysql2を最新版に更新
 - [ ] devise を Rails 8対応版に更新
 - [ ] pundit を最新版に更新
