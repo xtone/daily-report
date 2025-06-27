@@ -2,11 +2,13 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.0'
+gem 'rails', '~> 6.1.0'
 # Use mysql as the database for Active Record
-gem 'mysql2', '>= 0.3.18', '< 0.5'
+gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
+# Use logger for Rails 6.1 compatibility
+gem 'logger'
 # Bootsnap for faster boot times
 gem 'bootsnap', '>= 1.1.0', require: false
 # Use SCSS for stylesheets
@@ -25,9 +27,6 @@ gem 'data-confirm-modal'
 # gem 'therubyracer', platforms: :ruby
 
 gem 'webpacker', '~> 5.0'
-
-# Logger gem for webpacker compatibility
-gem 'logger'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -70,6 +69,9 @@ gem 'roo-xls', '~> 1.1.0'
 
 # Use slack-notifier to send notifications to Slack webhooks
 gem 'slack-notifier'
+
+# Use image_processing for Active Storage (Rails 6.1 requirement)
+gem 'image_processing', '~> 1.2'
 
 group :development, :test do
   gem 'rspec-rails'

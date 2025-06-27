@@ -36,7 +36,7 @@ class UsersController < ApplicationController
     authorize @user
     ApplicationRecord.transaction do
       @user.save
-      @user.update_attributes!(password: user_params[:password])
+      @user.update!(password: user_params[:password])
       @user.user_roles = UserRole.where(role: params[:user_roles])
     end
     redirect_to users_path, notice: "#{@user.name}さんを登録しました。"
@@ -59,7 +59,7 @@ class UsersController < ApplicationController
   def update
     authorize @user
     ApplicationRecord.transaction do
-      @user.update_attributes!(user_params)
+      @user.update!(user_params)
       @user.user_roles = UserRole.where(role: params[:user_roles])
     end
     redirect_to users_path, notice: "#{@user.name}さんの設定を更新しました。"

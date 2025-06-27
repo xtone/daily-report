@@ -66,7 +66,7 @@ class ProjectsController < ApplicationController
 
   def update
     authorize @project
-    if @project.update_attributes(project_params)
+    if @project.update(project_params)
       redirect_to projects_path, notice: 'プロジェクトの設定を更新しました。'
     else
       flash.now[:alert] = (%w(プロジェクトの設定の更新に失敗しました。) << @project.errors.full_messages).join("\n")

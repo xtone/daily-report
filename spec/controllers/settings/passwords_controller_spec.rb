@@ -125,7 +125,7 @@ RSpec.describe Settings::PasswordsController, type: :controller do
 
       context 'when user update fails for other reasons' do
         before do
-          allow_any_instance_of(User).to receive(:update_attributes).and_return(false)
+          allow_any_instance_of(User).to receive(:update).and_return(false)
           allow_any_instance_of(User).to receive(:errors).and_return(
             double(full_messages: ['Some validation error'])
           )

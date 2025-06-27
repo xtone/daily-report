@@ -29,7 +29,7 @@ services:
       BUGSNAG_API_KEY:
       BUGSNAG_ENV:
       SLACK_WEBHOOK_URL:
-      BUNDLER_VERSION: 2.0.2
+      BUNDLER_VERSION: 2.4.22
     command: tail -f /dev/null
 
 volumes:
