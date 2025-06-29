@@ -88,25 +88,58 @@ RSpecによるテストが用意されています。
 ### テストの実行方法
 
 全テストの実行
+```bash
+make test
+# または
+docker-compose -f docker-compose.test.yml run --rm app-test bundle exec rspec
 ```
-docker-compose exec app bundle exec rspec
+
+E2Eテストの実行
+```bash
+make e2e-test
+# または
+docker-compose -f docker-compose.test.yml run --rm app-test bundle exec rspec spec/features
 ```
 
 特定のテストファイルの実行
-```
-docker-compose exec app bundle exec rspec spec/models/user_spec.rb
+```bash
+docker-compose -f docker-compose.test.yml run --rm app-test bundle exec rspec spec/models/user_spec.rb
 ```
 
-特定のテストケースの実行（行番号指定）
-```
-docker-compose exec app bundle exec rspec spec/models/user_spec.rb:10
+テストカバレッジの計測
+```bash
+make coverage
 ```
 
 ### テスト実行時の注意事項
 
 - テストデータベースは自動的に作成されます
 - テストはutf8文字セットで実行されるため、日本語データも正しく扱えます（本番環境と同じ文字セット）
-- 現在、30個のテストケースがあり、13個のpendingテストが含まれています
+- 現在、400個のテストケースがあり、60個のpendingテストが含まれています
+- E2Eテストは15個実装されており、主要な画面遷移をカバーしています
+
+## CI/CD
+
+### GitHub Actions
+
+プルリクエストやpushに対して以下のチェックが自動実行されます：
+
+- **CI**: RSpecによる単体テストとE2Eテスト
+- **RuboCop**: Rubyコードの静的解析
+- **Security**: Brakemanによるセキュリティチェック、bundler-auditによる脆弱性チェック
+
+### ローカルでのチェック
+
+```bash
+# RuboCopの実行
+make rubocop
+
+# RuboCopで自動修正
+make rubocop-fix
+
+# セキュリティチェック
+make brakeman
+```
 
 ## システム概要
 

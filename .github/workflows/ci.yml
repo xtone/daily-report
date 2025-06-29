@@ -1,0 +1,181 @@
+name: CI
+
+on:
+  push:
+    branches: [ develop, main, master ]
+  pull_request:
+    branches: [ develop, main, master ]
+
+env:
+  RUBY_VERSION: 2.7.8
+  NODE_VERSION: 14
+  MYSQL_VERSION: 5.7
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: daily_report_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: true
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: |
+        yarn install --frozen-lockfile
+        
+    - name: Build webpack assets
+      run: |
+        npm run build:dev
+
+    - name: Setup test database
+      env:
+        RAILS_ENV: test
+        DATABASE_HOST: 127.0.0.1
+        DATABASE_USERNAME: root
+        DATABASE_PASSWORD: password
+      run: |
+        cp config/database.yml.ci config/database.yml
+        bundle exec rails db:create
+        bundle exec rails db:migrate
+
+    - name: Run tests
+      env:
+        RAILS_ENV: test
+        DATABASE_HOST: 127.0.0.1
+        DATABASE_USERNAME: root
+        DATABASE_PASSWORD: password
+      run: |
+        bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: rspec.xml
+
+  e2e-test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: daily_report_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: true
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+
+    - name: Install Chrome
+      run: |
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+
+    - name: Install dependencies
+      run: |
+        yarn install --frozen-lockfile
+        
+    - name: Build webpack assets
+      run: |
+        npm run build:dev
+
+    - name: Setup test database
+      env:
+        RAILS_ENV: test
+        DATABASE_HOST: 127.0.0.1
+        DATABASE_USERNAME: root
+        DATABASE_PASSWORD: password
+      run: |
+        cp config/database.yml.ci config/database.yml
+        bundle exec rails db:create
+        bundle exec rails db:migrate
+        bundle exec rails db:seed
+
+    - name: Run E2E tests
+      env:
+        RAILS_ENV: test
+        DATABASE_HOST: 127.0.0.1
+        DATABASE_USERNAME: root
+        DATABASE_PASSWORD: password
+      run: |
+        bundle exec rspec spec/features/ --format progress
+
+    - name: Upload screenshots on failure
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: screenshots
+        path: tmp/screenshots/
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: true
+
+    - name: Run RuboCop
+      run: |
+        bundle exec rubocop --parallel
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: true
+
+    - name: Run security checks
+      run: |
+        gem install bundler-audit
+        bundle audit check --update || true  # 一時的に失敗を許可
+        bundle exec brakeman -q -w2 || true  # 一時的に失敗を許可

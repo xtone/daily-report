@@ -1,0 +1,97 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
+  Exclude:
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+
+# Rails 6.1プロジェクトの標準的な設定
+Rails:
+  Enabled: true
+
+# 日本語のコメントを許可
+Style/AsciiComments:
+  Enabled: false
+
+# 行の長さ
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'spec/**/*'
+
+# メソッドの長さ
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'db/migrate/*'
+    - 'spec/**/*'
+
+# クラスの長さ
+Metrics/ClassLength:
+  Max: 150
+  Exclude:
+    - 'spec/**/*'
+
+# ブロックの長さ
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes.rb'
+    - 'config/environments/*'
+    - 'Gemfile'
+
+# ABC複雑度
+Metrics/AbcSize:
+  Max: 30
+
+# 循環的複雑度
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+# ドキュメンテーション
+Style/Documentation:
+  Enabled: false
+
+# frozen_string_literalの強制を無効化
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# RSpecの設定
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/NestedGroups:
+  Max: 4
+
+# FactoryBot関連
+RSpec/FactoryBot/CreateList:
+  Enabled: false
+
+# 既存コードとの互換性のため一時的に無効化
+Rails/ApplicationRecord:
+  Enabled: false
+
+Rails/ApplicationController:
+  Enabled: false
+
+# 日報システム特有の設定
+Rails/HasManyOrHasOneDependent:
+  Exclude:
+    - 'app/models/user.rb'  # 論理削除を使用しているため
+
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'spec/**/*'  # テストでは update_column を使用可能

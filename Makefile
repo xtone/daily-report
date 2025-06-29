@@ -91,4 +91,19 @@ e2e-setup: ## E2Eテスト環境をセットアップ
 	docker-compose -f docker-compose.test.yml build app-test
 	docker-compose -f docker-compose.test.yml run --rm app-test bundle install
 
-.PHONY: e2e-test e2e-setup
+# CI/CD commands
+rubocop: ## RuboCopを実行
+	$(DC) run --rm app bundle exec rubocop --parallel
+
+rubocop-fix: ## RuboCopで自動修正
+	$(DC) run --rm app bundle exec rubocop --parallel --auto-correct-all
+
+brakeman: ## Brakemanでセキュリティチェック
+	$(DC) run --rm app bundle exec brakeman -q -w2
+
+coverage: ## テストカバレッジを計測
+	docker-compose -f docker-compose.test.yml run --rm \
+		-e COVERAGE=true \
+		app-test bundle exec rspec
+
+.PHONY: e2e-test e2e-setup rubocop rubocop-fix brakeman coverage
