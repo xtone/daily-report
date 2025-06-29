@@ -85,6 +85,11 @@ group :development, :test do
   gem 'awesome_print'
   gem 'pry-rails'
   gem 'pry-byebug'
+  
+  # E2E testing
+  gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
 end
 
 group :development do

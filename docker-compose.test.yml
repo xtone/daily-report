@@ -15,7 +15,7 @@ services:
   app-test:
     build:
       context: .
-      dockerfile: ./docker/rails/Dockerfile.dev
+      dockerfile: ./docker/rails/Dockerfile.test
     volumes:
       - .:/daily-report
       - rubygems-test:/usr/local/bundle
