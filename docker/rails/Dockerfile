@@ -8,14 +8,15 @@ RUN apt-get update && \
         curl \
         ca-certificates \
         libmariadb-dev-compat \
-        python \
+        python3 \
         make \
         g++ && \
     rm -rf /var/lib/apt/lists/*
 
-# Node.js 14.x をNodeSourceリポジトリからインストール（node-sass 4.14.1との互換性確保）
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
-    apt-get install -y nodejs && \
+# Node.js 18.x をインストール（Debian標準パッケージ）
+RUN apt-get update && \
+    apt-get install -y nodejs npm && \
+    rm -rf /var/lib/apt/lists/* && \
     node --version && \
     npm --version
 
