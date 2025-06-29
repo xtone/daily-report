@@ -55,6 +55,7 @@ RSpec.feature 'Page Display', :js, type: :feature do
     scenario 'プロジェクト一覧が表示される' do
       # プロジェクト一覧は管理者権限が必要なので、このテストはスキップ
       # 管理者権限のテストは後述の「管理者ユーザーとしてログイン」セクションで実施
+      skip '管理者権限が必要なためスキップ'
     end
 
     scenario '参加プロジェクト設定が表示される' do
