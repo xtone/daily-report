@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## プロジェクト概要
+
+Daily Report - 社内日報管理システム (Rails 6.1.0 + React)
+
 ## 共通開発コマンド
 
 ### Dockerベースの開発環境
@@ -137,6 +141,13 @@ docker-compose -f docker-compose.dev.yml exec app bundle exec rails app:import_c
 - Deviseによるユーザー認証
 - Punditによる権限制御（管理者、ディレクター権限）
 - 論理削除（`deleted_at`）による非活性ユーザー管理
+
+### API設計
+
+- RESTful JSON API
+- エンドポイント: `/api/v1/*`
+- 認証: Deviseのセッション認証
+- レスポンス: JBuilderテンプレート
 
 ### 重要なディレクトリ
 
