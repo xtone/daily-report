@@ -103,6 +103,7 @@ group :development, :test do
 
   # CI/CD
   gem 'brakeman', require: false
+  gem 'bundler-audit', require: false
   gem 'rspec_junit_formatter'
   gem 'rubocop', require: false
   gem 'rubocop-factory_bot', require: false
