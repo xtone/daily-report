@@ -32,7 +32,13 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ env.RUBY_VERSION }}
-        bundler-cache: true
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -56,12 +62,9 @@ jobs:
     - name: Setup test database
       env:
         RAILS_ENV: test
-        DATABASE_HOST: 127.0.0.1
-        DATABASE_USERNAME: root
-        DATABASE_PASSWORD: password
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_PASSWORD: password
       run: |
-        cp config/database.yml.example config/database.yml
-        sed -i 's/localhost/127.0.0.1/g' config/database.yml
         bundle exec rails db:create
         bundle exec rails db:migrate
         bundle exec rails db:seed
@@ -69,9 +72,8 @@ jobs:
     - name: Run E2E tests
       env:
         RAILS_ENV: test
-        DATABASE_HOST: 127.0.0.1
-        DATABASE_USERNAME: root
-        DATABASE_PASSWORD: password
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_PASSWORD: password
       run: |
         bundle exec rspec spec/features/ --format progress
 
