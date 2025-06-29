@@ -13,7 +13,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     services:
       mysql:
@@ -76,7 +76,7 @@ jobs:
         path: rspec.xml
 
   e2e-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     services:
       mysql:
@@ -147,7 +147,7 @@ jobs:
         path: tmp/screenshots/
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
     - uses: actions/checkout@v4
@@ -163,7 +163,7 @@ jobs:
         bundle exec rubocop --parallel
 
   security:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
     - uses: actions/checkout@v4
