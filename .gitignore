@@ -48,3 +48,6 @@ yarn-debug.log*
 /app/assets/builds/*
 !/app/assets/builds/.keep
 !/app/assets/builds/manifest.json
+
+# Ignore compiled assets
+/public/assets
