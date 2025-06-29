@@ -57,7 +57,7 @@ jobs:
       run: yarn install --frozen-lockfile
         
     - name: Build webpack assets
-      run: npm run build:dev
+      run: yarn build
 
     - name: Setup test database
       env:

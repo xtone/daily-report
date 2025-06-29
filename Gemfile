@@ -26,7 +26,8 @@ gem 'data-confirm-modal'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-gem 'webpacker', '~> 5.0'
+# gem 'webpacker', '~> 5.0' # Replaced with jsbundling-rails
+gem 'jsbundling-rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

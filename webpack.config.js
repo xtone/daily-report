@@ -1,25 +1,13 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
-const { execSync } = require('child_process');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-// カスタムプラグイン：ビルド後にマニフェストを生成
-class GenerateManifestPlugin {
-  apply(compiler) {
-    compiler.plugin('done', () => {
-      try {
-        execSync('node scripts/generate-manifest.js', { stdio: 'inherit' });
-      } catch (error) {
-        console.error('Failed to generate manifest:', error);
-      }
-    });
-  }
-}
-
 module.exports = {
+  mode: isProduction ? 'production' : 'development',
+  
   entry: {
+    application: './app/javascript/application.js',
     admin: './app/javascript/packs/admin.jsx',
     bills: './app/javascript/packs/bills.jsx',
     estimates: './app/javascript/packs/estimates.jsx',
@@ -32,13 +20,13 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, 'public/packs'),
-    filename: '[name]-[hash].js',
-    publicPath: '/packs/'
+    path: path.resolve(__dirname, 'app/assets/builds'),
+    filename: '[name].js',
+    clean: true
   },
 
   resolve: {
-    extensions: ['.js', '.jsx', '.sass', '.scss', '.css', '.png', '.svg', '.gif', '.jpeg', '.jpg']
+    extensions: ['.js', '.jsx']
   },
 
   module: {
@@ -49,40 +37,8 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['env', 'react'],
-            plugins: ['transform-class-properties', 'syntax-dynamic-import']
-          }
-        }
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            {
-              loader: 'sass-loader',
-              options: {
-                implementation: require('sass')
-              }
-            }
-          ]
-        })
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name]-[hash].[ext]',
-            outputPath: 'assets/'
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: ['@babel/plugin-proposal-class-properties']
           }
         }
       }
@@ -90,23 +46,14 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin({
-      filename: '[name]-[hash].css',
-      disable: !isProduction
-    }),
-    new GenerateManifestPlugin(),
-    // webpack 3.x用の本番環境設定
-    ...(isProduction ? [
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('production')
-      }),
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: false
-        }
-      })
-    ] : [])
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    })
   ],
 
-  devtool: isProduction ? false : 'eval-cheap-module-source-map'
-}; 
+  devtool: isProduction ? false : 'source-map',
+
+  optimization: {
+    minimize: isProduction
+  }
+};

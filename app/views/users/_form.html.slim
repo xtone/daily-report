@@ -49,7 +49,7 @@
     .col-sm-offset-2.col-sm-10
       = f.submit user.new_record? ? '登録' : '更新', class: 'btn btn-default'
 
-= javascript_pack_tag 'forms'
+= javascript_include_tag 'forms'
 
 - content_for :foot do
   javascript:

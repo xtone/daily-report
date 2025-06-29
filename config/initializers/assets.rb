@@ -13,6 +13,19 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 
+# Precompile JavaScript bundles
+Rails.application.config.assets.precompile += %w[
+  admin.js
+  bills.js
+  estimates.js
+  forms.js
+  project_list.js
+  project_members.js
+  reports.js
+  reports_summary.js
+  unsubmitted.js
+]
+
 # CoffeeScriptプロセッサーを無効化（React移行完了のため）
 # 注意: 現在のSprocketsバージョンでは無効化メソッドが利用できないため、
 # coffee-railsを一時的に残してアセットパイプラインとの互換性を保つ
