@@ -1,0 +1,85 @@
+/* line 5, app/assets/stylesheets/reports.scss */
+h2.date {
+  text-align: center;
+}
+
+/* line 8, app/assets/stylesheets/reports.scss */
+ul.date-pager {
+  margin-top: -3em;
+}
+
+/* line 12, app/assets/stylesheets/reports.scss */
+.calendar .day {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+/* line 17, app/assets/stylesheets/reports.scss */
+.calendar .day.sun, .calendar .day.holiday {
+  background-color: #cccccc;
+}
+
+/* line 20, app/assets/stylesheets/reports.scss */
+.calendar .day.sat {
+  background-color: #cccccc;
+}
+
+/* line 23, app/assets/stylesheets/reports.scss */
+.calendar .day.today {
+  background-color: #ffffcc;
+}
+
+/* line 27, app/assets/stylesheets/reports.scss */
+.calendar .day .date {
+  padding-right: 0.5em;
+  text-align: right;
+  width: 3.5em;
+}
+
+/* line 32, app/assets/stylesheets/reports.scss */
+.calendar .day .operations {
+  padding-left: 0.5em;
+}
+
+/* line 35, app/assets/stylesheets/reports.scss */
+.calendar .day .operations .operation .workload {
+  padding-left: 0.5em;
+}
+
+/* line 40, app/assets/stylesheets/reports.scss */
+.calendar .day form {
+  padding-left: 0.5em;
+}
+
+/* line 42, app/assets/stylesheets/reports.scss */
+.calendar .day form input[type="text"] {
+  text-align: right;
+  width: 3.5em;
+}
+
+/* line 46, app/assets/stylesheets/reports.scss */
+.calendar .day form span.alert {
+  font-size: 12px;
+  padding: 0.2em 0.5em;
+}
+
+/* line 54, app/assets/stylesheets/reports.scss */
+form#summaryRender {
+  display: inline-block;
+}
+
+/* line 57, app/assets/stylesheets/reports.scss */
+form#summaryRender .form-group {
+  position: relative;
+}
+
+/* line 60, app/assets/stylesheets/reports.scss */
+form#summaryRender .form-group .separator {
+  padding: 0 .5em;
+}
+
+/* line 67, app/assets/stylesheets/reports.scss */
+table.reports-summary th.project {
+  white-space: nowrap;
+}

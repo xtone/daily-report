@@ -5,8 +5,8 @@ source 'https://rubygems.org'
 gem 'rails', '~> 6.1.0'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
-# Use Puma as the app server
-gem 'puma', '~> 3.0'
+# Use Puma as the app server (updated for security fixes)
+gem 'puma', '~> 5.6.9'
 # Use logger for Rails 6.1 compatibility
 gem 'logger'
 # Bootsnap for faster boot times
@@ -48,7 +48,7 @@ gem 'capistrano-rails', group: :development
 
 # Use Pundit and Devise to provide authorization system
 gem 'pundit'
-gem "devise", ">= 4.7.0"
+gem "devise", ">= 4.8.1"
 gem 'devise-encryptable'
 
 # Use Holidays to deal holidays

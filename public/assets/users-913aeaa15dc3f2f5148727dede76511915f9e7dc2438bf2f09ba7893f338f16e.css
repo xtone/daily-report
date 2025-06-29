@@ -1,0 +1,23 @@
+/* line 7, app/assets/stylesheets/users.scss */
+#user .label.label-sales_director, #users .label.label-sales_director {
+  color: #333;
+  background-color: #fffc4d;
+}
+
+/* line 8, app/assets/stylesheets/users.scss */
+#user .label.label-engineer, #users .label.label-engineer {
+  color: #333;
+  background-color: #88ce61;
+}
+
+/* line 9, app/assets/stylesheets/users.scss */
+#user .label.label-designer, #users .label.label-designer {
+  color: #333;
+  background-color: #ffbe39;
+}
+
+/* line 10, app/assets/stylesheets/users.scss */
+#user .label.label-other, #users .label.label-other {
+  color: #333;
+  background-color: #d9d9d9;
+}
