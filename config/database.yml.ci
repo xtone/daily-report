@@ -1,8 +1,0 @@
-test:
-  adapter: mysql2
-  encoding: utf8
-  database: daily_report_test
-  username: <%= ENV['DATABASE_USERNAME'] || 'root' %>
-  password: <%= ENV['DATABASE_PASSWORD'] || 'password' %>
-  host: <%= ENV['DATABASE_HOST'] || '127.0.0.1' %>
-  port: 3306
