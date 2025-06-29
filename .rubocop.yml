@@ -1,6 +1,7 @@
-require:
+plugins:
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-factory_bot
 
 AllCops:
   TargetRubyVersion: 2.7
@@ -77,7 +78,7 @@ RSpec/NestedGroups:
   Max: 4
 
 # FactoryBot関連
-RSpec/FactoryBot/CreateList:
+FactoryBot/CreateList:
   Enabled: false
 
 # 既存コードとの互換性のため一時的に無効化
