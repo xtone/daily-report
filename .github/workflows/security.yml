@@ -20,7 +20,13 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.7.8
-        bundler-cache: true
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
 
     - name: Run Brakeman
       run: |
@@ -36,7 +42,13 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.7.8
-        bundler-cache: true
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
 
     - name: Install bundler-audit
       run: |

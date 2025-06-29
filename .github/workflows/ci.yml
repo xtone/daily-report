@@ -32,7 +32,13 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ env.RUBY_VERSION }}
-        bundler-cache: true
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -95,7 +101,13 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ env.RUBY_VERSION }}
-        bundler-cache: true
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -156,7 +168,13 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ env.RUBY_VERSION }}
-        bundler-cache: true
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
 
     - name: Run RuboCop
       run: |
@@ -172,7 +190,13 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ env.RUBY_VERSION }}
-        bundler-cache: true
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
 
     - name: Run security checks
       run: |
