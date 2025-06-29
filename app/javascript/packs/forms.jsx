@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client';
 import DatePicker from '../components/DatePicker';
 
 // ユーザーフォーム用の日付ピッカーコンポーネント
@@ -38,6 +39,9 @@ class UserFormDatePicker extends React.Component {
 // CSRFトークンを取得
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+// React 18のルートを管理するためのMap
+const formsRoots = new Map();
+
 // Turbolinksイベントでコンポーネントをマウント
 document.addEventListener('turbolinks:load', () => {
   // ユーザーフォームの日付ピッカーを置き換え
@@ -60,14 +64,17 @@ document.addEventListener('turbolinks:load', () => {
       container.style.display = 'none';
       container.dataset.reactMounted = 'true';
       
-      ReactDOM.render(
+      // React 18のcreateRootを使用
+      const root = createRoot(reactContainer);
+      formsRoots.set(reactContainer, root);
+      
+      root.render(
         <UserFormDatePicker
           name={name}
           placeholder={placeholder}
           initialValue={initialValue}
           required={required}
-        />,
-        reactContainer
+        />
       );
     }
   });
@@ -80,7 +87,12 @@ document.addEventListener('turbolinks:before-render', () => {
   reactContainers.forEach(container => {
     const reactContainer = container.previousSibling;
     if (reactContainer && reactContainer.nodeType === Node.ELEMENT_NODE) {
-      ReactDOM.unmountComponentAtNode(reactContainer);
+      // React 18のルートをアンマウント
+      const root = formsRoots.get(reactContainer);
+      if (root) {
+        root.unmount();
+        formsRoots.delete(reactContainer);
+      }
       reactContainer.remove();
     }
     container.style.display = '';

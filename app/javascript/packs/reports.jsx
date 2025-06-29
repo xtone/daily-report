@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 //import FormData from 'formdata-polyfill'
 import * as Turbo from '@hotwired/turbo-rails'
 import PropTypes from 'prop-types'
@@ -101,7 +102,7 @@ class CalendarDay extends React.Component {
     this.destroy = this.destroy.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setOperationCountDefault();
   }
 
@@ -648,12 +649,13 @@ class ApiClient {
 
 
 document.addEventListener('turbo:load', () => {
-  ReactDOM.render(
-    <Calendar reports_path="/reports.json" projects_path="/settings/projects.json" />,
-    document.getElementById('reports')
-  );
+  const container = document.getElementById('reports');
+  if (container) {
+    const root = createRoot(container);
+    root.render(<Calendar reports_path="/reports.json" projects_path="/settings/projects.json" />);
+  }
 });
 
 document.addEventListener('turbo:before-render', () => {
-  ReactDOM.unmountComponentAtNode(document.getElementById('reports'));
+  // React 18では不要: ReactDOM.unmountComponentAtNode(document.getElementById('reports'));
 });

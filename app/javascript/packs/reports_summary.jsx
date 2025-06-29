@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client';
 
 // ReportSummary機能のReactコンポーネント（既存のCoffeeScriptから移植）
 class ReportSummaryManager extends React.Component {
@@ -84,6 +85,9 @@ class ReportSummaryManager extends React.Component {
 // CSRFトークンを取得
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+// React 18のルートを保持する変数
+let reportSummaryRoot = null;
+
 // Turbolinksイベントでコンポーネントをマウント
 document.addEventListener('turbolinks:load', () => {
   // ReportSummaryManagerをマウント（summaryRenderとsummaryDownloadフォームが存在する場合）
@@ -91,25 +95,37 @@ document.addEventListener('turbolinks:load', () => {
   const downloadForm = document.getElementById('summaryDownload');
   
   if (renderForm && downloadForm) {
-    const container = document.createElement('div');
-    container.id = 'report-summary-manager';
-    document.body.appendChild(container);
+    let container = document.getElementById('report-summary-manager');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'report-summary-manager';
+      document.body.appendChild(container);
+    }
     
-    ReactDOM.render(
+    // 既存のルートがある場合は再利用、なければ新規作成
+    if (!reportSummaryRoot) {
+      reportSummaryRoot = createRoot(container);
+    }
+    
+    reportSummaryRoot.render(
       <ReportSummaryManager 
         renderFormId="summaryRender" 
         downloadFormId="summaryDownload" 
-      />, 
-      container
+      />
     );
   }
 });
 
 // Turbolinksページ遷移前にコンポーネントをアンマウント
 document.addEventListener('turbolinks:before-render', () => {
+  // React 18のルートをアンマウント
+  if (reportSummaryRoot) {
+    reportSummaryRoot.unmount();
+    reportSummaryRoot = null;
+  }
+  
   const container = document.getElementById('report-summary-manager');
   if (container) {
-    ReactDOM.unmountComponentAtNode(container);
     container.remove();
   }
 }); 

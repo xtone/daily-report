@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client';
 import DatePicker from '../components/DatePicker';
 
 // 未提出一覧用の日付ピッカーコンポーネント
@@ -59,6 +60,9 @@ class UnsubmittedDatePicker extends React.Component {
 // CSRFトークンを取得
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+// React 18のルートを管理するためのMap
+const unsubmittedRoots = new Map();
+
 // Turbolinksイベントでコンポーネントをマウント
 document.addEventListener('turbolinks:load', () => {
   // 未提出一覧ページの日付ピッカーを置き換え
@@ -66,8 +70,8 @@ document.addEventListener('turbolinks:load', () => {
   
   if (unsubmittedForm) {
     const formGroup = unsubmittedForm.querySelector('.form-group');
-    const startInput = formGroup.querySelector('input[name="reports[start]"]');
-    const endInput = formGroup.querySelector('input[name="reports[end]"]');
+    const startInput = formGroup?.querySelector('input[name="reports[start]"]');
+    const endInput = formGroup?.querySelector('input[name="reports[end]"]');
     
     if (startInput && endInput && !formGroup.dataset.reactMounted) {
       // 元の値を取得
@@ -82,12 +86,15 @@ document.addEventListener('turbolinks:load', () => {
       formGroup.style.display = 'none';
       formGroup.dataset.reactMounted = 'true';
       
-      ReactDOM.render(
+      // React 18のcreateRootを使用
+      const root = createRoot(reactContainer);
+      unsubmittedRoots.set(reactContainer, root);
+      
+      root.render(
         <UnsubmittedDatePicker
           initialStartDate={initialStartDate}
           initialEndDate={initialEndDate}
-        />,
-        reactContainer
+        />
       );
     }
   }
@@ -100,7 +107,12 @@ document.addEventListener('turbolinks:before-render', () => {
   reactMountedElements.forEach(element => {
     const reactContainer = element.previousSibling;
     if (reactContainer && reactContainer.nodeType === Node.ELEMENT_NODE) {
-      ReactDOM.unmountComponentAtNode(reactContainer);
+      // React 18のルートをアンマウント
+      const root = unsubmittedRoots.get(reactContainer);
+      if (root) {
+        root.unmount();
+        unsubmittedRoots.delete(reactContainer);
+      }
       reactContainer.remove();
     }
     element.style.display = '';
