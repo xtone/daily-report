@@ -7,7 +7,9 @@ module E2EHelpers
     fill_in 'パスワード', with: 'password'
     click_button 'ログイン'
     # ログインが成功したことを確認（日報ページにリダイレクトされる）
-    expect(page).to have_content('日報')
+    expect(page).to have_content('日報', wait: 10)
+    # Turbo Driveのページ遷移が完了するのを待つ
+    expect(page).to have_css('.navbar', wait: 10)
   end
 
   # Turbo Driveのナビゲーションを確実に待つためのヘルパー
