@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_29_094804) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_29_094804) do
   create_table "bills", charset: "utf8", force: :cascade do |t|
     t.bigint "estimate_id"
     t.string "serial_no", null: false
