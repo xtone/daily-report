@@ -4,7 +4,7 @@ class Settings::ProjectsController < ApplicationController
   def index
     respond_to do |format|
       format.json { @projects = Project.find_in_user(current_user.id) }
-      format.any { }
+      format.html { }
     end
   end
 

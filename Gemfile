@@ -2,17 +2,19 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1.0'
+gem 'rails', '~> 7.0.0'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server (updated for security fixes)
 gem 'puma', '~> 5.6.9'
-# Use logger for Rails 6.1 compatibility
+# Use logger
 gem 'logger'
 # Bootsnap for faster boot times
 gem 'bootsnap', '>= 1.1.0', require: false
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
+# Sprockets for asset pipeline (required for Rails 7)
+gem 'sprockets-rails'
 # Use honoka-rails (Bootstrap Theme for Japanese)
 gem 'honoka-rails'
 # Use Slim for templating engine
@@ -31,8 +33,8 @@ gem 'jsbundling-rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
+# Turbo replaces Turbolinks in Rails 7
+gem 'turbo-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
@@ -75,6 +77,11 @@ gem 'slack-notifier'
 gem 'image_processing', '~> 1.2'
 
 gem 'concurrent-ruby', '1.3.4'
+
+# Required for Rails 7 (Ruby 3.1+)
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
 
 group :development, :test do
   gem 'rspec-rails'

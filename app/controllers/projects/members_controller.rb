@@ -8,7 +8,7 @@ class Projects::MembersController < ApplicationController
     authorize @project
     respond_to do |format|
       format.json { @users = User.find_in_project(@project.id) }
-      format.any {}
+      format.html {}
     end
   end
 

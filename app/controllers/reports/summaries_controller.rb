@@ -21,7 +21,7 @@ class Reports::SummariesController < ApplicationController
                   filename: "summary_#{@start_date.strftime('%Y%m%d')}-#{@end_date.strftime('%Y%m%d')}.csv",
                   type: :csv
       end
-      format.any do
+      format.html do
         if params[:reports].present?
           @start_date = Date.parse(params[:reports][:start])
           @end_date = Date.parse(params[:reports][:end])

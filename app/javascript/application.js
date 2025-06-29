@@ -1,5 +1,5 @@
 // Entry point for the build script in your package.json
-import "turbolinks"
+import "@hotwired/turbo-rails"
 
 // 共通のユーティリティ
 import "./utils/common"

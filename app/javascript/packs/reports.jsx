@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 //import FormData from 'formdata-polyfill'
-import Turbolinks from 'turbolinks'
+import * as Turbo from '@hotwired/turbo-rails'
 import PropTypes from 'prop-types'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
@@ -647,15 +647,13 @@ class ApiClient {
 
 
 
-Turbolinks.start();
-
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('turbo:load', () => {
   ReactDOM.render(
     <Calendar reports_path="/reports.json" projects_path="/settings/projects.json" />,
     document.getElementById('reports')
   );
 });
 
-document.addEventListener('turbolinks:before-render', () => {
+document.addEventListener('turbo:before-render', () => {
   ReactDOM.unmountComponentAtNode(document.getElementById('reports'));
 });

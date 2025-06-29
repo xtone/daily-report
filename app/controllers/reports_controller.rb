@@ -35,7 +35,7 @@ class ReportsController < ApplicationController
                   type: :csv
       end
 
-      format.any do
+      format.html do
         @date = get_date || Time.zone.now.to_date
         @projects = current_user.projects.available.order_by_reading
         # render view

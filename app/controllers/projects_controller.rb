@@ -12,7 +12,7 @@ class ProjectsController < ApplicationController
         @projects = Project.order(created_at: :asc)
         send_data render_to_string, filename: "project_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
       end
-      format.any do
+      format.html do
         order_hash = {}
         if params[:order].present? && params[:order] =~ /\A(.+)_([^_]+)\Z/
           if %w(code name name_reading displayed).include?($1)

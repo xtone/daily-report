@@ -12,7 +12,7 @@ class UsersController < ApplicationController
         @users = User.available.order(id: :asc)
         send_data render_to_string, filename: "user_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
       end
-      format.any do
+      format.html do
         if params[:active] == 'true'
           @users = User.includes(:user_roles).available.order(id: :asc)
         else

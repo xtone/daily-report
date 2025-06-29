@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Turbolinks from 'turbolinks'
+import * as Turbo from '@hotwired/turbo-rails'
 import PropTypes from 'prop-types'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
@@ -175,15 +175,13 @@ class ProjectCode extends React.Component {
 }
 
 
-Turbolinks.start();
-
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('turbo:load', () => {
   ReactDOM.render(
     <ProjectListRoot projects_path="/settings/projects" />,
     document.getElementById('project_list')
   );
 });
 
-document.addEventListener('turbolinks:before-render', () => {
+document.addEventListener('turbo:before-render', () => {
   ReactDOM.unmountComponentAtNode(document.getElementById('project_list'));
 });
