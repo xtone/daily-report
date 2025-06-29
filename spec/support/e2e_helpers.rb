@@ -63,7 +63,7 @@ module E2EHelpers
     # スクリーンショットディレクトリを作成
     FileUtils.mkdir_p('tmp/screenshots')
     
-    timestamp = Time.zone.now.strftime('%Y%m%d_%H%M%S')
+    timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
     filename = "screenshot_#{timestamp}_#{RSpec.current_example.full_description.gsub(/[^0-9A-Za-z.\-]/, '_')}.png"
     page.save_screenshot("tmp/screenshots/#{filename}")
     puts "Screenshot saved: tmp/screenshots/#{filename}"

@@ -1,5 +1,4 @@
-# Turbo Drive configuration
+# テスト環境ではTurbo Driveを無効化
 if Rails.env.test?
-  # Disable Turbo Drive in test environment to avoid E2E test issues
-  Rails.application.config.turbo = false
+  Rails.application.config.turbo.drive = false
 end
