@@ -22,6 +22,9 @@ RSpec.feature 'Page Display', :js, type: :feature do
   describe '未認証ユーザー' do
     scenario 'ログイン画面が表示される' do
       visit '/'
+      # Turbo Driveが無効化されていることを確認
+      expect(page.evaluate_script('window.Turbo ? window.Turbo.session.drive : true')).to eq(false)
+      
       expect(page).to have_current_path('/users/sign_in')
       expect(page).to have_content('Log in')
       expect(page).to have_field('メールアドレス')
@@ -44,6 +47,9 @@ RSpec.feature 'Page Display', :js, type: :feature do
 
     scenario 'ホーム画面（日報一覧）が表示される' do
       visit '/'
+      # ページが完全に読み込まれるまで待つ
+      wait_for_turbo_navigation if respond_to?(:wait_for_turbo_navigation)
+      
       expect(page).to have_content('日報')
       expect(page).to have_css('.navbar')
       expect(page).to have_link('日報入力')

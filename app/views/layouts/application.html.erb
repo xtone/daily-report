@@ -1,32 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DailyReport</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
     <% if Rails.env.test? %>
       <meta name="turbo-visit-control" content="reload">
     <% end %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbo-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbo-track': 'reload' %>
-    <%= content_for(:head) if content_for?(:head) %>
+    <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbo-track': 'reload' %>
   </head>
 
   <body>
-    <div class="navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header">
-          <%= link_to '日報システム', root_path, class: 'navbar-brand' %>
-        </div>
-        <div class="navbar-collapse collapse">
-          <%= global_header %>
-        </div>
-      </div>
-    </div>
-
+    <%= render 'application/header' %>
     <div class="container">
       <%= yield %>
     </div>
-    <%= content_for(:foot) if content_for?(:foot) %>
   </body>
 </html>

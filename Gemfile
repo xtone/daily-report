@@ -98,6 +98,7 @@ group :development, :test do
 
   # E2E testing
   gem 'capybara'
+  gem 'database_cleaner-active_record'
   gem 'selenium-webdriver'
   gem 'webdrivers'
 

@@ -60,6 +60,9 @@ module E2EHelpers
   def take_screenshot_on_failure
     return unless RSpec.current_example.exception
 
+    # スクリーンショットディレクトリを作成
+    FileUtils.mkdir_p('tmp/screenshots')
+    
     timestamp = Time.zone.now.strftime('%Y%m%d_%H%M%S')
     filename = "screenshot_#{timestamp}_#{RSpec.current_example.full_description.gsub(/[^0-9A-Za-z.\-]/, '_')}.png"
     page.save_screenshot("tmp/screenshots/#{filename}")

@@ -68,6 +68,9 @@ jobs:
         bundle exec rails db:create
         bundle exec rails db:migrate
         bundle exec rails db:seed
+    
+    - name: Create screenshots directory
+      run: mkdir -p tmp/screenshots
 
     - name: Run E2E tests
       env:
@@ -78,7 +81,11 @@ jobs:
         HEADLESS: true
         DISABLE_SPRING: true
       run: |
-        bundle exec rspec spec/features/ --format documentation --format progress || bundle exec rspec spec/features/ --format documentation
+        echo "Starting E2E tests..."
+        echo "Verifying Turbo configuration..."
+        bundle exec rails runner "puts 'Turbo enabled: ' + Rails.application.config.turbo.to_s"
+        echo "Running RSpec tests..."
+        bundle exec rspec spec/features/ --format documentation --format progress --backtrace
 
     - name: Upload screenshots on failure
       uses: actions/upload-artifact@v4
