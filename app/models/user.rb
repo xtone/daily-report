@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :rememberable, :encryptable
 
-  enum division: { undefined: 0, sales_director: 1, engineer: 2, designer: 3, other: 4 }
+  enum :division, { undefined: 0, sales_director: 1, engineer: 2, designer: 3, other: 4 }
 
   has_many :user_role_associations, dependent: :destroy
   has_many :user_roles, through: :user_role_associations

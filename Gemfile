@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.2.0'
+gem 'rails', '~> 8.0.0'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
-# Use Puma as the app server (updated for security fixes)
-gem 'puma', '~> 5.6.9'
+# Use Puma as the app server (updated for Rails 8 compatibility)
+gem 'puma', '~> 6.4'
 # Use logger
 gem 'logger'
 # Bootsnap for faster boot times
@@ -77,10 +77,13 @@ gem 'image_processing', '~> 1.2'
 
 gem 'concurrent-ruby', '1.3.4'
 
-# Required for Rails 7 (Ruby 3.1+)
+# Required for Rails 7+ (Ruby 3.1+)
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
+
+# Required for Rails 8 (Rack 3 compatibility)
+gem 'rackup', require: false
 
 group :development, :test do
   gem 'factory_bot_rails', '~> 6.2'
