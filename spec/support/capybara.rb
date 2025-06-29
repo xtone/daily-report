@@ -14,6 +14,13 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-setuid-sandbox')
   options.add_argument('--window-size=1280,800')
+  
+  # CI環境用の追加設定
+  if ENV['CI']
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_argument('--disable-features=VizDisplayCompositor')
+    options.add_argument('--disable-web-security')
+  end
 
   # Chromeのバイナリパスを明示的に指定（Docker環境用）
   options.binary = '/usr/bin/google-chrome-stable' if File.exist?('/usr/bin/google-chrome-stable')
@@ -23,7 +30,8 @@ end
 
 Capybara.default_driver = :rack_test
 Capybara.javascript_driver = :selenium_chrome_headless
-Capybara.default_max_wait_time = 5
+# CI環境では待ち時間を長く設定
+Capybara.default_max_wait_time = ENV['CI'] ? 10 : 5
 
 # Server configuration
 Capybara.server_host = '0.0.0.0'

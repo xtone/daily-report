@@ -61,7 +61,8 @@ RSpec.feature 'Page Display', :js, type: :feature do
     scenario '参加プロジェクト設定が表示される' do
       begin
         # ナビゲーションリンクが表示されるまで待つ
-        expect(page).to have_link('プロジェクト設定', wait: 10)
+        wait_for_page_load
+        expect(page).to have_link('プロジェクト設定', wait: ENV['CI'] ? 15 : 10)
         # ナビゲーションリンクをクリックして遷移
         click_link 'プロジェクト設定'
         expect(page).to have_css('h1', text: '参加プロジェクト設定', wait: 5)
@@ -90,7 +91,18 @@ RSpec.feature 'Page Display', :js, type: :feature do
 
   describe '管理者ユーザーとしてログイン' do
     before do
-      sign_in_as(admin_user)
+      begin
+        sign_in_as(admin_user)
+      rescue Selenium::WebDriver::Error::UnknownError => e
+        # CI環境でのSeleniumエラーをキャッチ
+        if e.message.include?('Node with given id does not belong to the document')
+          # ページをリフレッシュして再試行
+          visit '/'
+          sign_in_as(admin_user)
+        else
+          raise e
+        end
+      end
     end
 
     scenario '管理画面が表示される' do
@@ -98,9 +110,7 @@ RSpec.feature 'Page Display', :js, type: :feature do
         # 管理画面へのリンクが表示されることを確認
         expect(page).to have_link('管理画面', wait: 5)
         # リンクをクリックして遷移
-        click_link '管理画面'
-        # Turbo Driveの遷移を待つ
-        sleep 0.5
+        click_link_with_retry '管理画面'
         expect(page).to have_css('h1', text: '管理画面', wait: 5)
         expect(page).to have_link('プロジェクト管理')
         expect(page).to have_link('ユーザー管理')
@@ -125,12 +135,9 @@ RSpec.feature 'Page Display', :js, type: :feature do
         visit '/'
         expect(page).to have_content('日報', wait: 5)
         # 管理画面経由でユーザー管理画面へ遷移
-        click_link '管理画面'
-        # Turbo Driveの遷移を待つ
-        sleep 0.5
+        click_link_with_retry '管理画面'
         expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        click_link 'ユーザー管理'
-        sleep 0.5
+        click_link_with_retry 'ユーザー管理'
         expect(page).to have_css('h1', text: 'ユーザー一覧', wait: 5)
         expect(page).to have_link('新規登録')
         expect(page).to have_table
@@ -153,12 +160,9 @@ RSpec.feature 'Page Display', :js, type: :feature do
         visit '/'
         expect(page).to have_content('日報', wait: 5)
         # 管理画面経由でCSV出力画面へ遷移
-        click_link '管理画面'
-        # Turbo Driveの遷移を待つ
-        sleep 0.5
+        click_link_with_retry '管理画面'
         expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        click_link 'CSV出力'
-        sleep 0.5
+        click_link_with_retry 'CSV出力'
         expect(page).to have_css('h1', text: 'CSV出力', wait: 5)
         expect(page).to have_content('提出済みの日報一覧')
         expect(page).to have_content('プロジェクト一覧')

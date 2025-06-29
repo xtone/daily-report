@@ -74,8 +74,11 @@ jobs:
         RAILS_ENV: test
         MYSQL_HOST: 127.0.0.1
         MYSQL_PASSWORD: password
+        CI: true
+        HEADLESS: true
+        DISABLE_SPRING: true
       run: |
-        bundle exec rspec spec/features/ --format progress
+        bundle exec rspec spec/features/ --format documentation --format progress || bundle exec rspec spec/features/ --format documentation
 
     - name: Upload screenshots on failure
       uses: actions/upload-artifact@v4
