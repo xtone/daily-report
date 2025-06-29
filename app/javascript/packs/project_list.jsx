@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import * as Turbo from '@hotwired/turbo-rails'
 import PropTypes from 'prop-types'
 
@@ -81,13 +82,9 @@ ProjectListRoot.initials = ['あ','か','さ','た','な','は','ま','や','ら
 class ProjectList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { projects: [] };
+    this.state = { projects: this.props.projects || [] };
 
     this.toggleRelated = this.toggleRelated.bind(this);
-  }
-
-  componentWillMount() {
-    this.setState({ projects: this.props.projects });
   }
 
   /**
@@ -176,12 +173,13 @@ class ProjectCode extends React.Component {
 
 
 document.addEventListener('turbo:load', () => {
-  ReactDOM.render(
-    <ProjectListRoot projects_path="/settings/projects" />,
-    document.getElementById('project_list')
-  );
+  const container = document.getElementById('project_list');
+  if (container) {
+    const root = createRoot(container);
+    root.render(<ProjectListRoot projects_path="/settings/projects" />);
+  }
 });
 
 document.addEventListener('turbo:before-render', () => {
-  ReactDOM.unmountComponentAtNode(document.getElementById('project_list'));
+  // React 18では不要: ReactDOM.unmountComponentAtNode(document.getElementById('project_list'));
 });

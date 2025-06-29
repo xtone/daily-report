@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import DatePicker from '../components/DatePicker';
 
 // CsvDownload機能のReactコンポーネント
@@ -150,13 +151,14 @@ class CsvDatePicker extends React.Component {
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 // Turbolinksイベントでコンポーネントをマウント
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('turbo:load', () => {
   // CsvDownloadManagerをマウント
   const csvContainer = document.createElement('div');
   csvContainer.id = 'csv-download-manager';
   document.body.appendChild(csvContainer);
   
-  ReactDOM.render(<CsvDownloadManager />, csvContainer);
+  const csvRoot = createRoot(csvContainer);
+  csvRoot.render(<CsvDownloadManager />);
 
   // ReportDownloadFormをマウント（reportsフォームが存在する場合）
   const reportsForm = document.getElementById('reports');
@@ -165,7 +167,8 @@ document.addEventListener('turbolinks:load', () => {
     reportContainer.id = 'report-download-manager';
     document.body.appendChild(reportContainer);
     
-    ReactDOM.render(<ReportDownloadForm formId="reports" />, reportContainer);
+    const reportRoot = createRoot(reportContainer);
+    reportRoot.render(<ReportDownloadForm formId="reports" />);
   }
 
   // CSV出力の日付ピッカーをReact化
@@ -188,28 +191,28 @@ document.addEventListener('turbolinks:load', () => {
       formGroup.style.display = 'none';
       formGroup.dataset.reactDatePickerMounted = 'true';
       
-      ReactDOM.render(
+      const datePickerRoot = createRoot(reactContainer);
+      datePickerRoot.render(
         <CsvDatePicker
           initialStartDate={initialStartDate}
           initialEndDate={initialEndDate}
-        />,
-        reactContainer
+        />
       );
     }
   }
 });
 
 // Turbolinksページ遷移前にコンポーネントをアンマウント
-document.addEventListener('turbolinks:before-render', () => {
+document.addEventListener('turbo:before-render', () => {
   const csvContainer = document.getElementById('csv-download-manager');
   if (csvContainer) {
-    ReactDOM.unmountComponentAtNode(csvContainer);
+    // React 18では不要
     csvContainer.remove();
   }
 
   const reportContainer = document.getElementById('report-download-manager');
   if (reportContainer) {
-    ReactDOM.unmountComponentAtNode(reportContainer);
+    // React 18では不要
     reportContainer.remove();
   }
 
@@ -218,7 +221,7 @@ document.addEventListener('turbolinks:before-render', () => {
   reactDatePickerElements.forEach(element => {
     const reactContainer = element.previousSibling;
     if (reactContainer && reactContainer.nodeType === Node.ELEMENT_NODE) {
-      ReactDOM.unmountComponentAtNode(reactContainer);
+      // React 18では不要
       reactContainer.remove();
     }
     element.style.display = '';

@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import * as Turbo from '@hotwired/turbo-rails'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
@@ -250,18 +251,28 @@ class EstimateHiddenFields extends React.Component {
   }
 }
 
+// React 18のルートを保持する変数
+let estimatesRoot = null;
+
 document.addEventListener('turbo:load', () => {
   let container = document.getElementById('estimates');
   if (!container) return;
-  ReactDOM.render(
+  
+  // 既存のルートがある場合は再利用、なければ新規作成
+  if (!estimatesRoot) {
+    estimatesRoot = createRoot(container);
+  }
+  
+  estimatesRoot.render(
     <Estimate estimatesPath={container.dataset.estimatesPath}
-              confirmEstimatesPath={container.dataset.confirmEstimatesPath} />,
-    container
+              confirmEstimatesPath={container.dataset.confirmEstimatesPath} />
   );
 });
 
 document.addEventListener('turbo:before-render', () => {
-  let container = document.getElementById('estimates');
-  if (!container) return;
-  ReactDOM.unmountComponentAtNode(container);
+  // React 18のルートをアンマウント
+  if (estimatesRoot) {
+    estimatesRoot.unmount();
+    estimatesRoot = null;
+  }
 });
