@@ -1,0 +1,82 @@
+services:
+  db:
+    image: mysql:5.7
+    command: --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    volumes:
+      - mysql-db-dev:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: daily_report_development
+      MYSQL_USER: daily_report
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"  # ホストのMySQLと競合しないようにポートを変更
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/rails/Dockerfile.dev
+    volumes:
+      - .:/daily-report
+      - rubygems-dev:/usr/local/bundle
+      - node_modules:/daily-report/node_modules  # node_modulesを永続化
+    ports:
+      - "3000:3000"
+      - "3035:3035"  # webpack-dev-server用
+    depends_on:
+      - db
+    environment:
+      RAILS_ENV: development
+      NODE_ENV: development
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      DB_HOST: db
+      DB_USERNAME: root
+      DB_PASSWORD: password
+      DB_PORT: 3306
+      BUNDLER_VERSION: 2.4.22
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+      BOOTSNAP_CACHE_DIR: /tmp/bootsnap-cache
+      EDITOR: vim
+    stdin_open: true
+    tty: true
+    command: >
+      bash -c "
+        rm -f tmp/pids/server.pid &&
+        bundle install &&
+        yarn install &&
+        bundle exec rails db:create db:migrate &&
+        bundle exec rails server -b 0.0.0.0
+      "
+
+  # webpacker:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/rails/Dockerfile.dev
+  #   volumes:
+  #     - .:/daily-report
+  #     - rubygems-dev:/usr/local/bundle
+  #     - node_modules:/daily-report/node_modules
+  #   ports:
+  #     - "3035:3035"
+  #   depends_on:
+  #     - app
+  #   environment:
+  #     RAILS_ENV: development
+  #     NODE_ENV: development
+  #     WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+  #   command: ./bin/webpack-dev-server
+
+volumes:
+  rubygems-dev:
+    driver: 'local'
+  mysql-db-dev:
+    driver: 'local'
+  node_modules:
+    driver: 'local'

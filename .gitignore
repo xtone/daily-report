@@ -29,6 +29,10 @@ config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
 
+# 環境変数ファイル
+.env
+.env.local
+
 /.idea
 
 # Ignore master key for decrypting credentials and more.

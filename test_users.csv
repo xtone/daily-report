@@ -1,0 +1,3 @@
+氏名,メールアドレス,入社日,部門,権限
+テストユーザー,test@example.com,2025-06-01,engineer,
+管理者,admin@example.com,2025-06-01,sales_director,administrator
