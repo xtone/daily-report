@@ -17,7 +17,7 @@ RSpec.describe Operation, type: :model do
       it 'must be less than or equal to 100' do
         # バリデーションが設定されていることを確認
         expect(Operation.validators_on(:workload).any? { |v| v.is_a?(ActiveModel::Validations::NumericalityValidator) }).to be true
-        
+
         operation = build(:operation, report: report, project: project, workload: 50)
         expect(operation).to be_valid
       end
@@ -37,21 +37,23 @@ RSpec.describe Operation, type: :model do
 
   # アソシエーションテスト
   describe 'associations' do
-    it { should belong_to(:report) }
-    it { should belong_to(:project) }
+    it { is_expected.to belong_to(:report) }
+    it { is_expected.to belong_to(:project) }
   end
 
   describe '.summary' do
+    subject { Operation.summary(start_on, end_on) }
+
     let!(:user1) { create(:user, email: 'user1@example.com') }
     let!(:user2) { create(:user, email: 'user2@example.com') }
     let!(:project1) { create(:project, name: 'Project A') }
     let!(:project2) { create(:project, name: 'Project B') }
-    
+
     let!(:report1) { create(:report, user: user1, worked_in: '2017-01-10') }
     let!(:report2) { create(:report, user: user1, worked_in: '2017-01-11') }
     let!(:report3) { create(:report, user: user2, worked_in: '2017-01-10') }
     let!(:report4) { create(:report, user: user1, worked_in: '2017-01-20') }
-    
+
     before do
       # User1の作業時間
       create(:operation, report: report1, project: project1, workload: 60)
@@ -64,26 +66,24 @@ RSpec.describe Operation, type: :model do
       create(:operation, report: report4, project: project1, workload: 100)
     end
 
-    subject { Operation.summary(start_on, end_on) }
-
     context 'within specified period' do
       let(:start_on) { Date.new(2017, 1, 10) }
       let(:end_on) { Date.new(2017, 1, 11) }
 
       it 'returns summarized workload by project and user' do
         result = subject
-        
+
         # Arrayに変換されているか確認
         expect(result).to be_an(Array)
-        
+
         # Hashに戻して検証
         summary_hash = result.to_h
-        
+
         # Project1の集計
         expect(summary_hash[project1.id]).to be_a(Hash)
         expect(summary_hash[project1.id][user1.id]).to eq(160) # 60 + 100
         expect(summary_hash[project1.id][user2.id]).to eq(80)
-        
+
         # Project2の集計
         expect(summary_hash[project2.id]).to be_a(Hash)
         expect(summary_hash[project2.id][user1.id]).to eq(40)
@@ -98,7 +98,7 @@ RSpec.describe Operation, type: :model do
       it 'returns only data within the range' do
         result = subject
         summary_hash = result.to_h
-        
+
         # 1/20のデータのみ
         expect(summary_hash[project1.id][user1.id]).to eq(100)
         expect(summary_hash[project1.id][user2.id]).to be_nil

@@ -4,17 +4,17 @@ class Settings::ProjectsController < ApplicationController
   def index
     respond_to do |format|
       format.json { @projects = Project.find_in_user(current_user.id) }
-      format.html { }
+      format.html {}
     end
   end
 
   def update
     current_user.projects << Project.find(params[:id])
-    head 200
+    head :ok
   end
 
   def destroy
     current_user.user_projects.find_by(project_id: params[:id]).destroy
-    head 200
+    head :ok
   end
 end

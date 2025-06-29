@@ -1,8 +1,8 @@
 class EstimateValidator < ActiveModel::Validator
   def validate(record)
-    if record.director_manday + record.engineer_manday + record.designer_manday + record.other_manday <= 0.0
-      record.errors.add(:base, '工数の合計がゼロです。')
-    end
+    return unless record.director_manday + record.engineer_manday + record.designer_manday + record.other_manday <= 0.0
+
+    record.errors.add(:base, '工数の合計がゼロです。')
   end
 end
 
@@ -21,10 +21,10 @@ class Estimate < ApplicationRecord
   # @return [Boolean]
   def deja_vu?
     self.class.where(
-      director_manday: self.director_manday,
-      engineer_manday: self.engineer_manday,
-      designer_manday: self.designer_manday,
-      cost: self.cost
+      director_manday: director_manday,
+      engineer_manday: engineer_manday,
+      designer_manday: designer_manday,
+      cost: cost
     ).exists?
   end
 
@@ -32,6 +32,6 @@ class Estimate < ApplicationRecord
   # @param [Date] on 判定基準となる日付
   # @return [Boolean]
   def too_old?(on = Time.current.to_date)
-    on - self.estimated_on > 180
+    on - estimated_on > 180
   end
 end

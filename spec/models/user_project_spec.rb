@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe UserProject, type: :model do
   # アソシエーションテスト
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:project) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:project) }
   end
 
   # バリデーションテスト
@@ -44,7 +44,7 @@ RSpec.describe UserProject, type: :model do
     end
 
     it 'allows same user with different projects' do
-      project2 = create(:project, code: 99999)
+      project2 = create(:project, code: 99_999)
       create(:user_project, user: user, project: project)
       user_project2 = build(:user_project, user: user, project: project2)
       expect(user_project2).to be_valid

@@ -1,9 +1,7 @@
 class Settings::PasswordsController < ApplicationController
   before_action :authenticate_user!
 
-  def show
-
-  end
+  def show; end
 
   def update
     user = User.find(current_user.id)

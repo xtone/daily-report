@@ -8,6 +8,7 @@ class Reports::SummariesController < ApplicationController
     respond_to do |format|
       format.csv do
         raise ActiveRecord::RecordNotFoundunless unless params[:reports].present?
+
         @start_date = Date.parse(params[:reports][:start])
         @end_date = Date.parse(params[:reports][:end])
         if @start_date > @end_date
@@ -15,7 +16,7 @@ class Reports::SummariesController < ApplicationController
           return
         end
         @sum = Operation.summary(@start_date, @end_date)
-        @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
+        @projects = Project.where(id: @sum.map { |s| s[0] }).order(:id).index_by(&:id)
         @users = Report.submitted_users(@start_date, @end_date).order(:id)
         send_data render_to_string,
                   filename: "summary_#{@start_date.strftime('%Y%m%d')}-#{@end_date.strftime('%Y%m%d')}.csv",
@@ -30,7 +31,7 @@ class Reports::SummariesController < ApplicationController
             return
           end
           @sum = Operation.summary(@start_date, @end_date)
-          @projects = Project.where(id: @sum.map{ |s| s[0] }).order(:id).index_by(&:id)
+          @projects = Project.where(id: @sum.map { |s| s[0] }).order(:id).index_by(&:id)
           @users = Report.submitted_users(@start_date, @end_date).order(:id)
         else
           @end_date = Time.zone.now.to_date

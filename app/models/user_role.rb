@@ -3,7 +3,7 @@ class UserRole < ApplicationRecord
   has_many :users, through: :user_role_associations
 
   validates :role,
-    presence: true
+            presence: true
 
   enum role: {
     administrator: 0,

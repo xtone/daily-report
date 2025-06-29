@@ -1,7 +1,7 @@
 require 'csv'
 
 CSV.generate(encoding: 'SJIS') do |csv|
-  header = %w(PJコード プロジェクト名)
+  header = %w[PJコード プロジェクト名]
   @users.each do |user|
     header << user.name
   end

@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe UserRoleAssociation, type: :model do
   # アソシエーションテスト
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:user_role) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:user_role) }
   end
 
   # バリデーションテスト

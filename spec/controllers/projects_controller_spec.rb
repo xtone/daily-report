@@ -23,16 +23,16 @@ RSpec.describe ProjectsController, type: :controller do
   describe 'authorization' do
     before { sign_in regular_user }
 
-    it 'raises Pundit::NotAuthorizedError for new action', skip: "権限チェックの実装が異なるため一時的にスキップ" do
-      expect {
+    it 'raises Pundit::NotAuthorizedError for new action', skip: '権限チェックの実装が異なるため一時的にスキップ' do
+      expect do
         get :new
-      }.to raise_error(Pundit::NotAuthorizedError)
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it 'raises Pundit::NotAuthorizedError for create action' do
-      expect {
+      expect do
         post :create, params: { project: { name: 'Test Project' } }
-      }.to raise_error(Pundit::NotAuthorizedError)
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 
@@ -81,36 +81,36 @@ RSpec.describe ProjectsController, type: :controller do
     end
 
     describe 'GET #new' do
-      it 'returns success', skip: "next_expected_codeメソッドの実装が異なるため一時的にスキップ" do
+      it 'returns success', skip: 'next_expected_codeメソッドの実装が異なるため一時的にスキップ' do
         get :new
         expect(response).to have_http_status(:success)
       end
 
       it 'assigns new project with next expected code' do
-        allow(Project).to receive(:next_expected_code).and_return(12345)
+        allow(Project).to receive(:next_expected_code).and_return(12_345)
         get :new
         expect(assigns(:project)).to be_a_new(Project)
-        expect(assigns(:project).code).to eq(12345)
+        expect(assigns(:project).code).to eq(12_345)
       end
     end
 
     describe 'POST #create' do
-      let(:valid_params) {
+      let(:valid_params) do
         {
           project: {
             name: 'New Project',
-            code: 12345,
+            code: 12_345,
             name_reading: 'にゅーぷろじぇくと',
             category: 'client_shot'
           }
         }
-      }
+      end
 
       context 'with valid parameters' do
         it 'creates a new project' do
-          expect {
+          expect do
             post :create, params: valid_params
-          }.to change(Project, :count).by(1)
+          end.to change(Project, :count).by(1)
         end
 
         it 'redirects to projects index' do
@@ -121,7 +121,7 @@ RSpec.describe ProjectsController, type: :controller do
       end
 
       context 'with invalid parameters' do
-        let(:invalid_params) {
+        let(:invalid_params) do
           {
             project: {
               name: '',
@@ -130,12 +130,12 @@ RSpec.describe ProjectsController, type: :controller do
               category: 'client_shot'
             }
           }
-        }
+        end
 
         it 'does not create a project' do
-          expect {
+          expect do
             post :create, params: invalid_params
-          }.not_to change(Project, :count)
+          end.not_to change(Project, :count)
         end
 
         it 'renders new template with errors' do
@@ -160,7 +160,7 @@ RSpec.describe ProjectsController, type: :controller do
       it 'assigns @estimates and @bills' do
         estimate = create(:estimate, project: project)
         bill = create(:bill, estimate: estimate)
-        
+
         get :show, params: { id: project.id }
         expect(assigns(:estimates)).to include(estimate)
         expect(assigns(:bills)).to include(bill)
@@ -180,7 +180,7 @@ RSpec.describe ProjectsController, type: :controller do
     end
 
     describe 'PUT #update' do
-      let(:update_params) {
+      let(:update_params) do
         {
           id: project.id,
           project: {
@@ -188,7 +188,7 @@ RSpec.describe ProjectsController, type: :controller do
             name_reading: 'あっぷでーとぷろじぇくと'
           }
         }
-      }
+      end
 
       context 'with valid parameters' do
         it 'updates the project' do
@@ -206,7 +206,7 @@ RSpec.describe ProjectsController, type: :controller do
       end
 
       context 'with invalid parameters' do
-        let(:invalid_update_params) {
+        let(:invalid_update_params) do
           {
             id: project.id,
             project: {
@@ -214,7 +214,7 @@ RSpec.describe ProjectsController, type: :controller do
               name_reading: ''
             }
           }
-        }
+        end
 
         it 'does not update the project' do
           original_name = project.name
@@ -235,9 +235,9 @@ RSpec.describe ProjectsController, type: :controller do
       context 'when project has no user_projects' do
         it 'destroys the project' do
           project_to_delete = create(:project)
-          expect {
+          expect do
             delete :destroy, params: { id: project_to_delete.id }
-          }.to change(Project, :count).by(-1)
+          end.to change(Project, :count).by(-1)
         end
 
         it 'redirects to projects index with success message' do

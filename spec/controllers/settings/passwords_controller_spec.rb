@@ -34,12 +34,12 @@ RSpec.describe Settings::PasswordsController, type: :controller do
 
     describe 'PUT #update' do
       context 'with valid password parameters' do
-        let(:valid_params) {
+        let(:valid_params) do
           {
             password: 'new_password',
             password_confirmation: 'new_password'
           }
-        }
+        end
 
         it 'updates user password' do
           put :update, params: valid_params
@@ -55,12 +55,12 @@ RSpec.describe Settings::PasswordsController, type: :controller do
       end
 
       context 'with blank password' do
-        let(:blank_password_params) {
+        let(:blank_password_params) do
           {
             password: '',
             password_confirmation: ''
           }
-        }
+        end
 
         it 'does not update user password' do
           original_encrypted_password = user.encrypted_password
@@ -77,12 +77,12 @@ RSpec.describe Settings::PasswordsController, type: :controller do
       end
 
       context 'with mismatched password confirmation' do
-        let(:mismatched_params) {
+        let(:mismatched_params) do
           {
             password: 'new_password',
             password_confirmation: 'different_password'
           }
-        }
+        end
 
         it 'does not update user password' do
           original_encrypted_password = user.encrypted_password
@@ -99,7 +99,7 @@ RSpec.describe Settings::PasswordsController, type: :controller do
       end
 
       context 'with too short password' do
-        let(:invalid_params) {
+        let(:invalid_params) do
           {
             user: {
               current_password: 'password',
@@ -107,16 +107,16 @@ RSpec.describe Settings::PasswordsController, type: :controller do
               password_confirmation: '123'
             }
           }
-        }
+        end
 
-        it 'does not update user password', skip: "パスワード更新の処理が異なるため一時的にスキップ" do
+        it 'does not update user password', skip: 'パスワード更新の処理が異なるため一時的にスキップ' do
           original_encrypted_password = user.encrypted_password
           put :update, params: invalid_params
           user.reload
           expect(user.encrypted_password).to eq(original_encrypted_password)
         end
 
-        it 'renders show template with validation error', skip: "パスワード更新の処理が異なるため一時的にスキップ" do
+        it 'renders show template with validation error', skip: 'パスワード更新の処理が異なるため一時的にスキップ' do
           put :update, params: invalid_params
           expect(response).to render_template(:show)
           expect(flash.now[:alert]).to be_present
@@ -131,12 +131,12 @@ RSpec.describe Settings::PasswordsController, type: :controller do
           )
         end
 
-        let(:valid_params) {
+        let(:valid_params) do
           {
             password: 'new_password',
             password_confirmation: 'new_password'
           }
-        }
+        end
 
         it 'renders show template with error message' do
           put :update, params: valid_params

@@ -13,7 +13,11 @@ module Reports
     return nil unless params[:date].present?
 
     /\A(\d{4})(\d{2})\Z/.match(params[:date]) do |m|
-      time = Time.zone.local(m[1], m[2]) rescue nil
+      time = begin
+        Time.zone.local(m[1], m[2])
+      rescue StandardError
+        nil
+      end
       time&.to_date
     end
   end

@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :get_resource, only: %i(edit update destroy revive)
+  before_action :get_resource, only: %i[edit update destroy revive]
 
   layout 'admin'
 
@@ -13,18 +13,28 @@ class UsersController < ApplicationController
         send_data render_to_string, filename: "user_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: :csv
       end
       format.html do
-        if params[:active] == 'true'
-          @users = User.includes(:user_roles).available.order(id: :asc)
-        else
-          @users = User.includes(:user_roles).order(id: :asc)
-        end
+        @users = if params[:active] == 'true'
+                   User.includes(:user_roles).available.order(id: :asc)
+                 else
+                   User.includes(:user_roles).order(id: :asc)
+                 end
       end
     end
+  end
+
+  def show
+    redirect_to edit_user_path(params[:id])
   end
 
   # ユーザー新規登録
   def new
     @user = User.new
+    authorize @user
+    @roles = UserRole.roles
+  end
+
+  # ユーザー編集
+  def edit
     authorize @user
     @roles = UserRole.roles
   end
@@ -40,20 +50,10 @@ class UsersController < ApplicationController
       @user.user_roles = UserRole.where(role: params[:user_roles])
     end
     redirect_to users_path, notice: "#{@user.name}さんを登録しました。"
-  rescue => e
-    flash.now[:alert] = %w(ユーザーの登録に失敗しました。).push(@user.errors.full_messages).join("\n")
+  rescue StandardError
+    flash.now[:alert] = %w[ユーザーの登録に失敗しました。].push(@user.errors.full_messages).join("\n")
     @roles = UserRole.roles
     render :new
-  end
-
-  def show
-    redirect_to edit_user_path(params[:id])
-  end
-
-  # ユーザー編集
-  def edit
-    authorize @user
-    @roles = UserRole.roles
   end
 
   def update
@@ -63,8 +63,8 @@ class UsersController < ApplicationController
       @user.user_roles = UserRole.where(role: params[:user_roles])
     end
     redirect_to users_path, notice: "#{@user.name}さんの設定を更新しました。"
-  rescue => e
-    flash.now[:alert] = %w(ユーザーの設定の更新に失敗しました。).push(@user.errors.full_messages).join("\n")
+  rescue StandardError
+    flash.now[:alert] = %w[ユーザーの設定の更新に失敗しました。].push(@user.errors.full_messages).join("\n")
     @roles = UserRole.roles
     render :edit
   end

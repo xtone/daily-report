@@ -43,27 +43,27 @@ RSpec.describe ApplicationController, type: :controller do
       before { allow(Rails.env).to receive(:production?).and_return(false) }
 
       it 'raises Pundit::NotAuthorizedError' do
-        expect {
+        expect do
           get :index, params: { error_type: 'pundit' }
-        }.to raise_error(Pundit::NotAuthorizedError)
+        end.to raise_error(Pundit::NotAuthorizedError)
       end
 
       it 'raises ActiveRecord::RecordNotFound' do
-        expect {
+        expect do
           get :index, params: { error_type: 'not_found' }
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'raises ActionView::MissingTemplate' do
-        expect {
+        expect do
           get :index, params: { error_type: 'missing_template' }
-        }.to raise_error(ActionView::MissingTemplate)
+        end.to raise_error(ActionView::MissingTemplate)
       end
 
       it 'raises StandardError' do
-        expect {
+        expect do
           get :index, params: { error_type: 'standard' }
-        }.to raise_error(StandardError)
+        end.to raise_error(StandardError)
       end
     end
 
@@ -71,27 +71,27 @@ RSpec.describe ApplicationController, type: :controller do
       before { allow(Rails.env).to receive(:production?).and_return(true) }
 
       it 'handles Pundit::NotAuthorizedError gracefully' do
-        expect {
+        expect do
           get :index, params: { error_type: 'pundit' }
-        }.not_to raise_error
+        end.not_to raise_error
       end
 
       it 'handles ActiveRecord::RecordNotFound gracefully' do
-        expect {
+        expect do
           get :index, params: { error_type: 'not_found' }
-        }.not_to raise_error
+        end.not_to raise_error
       end
 
       it 'handles ActionView::MissingTemplate gracefully' do
-        expect {
+        expect do
           get :index, params: { error_type: 'missing_template' }
-        }.not_to raise_error
+        end.not_to raise_error
       end
 
       it 'handles StandardError gracefully' do
-        expect {
+        expect do
           get :index, params: { error_type: 'standard' }
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
   end
@@ -101,4 +101,4 @@ RSpec.describe ApplicationController, type: :controller do
       expect(controller.class.forgery_protection_strategy).to eq(ActionController::RequestForgeryProtection::ProtectionMethods::Exception)
     end
   end
-end 
+end

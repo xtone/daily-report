@@ -5,6 +5,7 @@ class UserPolicy < ApplicationPolicy
 
   def create?
     return false if @user.nil?
+
     @user.administrator?
   end
 

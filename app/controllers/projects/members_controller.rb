@@ -15,13 +15,13 @@ class Projects::MembersController < ApplicationController
   def update
     authorize @project
     @project.users << User.find(params[:id])
-    head 200
+    head :ok
   end
 
   def destroy
     authorize @project
     @project.user_projects.find_by(user_id: params[:id]).destroy
-    head 200
+    head :ok
   end
 
   private

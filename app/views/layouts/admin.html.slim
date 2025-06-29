@@ -3,6 +3,8 @@ html
   head
     title= title
     = csrf_meta_tags
+    - if Rails.env.test?
+      meta name="turbo-visit-control" content="reload"
     = stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
     = content_for(:head) if content_for?(:head)
     = javascript_include_tag 'application'

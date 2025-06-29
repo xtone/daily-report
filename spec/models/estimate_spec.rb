@@ -16,7 +16,7 @@ RSpec.describe Estimate, type: :model do
         expect(estimate.errors[:serial_no]).to include('を入力してください')
       end
 
-      it 'must be unique', skip: "シリアル番号の一意性制約のテストが異なるため一時的にスキップ" do
+      it 'must be unique', skip: 'シリアル番号の一意性制約のテストが異なるため一時的にスキップ' do
         create(:estimate, serial_no: 'EST-001')
         estimate = build(:estimate, serial_no: 'EST-001')
         expect(estimate).not_to be_valid
@@ -40,7 +40,7 @@ RSpec.describe Estimate, type: :model do
       end
 
       it 'accepts positive values' do
-        estimate = build(:estimate, amount: 100000)
+        estimate = build(:estimate, amount: 100_000)
         expect(estimate).to be_valid
       end
     end
@@ -55,23 +55,21 @@ RSpec.describe Estimate, type: :model do
 
     describe 'manday validation' do
       it 'fails when all mandays are zero' do
-        estimate = build(:estimate, 
-          director_manday: 0.0,
-          engineer_manday: 0.0,
-          designer_manday: 0.0,
-          other_manday: 0.0
-        )
+        estimate = build(:estimate,
+                         director_manday: 0.0,
+                         engineer_manday: 0.0,
+                         designer_manday: 0.0,
+                         other_manday: 0.0)
         expect(estimate).not_to be_valid
         expect(estimate.errors[:base]).to include('工数の合計がゼロです。')
       end
 
       it 'passes when at least one manday is positive' do
-        estimate = build(:estimate, 
-          director_manday: 0.0,
-          engineer_manday: 1.0,
-          designer_manday: 0.0,
-          other_manday: 0.0
-        )
+        estimate = build(:estimate,
+                         director_manday: 0.0,
+                         engineer_manday: 1.0,
+                         designer_manday: 0.0,
+                         other_manday: 0.0)
         expect(estimate).to be_valid
       end
     end
@@ -79,36 +77,35 @@ RSpec.describe Estimate, type: :model do
 
   # アソシエーションテスト
   describe 'associations' do
-    it { should belong_to(:project) }
-    it { should have_one(:bill) }
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_one(:bill) }
   end
 
   # インスタンスメソッドテスト
   describe '#deja_vu?' do
-    let!(:existing_estimate) { create(:estimate, 
-      director_manday: 1.0,
-      engineer_manday: 5.0,
-      designer_manday: 2.0,
-      cost: 50000
-    ) }
+    let!(:existing_estimate) do
+      create(:estimate,
+             director_manday: 1.0,
+             engineer_manday: 5.0,
+             designer_manday: 2.0,
+             cost: 50_000)
+    end
 
     it 'returns true when same manday and cost combination exists' do
       new_estimate = build(:estimate,
-        director_manday: 1.0,
-        engineer_manday: 5.0,
-        designer_manday: 2.0,
-        cost: 50000
-      )
+                           director_manday: 1.0,
+                           engineer_manday: 5.0,
+                           designer_manday: 2.0,
+                           cost: 50_000)
       expect(new_estimate.deja_vu?).to be true
     end
 
     it 'returns false when different manday or cost combination' do
       new_estimate = build(:estimate,
-        director_manday: 2.0,
-        engineer_manday: 5.0,
-        designer_manday: 2.0,
-        cost: 50000
-      )
+                           director_manday: 2.0,
+                           engineer_manday: 5.0,
+                           designer_manday: 2.0,
+                           cost: 50_000)
       expect(new_estimate.deja_vu?).to be false
     end
   end

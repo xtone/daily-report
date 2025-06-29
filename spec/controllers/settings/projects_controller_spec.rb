@@ -56,10 +56,10 @@ RSpec.describe Settings::ProjectsController, type: :controller do
 
         it 'includes related flag for user projects' do
           allow(Project).to receive(:find_in_user).with(user.id).and_return([
-            { id: project1.id, name: project1.name, related: true },
-            { id: project2.id, name: project2.name, related: false }
-          ])
-          
+                                                                              { id: project1.id, name: project1.name, related: true },
+                                                                              { id: project2.id, name: project2.name, related: false }
+                                                                            ])
+
           get :index, format: :json
           expect(assigns(:projects)).to include(
             hash_including(id: project1.id, related: true)
@@ -74,9 +74,9 @@ RSpec.describe Settings::ProjectsController, type: :controller do
     describe 'PUT #update' do
       context 'when user is not associated with project' do
         it 'adds user to project' do
-          expect {
+          expect do
             put :update, params: { id: project1.id }
-          }.to change { user.projects.count }.by(1)
+          end.to change { user.projects.count }.by(1)
         end
 
         it 'returns success status' do
@@ -95,13 +95,13 @@ RSpec.describe Settings::ProjectsController, type: :controller do
           user.projects << project1
         end
 
-        it 'does not create duplicate association', skip: "重複関連の処理が異なるため一時的にスキップ" do
+        it 'does not create duplicate association', skip: '重複関連の処理が異なるため一時的にスキップ' do
           initial_count = user.projects.count
           put :update, params: { id: project1.id }
           expect(user.projects.count).to eq(initial_count)
         end
 
-        it 'returns success status', skip: "重複関連の処理が異なるため一時的にスキップ" do
+        it 'returns success status', skip: '重複関連の処理が異なるため一時的にスキップ' do
           put :update, params: { id: project1.id }
           expect(response).to have_http_status(:ok)
         end
@@ -109,9 +109,9 @@ RSpec.describe Settings::ProjectsController, type: :controller do
 
       context 'with non-existent project' do
         it 'raises ActiveRecord::RecordNotFound' do
-          expect {
-            put :update, params: { id: 99999 }
-          }.to raise_error(ActiveRecord::RecordNotFound)
+          expect do
+            put :update, params: { id: 99_999 }
+          end.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
     end
@@ -123,9 +123,9 @@ RSpec.describe Settings::ProjectsController, type: :controller do
         end
 
         it 'removes user from project' do
-          expect {
+          expect do
             delete :destroy, params: { id: project1.id }
-          }.to change { user.projects.count }.by(-1)
+          end.to change { user.projects.count }.by(-1)
         end
 
         it 'returns success status' do
@@ -140,13 +140,13 @@ RSpec.describe Settings::ProjectsController, type: :controller do
       end
 
       context 'when user is not associated with project' do
-        it 'does not change user projects count', skip: "関連削除の処理が異なるため一時的にスキップ" do
+        it 'does not change user projects count', skip: '関連削除の処理が異なるため一時的にスキップ' do
           initial_count = user.projects.count
           delete :destroy, params: { id: project1.id }
           expect(user.projects.count).to eq(initial_count)
         end
 
-        it 'returns success status', skip: "関連削除の処理が異なるため一時的にスキップ" do
+        it 'returns success status', skip: '関連削除の処理が異なるため一時的にスキップ' do
           delete :destroy, params: { id: project1.id }
           expect(response).to have_http_status(:ok)
         end
@@ -157,10 +157,10 @@ RSpec.describe Settings::ProjectsController, type: :controller do
           create(:user_project, user: user, project: project1)
         end
 
-        it 'raises ActiveRecord::RecordNotFound when project does not exist', skip: "エラーハンドリングが異なるため一時的にスキップ" do
-          expect {
-            delete :destroy, params: { id: 99999 }
-          }.to raise_error(ActiveRecord::RecordNotFound)
+        it 'raises ActiveRecord::RecordNotFound when project does not exist', skip: 'エラーハンドリングが異なるため一時的にスキップ' do
+          expect do
+            delete :destroy, params: { id: 99_999 }
+          end.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
     end
