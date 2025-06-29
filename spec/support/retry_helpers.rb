@@ -31,19 +31,27 @@ module RetryHelpers
   end
 
   # クリック操作をリトライ付きで実行
-  def click_link_with_retry(locator, options = {})
+  def click_link_with_retry(locator, **options)
     with_retry do
       wait_for_page_load if respond_to?(:wait_for_page_load)
-      click_link locator, options
+      if options.any?
+        click_link locator, **options
+      else
+        click_link locator
+      end
       wait_for_page_load if respond_to?(:wait_for_page_load)
     end
   end
 
   # ボタンクリックをリトライ付きで実行
-  def click_button_with_retry(locator, options = {})
+  def click_button_with_retry(locator, **options)
     with_retry do
       wait_for_page_load if respond_to?(:wait_for_page_load)
-      click_button locator, options
+      if options.any?
+        click_button locator, **options
+      else
+        click_button locator
+      end
       wait_for_page_load if respond_to?(:wait_for_page_load)
     end
   end
