@@ -1,0 +1,77 @@
+name: Test
+
+on:
+  push:
+    branches: [ develop, main, master ]
+  pull_request:
+    branches: [ develop, main, master ]
+
+env:
+  RUBY_VERSION: 2.7.8
+  NODE_VERSION: 14
+  MYSQL_VERSION: 5.7
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: daily_report_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+
+    - name: Install JavaScript dependencies
+      run: yarn install --frozen-lockfile
+        
+    - name: Build webpack assets
+      run: npm run build:dev
+
+    - name: Setup test database
+      env:
+        RAILS_ENV: test
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_PASSWORD: password
+      run: |
+        bundle exec rails db:create
+        bundle exec rails db:migrate
+
+    - name: Run tests
+      env:
+        RAILS_ENV: test
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_PASSWORD: password
+      run: |
+        bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: rspec.xml

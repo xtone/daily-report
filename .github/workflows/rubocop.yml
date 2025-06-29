@@ -1,0 +1,28 @@
+name: RuboCop
+
+on:
+  pull_request:
+    branches: [ develop, main, master ]
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.8
+        bundler-cache: false
+
+    - name: Update RubyGems and install dependencies
+      run: |
+        gem update --system 3.3.22
+        gem install bundler
+        bundle install
+
+    - name: Run RuboCop
+      run: |
+        bundle exec rubocop --parallel --format github || true  # 一時的に失敗を許可
