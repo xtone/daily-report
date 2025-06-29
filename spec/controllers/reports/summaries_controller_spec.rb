@@ -26,9 +26,9 @@ RSpec.describe Reports::SummariesController, type: :controller do
       before { sign_in regular_user }
 
       it 'raises Pundit::NotAuthorizedError' do
-        expect {
+        expect do
           get :show
-        }.to raise_error(Pundit::NotAuthorizedError)
+        end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
@@ -50,14 +50,14 @@ RSpec.describe Reports::SummariesController, type: :controller do
         end
 
         context 'with valid date parameters' do
-          let(:params) {
+          let(:params) do
             {
               reports: {
                 start: start_date.to_s,
                 end: end_date.to_s
               }
             }
-          }
+          end
 
           it 'assigns date range from params' do
             get :show, params: params
@@ -74,14 +74,14 @@ RSpec.describe Reports::SummariesController, type: :controller do
         end
 
         context 'with invalid date range' do
-          let(:invalid_params) {
+          let(:invalid_params) do
             {
               reports: {
                 start: end_date.to_s,
                 end: start_date.to_s
               }
             }
-          }
+          end
 
           it 'shows error message when start date is after end date' do
             get :show, params: invalid_params
@@ -91,14 +91,14 @@ RSpec.describe Reports::SummariesController, type: :controller do
       end
 
       context 'with CSV format' do
-        let(:csv_params) {
+        let(:csv_params) do
           {
             reports: {
               start: start_date.to_s,
               end: end_date.to_s
             }
           }
-        }
+        end
 
         it 'returns CSV file' do
           get :show, params: csv_params, format: :csv
@@ -113,22 +113,22 @@ RSpec.describe Reports::SummariesController, type: :controller do
         end
 
         context 'without date parameters' do
-          it 'raises RecordNotFound error', skip: "エラーハンドリングの実装が異なるため一時的にスキップ" do
-            expect {
+          it 'raises RecordNotFound error', skip: 'エラーハンドリングの実装が異なるため一時的にスキップ' do
+            expect do
               get :show, format: :csv
-            }.to raise_error(ActiveRecord::RecordNotFound)
+            end.to raise_error(ActiveRecord::RecordNotFound)
           end
         end
 
         context 'with invalid date range' do
-          let(:invalid_csv_params) {
+          let(:invalid_csv_params) do
             {
               reports: {
                 start: end_date.to_s,
                 end: start_date.to_s
               }
             }
-          }
+          end
 
           it 'redirects with error message' do
             get :show, params: invalid_csv_params, format: :csv
@@ -148,4 +148,4 @@ RSpec.describe Reports::SummariesController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
-end 
+end

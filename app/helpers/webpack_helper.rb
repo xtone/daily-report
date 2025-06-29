@@ -18,7 +18,7 @@ module WebpackHelper
 
   def load_manifest
     @manifest ||= begin
-      manifest_path = Rails.root.join('public', 'packs', 'manifest.json')
+      manifest_path = Rails.public_path.join('packs/manifest.json')
       if File.exist?(manifest_path)
         JSON.parse(File.read(manifest_path))
       else
@@ -26,4 +26,4 @@ module WebpackHelper
       end
     end
   end
-end 
+end

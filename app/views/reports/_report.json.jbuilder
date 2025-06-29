@@ -8,7 +8,7 @@ if data[:report].present?
       json.array!(data[:report].operations) do |operation|
         json.id operation.id
         json.project do
-          json.(operation.project, :id, :name)
+          json.call(operation.project, :id, :name)
         end
         json.workload operation.workload
       end

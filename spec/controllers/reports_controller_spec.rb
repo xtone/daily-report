@@ -105,24 +105,24 @@ RSpec.describe ReportsController, type: :controller do
 
     describe 'POST #create' do
       context 'with JSON format' do
-        let(:valid_params) {
+        let(:valid_params) do
           {
             worked_in: Date.current.to_s,
             project_ids: [project.id.to_s],
             workloads: ['100']
           }
-        }
+        end
 
         it 'creates a new report' do
-          expect {
+          expect do
             post :create, params: valid_params, format: :json
-          }.to change(Report, :count).by(1)
+          end.to change(Report, :count).by(1)
         end
 
         it 'creates operations for the report' do
-          expect {
+          expect do
             post :create, params: valid_params, format: :json
-          }.to change(Operation, :count).by(1)
+          end.to change(Operation, :count).by(1)
         end
 
         it 'returns success' do
@@ -136,9 +136,9 @@ RSpec.describe ReportsController, type: :controller do
             project_ids: [project.id.to_s, ''],
             workloads: ['50', '']
           }
-          expect {
+          expect do
             post :create, params: params_with_blanks, format: :json
-          }.to change(Operation, :count).by(1)
+          end.to change(Operation, :count).by(1)
         end
       end
     end
@@ -147,14 +147,14 @@ RSpec.describe ReportsController, type: :controller do
       let!(:operation) { create(:operation, report: report, project: project, workload: 50) }
 
       context 'with JSON format' do
-        let(:update_params) {
+        let(:update_params) do
           {
             id: report.id,
             operation_ids: [operation.id.to_s],
             project_ids: [project.id.to_s],
             workloads: ['75']
           }
-        }
+        end
 
         it 'updates the report operations' do
           put :update, params: update_params, format: :json
@@ -163,16 +163,16 @@ RSpec.describe ReportsController, type: :controller do
         end
 
         it 'creates new operations when operation_id is blank' do
-          new_project = create(:project, code: 99999)
+          new_project = create(:project, code: 99_999)
           params_with_new_op = {
             id: report.id,
             operation_ids: [operation.id.to_s, ''],
             project_ids: [project.id.to_s, new_project.id.to_s],
-            workloads: ['50', '25']
+            workloads: %w[50 25]
           }
-          expect {
+          expect do
             put :update, params: params_with_new_op, format: :json
-          }.to change(Operation, :count).by(1)
+          end.to change(Operation, :count).by(1)
         end
       end
 
@@ -181,9 +181,9 @@ RSpec.describe ReportsController, type: :controller do
         let(:other_report) { create(:report, user: other_user) }
 
         it 'raises Pundit::NotAuthorizedError' do
-          expect {
+          expect do
             put :update, params: { id: other_report.id }, format: :json
-          }.to raise_error(Pundit::NotAuthorizedError)
+          end.to raise_error(Pundit::NotAuthorizedError)
         end
       end
     end
@@ -193,9 +193,9 @@ RSpec.describe ReportsController, type: :controller do
 
       context 'with JSON format' do
         it 'destroys the report' do
-          expect {
+          expect do
             delete :destroy, params: { id: report.id }, format: :json
-          }.to change(Report, :count).by(-1)
+          end.to change(Report, :count).by(-1)
         end
 
         it 'returns success' do
@@ -209,9 +209,9 @@ RSpec.describe ReportsController, type: :controller do
         let(:other_report) { create(:report, user: other_user) }
 
         it 'raises Pundit::NotAuthorizedError' do
-          expect {
+          expect do
             delete :destroy, params: { id: other_report.id }, format: :json
-          }.to raise_error(Pundit::NotAuthorizedError)
+          end.to raise_error(Pundit::NotAuthorizedError)
         end
       end
     end

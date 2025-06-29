@@ -1,3 +1,2 @@
 class OperationPolicy < ApplicationPolicy
-
 end

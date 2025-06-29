@@ -4,7 +4,7 @@ class Report < ApplicationRecord
   has_many :projects, through: :operations
 
   validates :worked_in,
-    presence: true
+            presence: true
 
   class << self
     # 日報のデータを月単位で取得する
@@ -13,9 +13,9 @@ class Report < ApplicationRecord
     # @return [Array]
     def find_in_month(user_id, date = Time.zone.now)
       data = includes(operations: :project)
-               .where(user_id: user_id, worked_in: [date.beginning_of_month..date.end_of_month])
-               .order(worked_in: :asc)
-               .to_a
+             .where(user_id: user_id, worked_in: [date.all_month])
+             .order(worked_in: :asc)
+             .to_a
       output_calendar(data, date.beginning_of_month.to_date, date.end_of_month.day)
     end
 
@@ -26,9 +26,9 @@ class Report < ApplicationRecord
     def find_in_week(user_id, at = Time.zone.now)
       base_date = at.to_date - 4
       data = includes(operations: :project)
-               .where(user_id: user_id, worked_in: [base_date..(base_date + 6)])
-               .order(worked_in: :asc)
-               .to_a
+             .where(user_id: user_id, worked_in: [base_date..(base_date + 6)])
+             .order(worked_in: :asc)
+             .to_a
       output_calendar(data, base_date, 7)
     end
 
@@ -38,9 +38,9 @@ class Report < ApplicationRecord
     # @return [Array] users
     def submitted_users(start_on, end_on)
       user_ids = where(worked_in: [start_on..end_on])
-                   .select(:user_id)
-                   .uniq
-                   .pluck(:user_id)
+                 .select(:user_id)
+                 .uniq
+                 .pluck(:user_id)
       User.available.where(id: user_ids)
     end
 
@@ -53,19 +53,19 @@ class Report < ApplicationRecord
       result = []
       user = User.find(user_id)
       return result if user.began_on.nil?
+
       # ユーザーの集計開始日より前のデータは無視する
-      if start_on.present?
-        start_on = [start_on, user.began_on].max
-      else
-        start_on = user.began_on
-      end
+      start_on = if start_on.present?
+                   [start_on, user.began_on].max
+                 else
+                   user.began_on
+                 end
       end_on ||= Time.zone.now.to_date
       reports = where(user_id: user_id, worked_in: start_on..end_on).pluck(:worked_in)
       (start_on..end_on).each do |date|
         next if date.sunday? || date.saturday? || date.holiday?(:jp)
-        unless reports.any? { |worked_in| worked_in === date }
-          result << date
-        end
+
+        result << date unless reports.any? { |worked_in| worked_in === date }
       end
       result
     end
@@ -84,7 +84,7 @@ class Report < ApplicationRecord
         calendar << {
           date: d,
           holiday: d.holiday?(:jp),
-          report: data.find{ |report| report.worked_in == d }
+          report: data.find { |report| report.worked_in == d }
         }
       end
       calendar

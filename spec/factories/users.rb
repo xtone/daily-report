@@ -2,11 +2,11 @@ FactoryBot.define do
   factory :user do
     sequence(:name) { |n| "ユーザー#{n}" }
     sequence(:email) { |n| "user#{n}@example.com" }
-    password { "password" }
-    password_confirmation { "password" }
+    password { 'password' }
+    password_confirmation { 'password' }
     began_on { Time.zone.local(2017, 1, 1) }
-    encrypted_password { "tmp" } # 一時的な値を設定
-    
+    encrypted_password { 'tmp' } # 一時的な値を設定
+
     after(:create) do |user|
       # MD5でパスワードを暗号化（IDが確定してから）
       if user.password.present?
@@ -17,13 +17,13 @@ FactoryBot.define do
     end
 
     trait :administrator do
-      after(:create) do |user, evaluator|
+      after(:create) do |user, _evaluator|
         user.user_roles << FactoryBot.create(:user_role, :administrator)
       end
     end
 
     trait :director do
-      after(:create) do |user, evaluator|
+      after(:create) do |user, _evaluator|
         user.user_roles << FactoryBot.create(:user_role, :director)
       end
     end

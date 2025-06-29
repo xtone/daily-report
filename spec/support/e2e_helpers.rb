@@ -10,17 +10,23 @@ module E2EHelpers
     expect(page).to have_content('日報')
   end
 
+  # Turbo Driveのナビゲーションを確実に待つためのヘルパー
+  def visit_and_wait(path, content_to_wait_for)
+    visit path
+    expect(page).to have_content(content_to_wait_for, wait: 5)
+  end
+
   def sign_in_as_admin
     admin = create(:user, :administrator, email: 'admin@example.com')
     # 保存後にIDが確定してから暗号化パスワードを更新
-    admin.update_column(:encrypted_password, Digest::MD5.hexdigest('password' + admin.id.to_s))
+    admin.update_column(:encrypted_password, Digest::MD5.hexdigest("password#{admin.id}"))
     sign_in_as(admin)
   end
 
   def sign_in_as_user
     user = create(:user, email: 'user@example.com')
     # 保存後にIDが確定してから暗号化パスワードを更新
-    user.update_column(:encrypted_password, Digest::MD5.hexdigest('password' + user.id.to_s))
+    user.update_column(:encrypted_password, Digest::MD5.hexdigest("password#{user.id}"))
     sign_in_as(user)
   end
 
@@ -32,18 +38,18 @@ module E2EHelpers
   end
 
   def take_screenshot_on_failure
-    if RSpec.current_example.exception
-      timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
-      filename = "screenshot_#{timestamp}_#{RSpec.current_example.full_description.gsub(/[^0-9A-Za-z.\-]/, '_')}.png"
-      page.save_screenshot("tmp/screenshots/#{filename}")
-      puts "Screenshot saved: tmp/screenshots/#{filename}"
-    end
+    return unless RSpec.current_example.exception
+
+    timestamp = Time.zone.now.strftime('%Y%m%d_%H%M%S')
+    filename = "screenshot_#{timestamp}_#{RSpec.current_example.full_description.gsub(/[^0-9A-Za-z.\-]/, '_')}.png"
+    page.save_screenshot("tmp/screenshots/#{filename}")
+    puts "Screenshot saved: tmp/screenshots/#{filename}"
   end
 end
 
 RSpec.configure do |config|
   config.include E2EHelpers, type: :feature
-  
+
   config.after(:each, type: :feature) do
     take_screenshot_on_failure
   end

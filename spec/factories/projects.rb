@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :project do
-    sequence(:code) { |n| 17000 + n }
-    name { "プロジェクト" }
-    name_reading { "ぷろじぇくと" }
+    sequence(:code) { |n| 17_000 + n }
+    name { 'プロジェクト' }
+    name_reading { 'ぷろじぇくと' }
 
     trait :hidden do
       hidden { true }

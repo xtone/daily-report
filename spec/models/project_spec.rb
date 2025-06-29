@@ -22,8 +22,8 @@ RSpec.describe Project, type: :model do
       end
 
       it 'must be unique' do
-        create(:project, code: 12345)
-        project = build(:project, code: 12345)
+        create(:project, code: 12_345)
+        project = build(:project, code: 12_345)
         expect(project).not_to be_valid
         expect(project.errors[:code]).to be_present
       end
@@ -33,7 +33,7 @@ RSpec.describe Project, type: :model do
       it 'is required' do
         project = build(:project, name: nil)
         expect(project).not_to be_valid
-        expect(project.errors[:name]).to include("を入力してください")
+        expect(project.errors[:name]).to include('を入力してください')
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe Project, type: :model do
       it 'is required' do
         project = build(:project, name_reading: nil)
         expect(project).not_to be_valid
-        expect(project.errors[:name_reading]).to include("を入力してください")
+        expect(project.errors[:name_reading]).to include('を入力してください')
       end
 
       it 'must be hiragana format' do
@@ -66,23 +66,23 @@ RSpec.describe Project, type: :model do
   describe 'enums' do
     it 'defines category enum' do
       expect(Project.categories).to eq({
-        'undefined' => 0,
-        'client_shot' => 1,
-        'client_maintenance' => 2,
-        'internal' => 3,
-        'general_affairs' => 4,
-        'other' => 5
-      })
+                                         'undefined' => 0,
+                                         'client_shot' => 1,
+                                         'client_maintenance' => 2,
+                                         'internal' => 3,
+                                         'general_affairs' => 4,
+                                         'other' => 5
+                                       })
     end
   end
 
   # アソシエーションテスト
   describe 'associations' do
-    it { should have_many(:operations) }
-    it { should have_many(:user_projects).dependent(:destroy) }
-    it { should have_many(:users).through(:user_projects) }
-    it { should have_many(:estimates) }
-    it { should have_many(:bills).through(:estimates) }
+    it { is_expected.to have_many(:operations) }
+    it { is_expected.to have_many(:user_projects).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:user_projects) }
+    it { is_expected.to have_many(:estimates) }
+    it { is_expected.to have_many(:bills).through(:estimates) }
   end
 
   # スコープテスト
@@ -105,7 +105,7 @@ RSpec.describe Project, type: :model do
       it 'orders projects by name_reading' do
         result = Project.order_by_reading
         readings = result.map(&:name_reading)
-        expect(readings).to eq(['あー', 'かー', 'しー'])
+        expect(readings).to eq(%w[あー かー しー])
       end
     end
   end
@@ -124,16 +124,16 @@ RSpec.describe Project, type: :model do
 
       it 'returns projects with user relation information' do
         result = Project.find_in_user(user.id)
-        
+
         expect(result).to be_an(Array)
         expect(result.size).to eq(2) # available projects only
-        
+
         project1_info = result.find { |p| p[:id] == project1.id }
         expect(project1_info[:name]).to eq(project1.name)
         expect(project1_info[:name_reading]).to eq(project1.name_reading)
         expect(project1_info[:code]).to eq(project1.code)
         expect(project1_info[:related]).to be true
-        
+
         project2_info = result.find { |p| p[:id] == project2.id }
         expect(project2_info[:related]).to be false
       end
@@ -152,33 +152,33 @@ RSpec.describe Project, type: :model do
 
     describe '.next_expected_code' do
       context 'with no existing projects' do
-        it 'returns year-based code', skip: "next_expected_codeメソッドの実装が異なるため一時的にスキップ" do
+        it 'returns year-based code', skip: 'next_expected_codeメソッドの実装が異なるため一時的にスキップ' do
           at = Time.new(2017, 1, 1)
-          expect(Project.next_expected_code(at)).to eq(17001)
+          expect(Project.next_expected_code(at)).to eq(17_001)
         end
       end
 
       context 'with existing projects' do
         before do
-          create(:project, code: 17005)
-          create(:project, code: 17010)
+          create(:project, code: 17_005)
+          create(:project, code: 17_010)
         end
 
         it 'returns next available code' do
           at = Time.new(2017, 1, 1)
-          expect(Project.next_expected_code(at)).to eq(17011)
+          expect(Project.next_expected_code(at)).to eq(17_011)
         end
 
         it 'handles year boundary correctly' do
           at = Time.new(2018, 1, 1)
-          expect(Project.next_expected_code(at)).to eq(18001)
+          expect(Project.next_expected_code(at)).to eq(18_001)
         end
       end
 
       context 'with default parameter' do
-        it 'uses current time', skip: "next_expected_codeメソッドの実装が異なるため一時的にスキップ" do
+        it 'uses current time', skip: 'next_expected_codeメソッドの実装が異なるため一時的にスキップ' do
           travel_to Time.new(2025, 5, 29) do
-            expect(Project.next_expected_code).to eq(25001)
+            expect(Project.next_expected_code).to eq(25_001)
           end
         end
       end
@@ -192,10 +192,10 @@ RSpec.describe Project, type: :model do
       let!(:user1) { create(:user, email: 'user1@example.com') }
       let!(:user2) { create(:user, email: 'user2@example.com') }
       let!(:user3) { create(:user, email: 'user3@example.com') }
-      
+
       let!(:report1) { create(:report, user: user1) }
       let!(:report2) { create(:report, user: user2) }
-      
+
       before do
         create(:operation, report: report1, project: project, workload: 50)
         create(:operation, report: report2, project: project, workload: 30)

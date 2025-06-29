@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Turbolinks from 'turbolinks'
+import * as Turbo from '@hotwired/turbo-rails'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 const requestParams = {
@@ -250,9 +250,7 @@ class EstimateHiddenFields extends React.Component {
   }
 }
 
-Turbolinks.start();
-
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('turbo:load', () => {
   let container = document.getElementById('estimates');
   if (!container) return;
   ReactDOM.render(
@@ -262,7 +260,7 @@ document.addEventListener('turbolinks:load', () => {
   );
 });
 
-document.addEventListener('turbolinks:before-render', () => {
+document.addEventListener('turbo:before-render', () => {
   let container = document.getElementById('estimates');
   if (!container) return;
   ReactDOM.unmountComponentAtNode(container);

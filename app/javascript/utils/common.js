@@ -6,13 +6,13 @@ export const getCsrfToken = () => {
   return metaTag ? metaTag.getAttribute('content') : null;
 };
 
-// Turbolinksイベントリスナーのヘルパー
-export const onTurbolinksLoad = (callback) => {
-  document.addEventListener('turbolinks:load', callback);
+// Turboイベントリスナーのヘルパー
+export const onTurboLoad = (callback) => {
+  document.addEventListener('turbo:load', callback);
 };
 
-export const onTurbolinksBeforeRender = (callback) => {
-  document.addEventListener('turbolinks:before-render', callback);
+export const onTurboBeforeRender = (callback) => {
+  document.addEventListener('turbo:before-render', callback);
 };
 
 // React コンポーネントのマウント/アンマウントヘルパー

@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe UserRole, type: :model do
   # アソシエーションテスト
   describe 'associations' do
-    it { should have_many(:user_role_associations).dependent(:destroy) }
-    it { should have_many(:users).through(:user_role_associations) }
+    it { is_expected.to have_many(:user_role_associations).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:user_role_associations) }
   end
 
   # バリデーションテスト
@@ -22,9 +22,9 @@ RSpec.describe UserRole, type: :model do
   describe 'enums' do
     it 'defines role enum' do
       expect(UserRole.roles).to eq({
-        'administrator' => 0,
-        'director' => 1
-      })
+                                     'administrator' => 0,
+                                     'director' => 1
+                                   })
     end
 
     it 'creates administrator role' do

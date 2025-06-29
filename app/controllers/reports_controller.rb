@@ -1,18 +1,18 @@
 class ReportsController < ApplicationController
   include Reports
 
-  before_action :get_resource, only: %i(update destroy)
+  before_action :get_resource, only: %i[update destroy]
 
   # 日報の一覧
   def index
     respond_to do |format|
       format.json do
         date = get_date
-        if date.present?
-          @reports = Report.find_in_month(current_user.id, date)
-        else
-          @reports = Report.find_in_week(current_user.id)
-        end
+        @reports = if date.present?
+                     Report.find_in_month(current_user.id, date)
+                   else
+                     Report.find_in_week(current_user.id)
+                   end
       end
 
       format.csv do
@@ -27,15 +27,15 @@ class ReportsController < ApplicationController
           return
         end
         @reports = Report.includes(:user).joins(:user)
-          .where(worked_in: [start_on..end_on])
-          .merge(User.available)
-          .order('users.id', worked_in: :asc)
+                         .where(worked_in: [start_on..end_on])
+                         .merge(User.available)
+                         .order('users.id', worked_in: :asc)
         send_data render_to_string,
                   filename: "dailyreport_#{start_on.strftime('%Y%m%d')}-#{end_on.strftime('%Y%m%d')}.csv",
                   type: :csv
       end
 
-      format.any do
+      format.html do
         @date = get_date || Time.zone.now.to_date
         @projects = current_user.projects.available.order_by_reading
         # render view
@@ -49,6 +49,7 @@ class ReportsController < ApplicationController
         report = current_user.reports.build(worked_in: params[:worked_in])
         params[:project_ids].each_with_index do |project_id, i|
           next if project_id.blank? || params[:workloads][i].blank?
+
           report.operations << Operation.new(
             project_id: project_id,
             workload: params[:workloads][i]
@@ -76,9 +77,9 @@ class ReportsController < ApplicationController
         params[:operation_ids].each_with_index do |operation_id, i|
           op = Operation.find_by(id: operation_id) || Operation.new
           op.assign_attributes({
-            project_id: params[:project_ids][i],
-            workload: params[:workloads][i]
-          })
+                                 project_id: params[:project_ids][i],
+                                 workload: params[:workloads][i]
+                               })
           ops << op
         end
         @report.operations = ops

@@ -7,7 +7,7 @@ RSpec.describe User, type: :model do
       it 'is required' do
         user = build(:user, name: nil)
         expect(user).not_to be_valid
-        expect(user.errors[:name]).to include("を入力してください")
+        expect(user.errors[:name]).to include('を入力してください')
       end
     end
 
@@ -15,7 +15,7 @@ RSpec.describe User, type: :model do
       it 'is required' do
         user = build(:user, email: nil)
         expect(user).not_to be_valid
-        expect(user.errors[:email]).to include("を入力してください")
+        expect(user.errors[:email]).to include('を入力してください')
       end
 
       it 'must be present' do
@@ -24,7 +24,7 @@ RSpec.describe User, type: :model do
         expect(user.errors[:email]).to include('を入力してください')
       end
 
-      it 'must be unique', skip: "メールアドレスの一意性制約のテストが異なるため一時的にスキップ" do
+      it 'must be unique', skip: 'メールアドレスの一意性制約のテストが異なるため一時的にスキップ' do
         create(:user, email: 'test@example.com')
         user = build(:user, email: 'test@example.com')
         expect(user).not_to be_valid
@@ -37,13 +37,13 @@ RSpec.describe User, type: :model do
         it 'is required' do
           user = build(:user, password: nil, password_confirmation: nil)
           expect(user).not_to be_valid
-          expect(user.errors[:password]).to include("を入力してください")
+          expect(user.errors[:password]).to include('を入力してください')
         end
 
         it 'requires confirmation to match' do
           user = build(:user, password: 'password123', password_confirmation: 'different')
           expect(user).not_to be_valid
-          expect(user.errors[:password_confirmation]).to include("とパスワードの入力が一致しません")
+          expect(user.errors[:password_confirmation]).to include('とパスワードの入力が一致しません')
         end
       end
 
@@ -67,7 +67,7 @@ RSpec.describe User, type: :model do
       it 'is required' do
         user = build(:user, began_on: nil)
         expect(user).not_to be_valid
-        expect(user.errors[:began_on]).to include("を入力してください")
+        expect(user.errors[:began_on]).to include('を入力してください')
       end
     end
   end
@@ -93,12 +93,12 @@ RSpec.describe User, type: :model do
 
   # アソシエーションテスト
   describe 'associations' do
-    it { should have_many(:reports) }
-    it { should have_many(:operations).through(:reports) }
-    it { should have_many(:user_projects).dependent(:destroy) }
-    it { should have_many(:projects).through(:user_projects) }
-    it { should have_many(:user_role_associations).dependent(:destroy) }
-    it { should have_many(:user_roles).through(:user_role_associations) }
+    it { is_expected.to have_many(:reports) }
+    it { is_expected.to have_many(:operations).through(:reports) }
+    it { is_expected.to have_many(:user_projects).dependent(:destroy) }
+    it { is_expected.to have_many(:projects).through(:user_projects) }
+    it { is_expected.to have_many(:user_role_associations).dependent(:destroy) }
+    it { is_expected.to have_many(:user_roles).through(:user_role_associations) }
 
     it 'accepts nested attributes for user_roles' do
       expect(User.new).to respond_to(:user_roles_attributes=)
@@ -122,12 +122,12 @@ RSpec.describe User, type: :model do
   describe 'enums' do
     it 'defines division enum' do
       expect(User.divisions).to eq({
-        'undefined' => 0,
-        'sales_director' => 1,
-        'engineer' => 2,
-        'designer' => 3,
-        'other' => 4
-      })
+                                     'undefined' => 0,
+                                     'sales_director' => 1,
+                                     'engineer' => 2,
+                                     'designer' => 3,
+                                     'other' => 4
+                                   })
     end
   end
 
@@ -146,14 +146,14 @@ RSpec.describe User, type: :model do
       it 'returns users with project relation information' do
         result = User.find_in_project(project.id)
         available_users_count = User.available.count
-        
+
         expect(result).to be_an(Array)
         expect(result.size).to eq(available_users_count) # available users only
-        
+
         user1_info = result.find { |u| u[:id] == user1.id }
         expect(user1_info[:name]).to eq(user1.name)
         expect(user1_info[:related]).to be true
-        
+
         user2_info = result.find { |u| u[:id] == user2.id }
         expect(user2_info[:name]).to eq(user2.name)
         expect(user2_info[:related]).to be false
@@ -171,16 +171,18 @@ RSpec.describe User, type: :model do
     subject { user.administrator? }
 
     context 'user is administrator' do
-      let(:user) { create :user, :administrator }
-      it 'should return true' do
-        is_expected.to eq(true)
+      let(:user) { create(:user, :administrator) }
+
+      it 'returns true' do
+        expect(subject).to eq(true)
       end
     end
 
     context 'user is not administrator' do
-      let(:user) { create :user }
-      it 'should return false' do
-        is_expected.to eq(false)
+      let(:user) { create(:user) }
+
+      it 'returns false' do
+        expect(subject).to eq(false)
       end
     end
   end
@@ -189,16 +191,18 @@ RSpec.describe User, type: :model do
     subject { user.director? }
 
     context 'user is director' do
-      let(:user) { create :user, :director }
-      it 'should return true' do
-        is_expected.to eq(true)
+      let(:user) { create(:user, :director) }
+
+      it 'returns true' do
+        expect(subject).to eq(true)
       end
     end
 
     context 'user is not director' do
-      let(:user) { create :user }
-      it 'should return false' do
-        is_expected.to eq(false)
+      let(:user) { create(:user) }
+
+      it 'returns false' do
+        expect(subject).to eq(false)
       end
     end
   end
@@ -207,24 +211,27 @@ RSpec.describe User, type: :model do
     subject { user.available? }
 
     context 'user is not deleted' do
-      let(:user) { create :user }
-      it 'should return true' do
-        is_expected.to eq(true)
+      let(:user) { create(:user) }
+
+      it 'returns true' do
+        expect(subject).to eq(true)
       end
     end
 
     context 'user is deleted' do
-      let(:user) { create :user, :deleted }
-      it 'should return false' do
-        is_expected.to eq(false)
+      let(:user) { create(:user, :deleted) }
+
+      it 'returns false' do
+        expect(subject).to eq(false)
       end
     end
   end
 
   describe '#soft_delete' do
     subject { user.soft_delete }
-    let(:user) { create :user }
-    
+
+    let(:user) { create(:user) }
+
     it 'sets deleted_at timestamp' do
       expect(user.deleted_at).to be_nil
       subject
@@ -241,8 +248,9 @@ RSpec.describe User, type: :model do
 
   describe '#revive' do
     subject { user.revive }
-    let(:user) { create :user, :deleted }
-    
+
+    let(:user) { create(:user, :deleted) }
+
     it 'removes deleted_at timestamp' do
       expect(user.deleted_at).not_to be_nil
       subject
@@ -254,6 +262,7 @@ RSpec.describe User, type: :model do
   describe '#inactive_message' do
     context 'when user is active' do
       let(:user) { create(:user) }
+
       it 'returns default message' do
         expect(user.inactive_message).to eq(:inactive)
       end
@@ -261,6 +270,7 @@ RSpec.describe User, type: :model do
 
     context 'when user is deleted' do
       let(:user) { create(:user, :deleted) }
+
       it 'returns deleted account message' do
         expect(user.inactive_message).to eq(:deleted_account)
       end
@@ -275,7 +285,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'does nothing when setting password_salt' do
-      expect { user.password_salt = 'new_salt' }.not_to change { user.password_salt }
+      expect { user.password_salt = 'new_salt' }.not_to(change { user.password_salt })
     end
   end
 
@@ -283,19 +293,17 @@ RSpec.describe User, type: :model do
     let(:user) { create(:user) }
 
     context 'with valid date range' do
-      it 'creates reports for weekdays only', skip: "fill_absentメソッドの実装が異なるため一時的にスキップ" do
+      it 'creates reports for weekdays only', skip: 'fill_absentメソッドの実装が異なるため一時的にスキップ' do
         from = Date.new(2017, 1, 2) # Monday
         to = Date.new(2017, 1, 6)   # Friday
-        
-        expect {
+
+        expect do
           user.fill_absent(from, to)
-        }.to change(Report, :count).by(5)
-        
+        end.to change(Report, :count).by(5)
+
         # Check that reports were created for weekdays only
         (from..to).each do |date|
-          if date.wday.between?(1, 5) # Monday to Friday
-            expect(user.reports.find_by(worked_in: date)).to be_present
-          end
+          expect(user.reports.find_by(worked_in: date)).to be_present if date.wday.between?(1, 5) # Monday to Friday
         end
       end
     end

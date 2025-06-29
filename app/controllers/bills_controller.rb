@@ -5,21 +5,17 @@ class BillsController < ApplicationController
 
   layout 'admin'
 
-  def index
-  end
+  def index; end
 
   def confirm
-    if params[:file].blank?
-      fail '見積書ファイルをアップロードしてください。'
-    end
+    raise '見積書ファイルをアップロードしてください。' if params[:file].blank?
+
     book = Roo::Spreadsheet.open(params[:file].tempfile)
     sheet = book.sheet('設定')
     @estimate_serial_no = read(sheet, 'C8')
     logger.debug "estimate_serial_no: #{@estimate_serial_no}"
     estimate = Estimate.find_by(serial_no: @estimate_serial_no)
-    unless estimate.present?
-      fail '紐づく見積書が存在しません。'
-    end
+    raise '紐づく見積書が存在しません。' unless estimate.present?
 
     serial_no = read(sheet, 'C15')
     claimed_on = read(sheet, 'C13')
@@ -37,14 +33,10 @@ class BillsController < ApplicationController
     )
 
     @warnings = []
-    if Bill.exists?(serial_no: @resource.serial_no)
-      @warnings << '請求書NOが重複しています。登録内容は上書きされます。'
-    end
-    unless @resource.valid?
-      fail @resource.errors.full_messages.join("\n")
-    end
-  rescue => ex
-    @error = ex.message
+    @warnings << '請求書NOが重複しています。登録内容は上書きされます。' if Bill.exists?(serial_no: @resource.serial_no)
+    raise @resource.errors.full_messages.join("\n") unless @resource.valid?
+  rescue StandardError => e
+    @error = e.message
   end
 
   def create
@@ -52,15 +44,15 @@ class BillsController < ApplicationController
     resource.assign_attributes(bill_params)
     resource.save!
     redirect_to bills_path, notice: "請求書ファイル #{resource.filename} を登録しました。"
-  rescue => ex
-    redirect_to bills_path, alert: ex.message
+  rescue StandardError => e
+    redirect_to bills_path, alert: e.message
   end
 
   private
 
   def bill_params
     params.require(:bill).permit(
-      *%i(estimate_id claimed_on serial_no subject amount filename)
+      *%i[estimate_id claimed_on serial_no subject amount filename]
     )
   end
 end

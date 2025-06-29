@@ -12,7 +12,6 @@
 //
 //= require rails-ujs
 //= require jquery
-//= require turbolinks
 //= require bootstrap-sprockets
 //= require data-confirm-modal
 //= require moment

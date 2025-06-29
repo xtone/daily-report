@@ -15,18 +15,18 @@ class User < ApplicationRecord
   scope :available, -> { where(deleted_at: nil) }
 
   validates :name,
-    presence: true
+            presence: true
 
   validates :email,
-    presence: true
+            presence: true
 
   validates :password,
-    presence: true,
-    confirmation: true,
-    if: Proc.new { |user| user.new_record? || user.password.present? }
+            presence: true,
+            confirmation: true,
+            if: proc { |user| user.new_record? || user.password.present? }
 
   validates :began_on,
-    presence: true
+            presence: true
 
   class << self
     # 該当のプロジェクトに関与しているかの情報を含むリストを取得
@@ -47,9 +47,9 @@ class User < ApplicationRecord
   end
 
   # ensure user account is active
-  #def active_for_authentication?
+  # def active_for_authentication?
   #  super && !self.deleted_at
-  #end
+  # end
 
   # 管理者権限を持っている？
   # @return [TrueClass | FalseClass]
@@ -60,7 +60,7 @@ class User < ApplicationRecord
   # 有効な(集計中の)ユーザー？
   # @return [TrueClass | FalseClass]
   def available?
-    self.deleted_at.nil?
+    deleted_at.nil?
   end
 
   # ディレクター権限を持っている？
@@ -71,16 +71,15 @@ class User < ApplicationRecord
 
   # provide a custom message for a deleted account
   def inactive_message
-    !self.deleted_at ? super : :deleted_account
+    deleted_at ? :deleted_account : super
   end
 
   # @return [String]
   def password_salt
-    self.id.to_s
+    id.to_s
   end
 
-  def password_salt=(new_salt)
-  end
+  def password_salt=(new_salt); end
 
   # 削除状態を取り消す
   def revive
@@ -94,15 +93,12 @@ class User < ApplicationRecord
   end
 
   def fill_absent(date_range)
-    if date_range.class != Range
-      return nil
-    end
-    
-    absent_project = Project.find_by(name: "休み")
+    return nil if date_range.class != Range
+
+    absent_project = Project.find_by(name: '休み')
     date_range.each do |date|
-      if date.wday == 0 || date.wday == 6
-        next
-      end
+      next if [0, 6].include?(date.wday)
+
       report = user.reports.create(worked_in: date)
       report.operations.create(project: absent_project, workload: 100)
     end
