@@ -1,9 +1,8 @@
 require 'capybara/rspec'
 require 'selenium-webdriver'
-require 'webdrivers/chromedriver'
 
-# Chromeドライバーの自動管理（インストールされているChromeに合わせて自動的にダウンロード）
-Webdrivers.cache_time = 86_400 # 1日間キャッシュ
+# Chrome/Chromiumの設定
+Selenium::WebDriver::Chrome.path = ENV['CHROME_BIN'] if ENV['CHROME_BIN']
 
 # Capybara configuration
 Capybara.register_driver :selenium_chrome_headless do |app|
@@ -22,10 +21,23 @@ Capybara.register_driver :selenium_chrome_headless do |app|
     options.add_argument('--disable-web-security')
   end
 
-  # Chromeのバイナリパスを明示的に指定（Docker環境用）
-  options.binary = '/usr/bin/google-chrome-stable' if File.exist?('/usr/bin/google-chrome-stable')
+  # Chrome/Chromiumのバイナリパスを明示的に指定
+  if ENV['CHROME_BIN']
+    options.binary = ENV['CHROME_BIN']
+  elsif File.exist?('/usr/bin/chromium')
+    options.binary = '/usr/bin/chromium'
+  elsif File.exist?('/usr/bin/google-chrome-stable')
+    options.binary = '/usr/bin/google-chrome-stable'
+  end
 
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  # WebDriverのパスを設定
+  service = if ENV['CHROMEDRIVER_PATH']
+    Selenium::WebDriver::Service.chrome(path: ENV['CHROMEDRIVER_PATH'])
+  else
+    Selenium::WebDriver::Service.chrome
+  end
+
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, service: service)
 end
 
 Capybara.default_driver = :rack_test
