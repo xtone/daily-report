@@ -7,4 +7,4 @@ Rails.application.config.assets.version = "1.0"
 # Rails.application.config.assets.paths << Emoji.images_path
 
 # Precompile additional assets.
-Rails.application.config.assets.precompile += %w( csv_datepicker.js )
+Rails.application.config.assets.precompile += %w( csv_datepicker.js summary_datepicker.js unsubmitted_datepicker.js )
