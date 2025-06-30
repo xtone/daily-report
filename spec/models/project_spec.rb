@@ -35,6 +35,28 @@ RSpec.describe Project, type: :model do
         expect(project).not_to be_valid
         expect(project.errors[:name]).to include('を入力してください')
       end
+
+      it 'must contain only SJIS-convertible characters' do
+        project = build(:project, name: 'プロジェクト😀')
+        expect(project).not_to be_valid
+        expect(project.errors[:name]).to include(/Shift_JIS に変換できない文字「😀」が含まれています/)
+      end
+
+      it 'accepts SJIS-convertible Japanese characters' do
+        project = build(:project, name: '新規プロジェクト')
+        expect(project).to be_valid
+      end
+
+      it 'accepts SJIS-convertible symbols' do
+        project = build(:project, name: 'プロジェクト（２０２４年度）')
+        expect(project).to be_valid
+      end
+
+      it 'rejects Unicode-only characters' do
+        project = build(:project, name: 'プロジェクト№')
+        expect(project).not_to be_valid
+        expect(project.errors[:name]).to include(/Shift_JIS に変換できない文字/)
+      end
     end
 
     describe 'name_reading' do
@@ -57,6 +79,25 @@ RSpec.describe Project, type: :model do
 
       it 'accepts hiragana with long vowel mark' do
         project = build(:project, name_reading: 'ぷろじぇくとー')
+        expect(project).to be_valid
+      end
+
+      it 'must contain only SJIS-convertible characters' do
+        # ひらがなのみという制約があるため、実際には絵文字などは入らないが、
+        # 念のためSJIS変換バリデーションも適用されていることを確認
+        allow_any_instance_of(Project).to receive(:name_reading=).and_call_original
+        project = build(:project)
+        # name_reading の format バリデーションを一時的に無効化して、SJIS変換バリデーションのみをテスト
+        allow(project).to receive(:valid?).and_wrap_original do |method|
+          project.errors.clear
+          project.class.validators_on(:name_reading).each do |validator|
+            next if validator.is_a?(ActiveModel::Validations::FormatValidator)
+            validator.validate(project)
+          end
+          project.errors.empty?
+        end
+        
+        project.name_reading = 'てすと'
         expect(project).to be_valid
       end
     end
