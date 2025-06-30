@@ -54,3 +54,4 @@ yarn-debug.log*
 
 # Ignore coverage reports
 /coverage/
+coverage/
