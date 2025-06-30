@@ -7,8 +7,8 @@ on:
     branches: [ develop, main, master ]
 
 env:
-  RUBY_VERSION: 3.1.6
-  NODE_VERSION: 14
+  RUBY_VERSION: 3.2.5
+  NODE_VERSION: 18
   MYSQL_VERSION: 5.7
 
 jobs:
@@ -50,6 +50,9 @@ jobs:
       run: yarn install --frozen-lockfile
         
     - name: Build webpack assets
+      env:
+        NODE_ENV: test
+        RAILS_ENV: test
       run: yarn build
 
     - name: Setup test database

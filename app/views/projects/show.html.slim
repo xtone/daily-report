@@ -68,7 +68,7 @@ h2 このプロジェクトの日報を投稿したメンバー
       td= @estimates.size
     tr
       th.text-right= t('estimate.filename')
-      td== @estimates.map { |e| e.filename }.join('<br/>')
+      td= safe_join(@estimates.map { |e| e.filename }, tag.br)
     tr
       th.text-right= t('project.estimate.cost')
       td= "¥#{@estimates.sum { |e| e.cost }.to_s(:delimited)}"

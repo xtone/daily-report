@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { createRoot } from 'react-dom/client'
 //import FormData from 'formdata-polyfill'
 import * as Turbo from '@hotwired/turbo-rails'

@@ -7,8 +7,8 @@ on:
     branches: [ develop, main, master ]
 
 env:
-  RUBY_VERSION: 3.1.6
-  NODE_VERSION: 14
+  RUBY_VERSION: 3.2.5
+  NODE_VERSION: 18
   MYSQL_VERSION: 5.7
 
 jobs:
@@ -57,6 +57,9 @@ jobs:
       run: yarn install --frozen-lockfile
         
     - name: Build webpack assets
+      env:
+        NODE_ENV: test
+        RAILS_ENV: test
       run: yarn build
 
     - name: Setup test database
@@ -68,14 +71,24 @@ jobs:
         bundle exec rails db:create
         bundle exec rails db:migrate
         bundle exec rails db:seed
+    
+    - name: Create screenshots directory
+      run: mkdir -p tmp/screenshots
 
     - name: Run E2E tests
       env:
         RAILS_ENV: test
         MYSQL_HOST: 127.0.0.1
         MYSQL_PASSWORD: password
+        CI: true
+        HEADLESS: true
+        DISABLE_SPRING: true
       run: |
-        bundle exec rspec spec/features/ --format progress
+        echo "Starting E2E tests..."
+        echo "Verifying Turbo configuration..."
+        bundle exec rails runner "puts 'Turbo enabled: ' + Rails.application.config.turbo.to_s"
+        echo "Running RSpec tests..."
+        bundle exec rspec spec/features/ --format documentation --format progress --backtrace
 
     - name: Upload screenshots on failure
       uses: actions/upload-artifact@v4

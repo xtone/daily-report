@@ -1,0 +1,30 @@
+<% if user_signed_in? %>
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <%= link_to '日報システム', root_path, class: 'navbar-brand' %>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="<%= 'active' if current_page?(root_path) %>">
+            <%= link_to '日報入力', root_path %>
+          </li>
+          <li class="<%= 'active' if current_page?(settings_projects_path) %>">
+            <%= link_to 'プロジェクト設定', settings_projects_path %>
+          </li>
+          <li class="<%= 'active' if current_page?(settings_password_path) %>">
+            <%= link_to 'パスワード変更', settings_password_path %>
+          </li>
+          <% if current_user.user_roles.present? %>
+            <li class="<%= 'active' if current_page?(admin_root_path) %>">
+              <%= link_to '管理画面', admin_root_path %>
+            </li>
+          <% end %>
+        </ul>
+        <%= form_with url: destroy_user_session_path, method: 'delete', class: 'navbar-form navbar-right', local: true do %>
+          <%= submit_tag 'ログアウト', class: 'btn btn-default' %>
+        <% end %>
+      </div>
+    </div>
+  </nav>
+<% end %>

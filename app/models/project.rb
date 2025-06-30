@@ -1,5 +1,5 @@
 class Project < ApplicationRecord
-  enum category: { undefined: 0, client_shot: 1, client_maintenance: 2, internal: 3, general_affairs: 4, other: 5 }
+  enum :category, { undefined: 0, client_shot: 1, client_maintenance: 2, internal: 3, general_affairs: 4, other: 5 }
 
   has_many :operations
   has_many :user_projects, dependent: :destroy

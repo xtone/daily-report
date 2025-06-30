@@ -1,4 +1,4 @@
-FROM ruby:3.1.6
+FROM ruby:3.2.5
 ENV LANG C.UTF-8
 
 # 開発に便利なツールもインストール
@@ -19,12 +19,14 @@ RUN apt-get update && \
         gnupg && \
     rm -rf /var/lib/apt/lists/*
 
-# Chrome と必要な依存関係をインストール
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
-    apt-get update && \
-    apt-get install -y google-chrome-stable && \
+# Chromium と必要な依存関係をインストール（ARM64対応）
+RUN apt-get update && \
+    apt-get install -y chromium chromium-driver && \
     rm -rf /var/lib/apt/lists/*
+
+# Chromiumのパスを環境変数に設定
+ENV CHROME_BIN=/usr/bin/chromium
+ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
 
 # Node.js 18.x をインストール（Debian標準パッケージ）
 RUN apt-get update && \
@@ -36,7 +38,7 @@ RUN apt-get update && \
 # Yarnをnpmでインストール
 RUN npm install -g yarn@1.22.19
 
-# Ruby 3.1で使用可能な最新のBundler 2.4.22をインストール
+# Ruby 3.2で使用可能な最新のBundler 2.4.22をインストール
 RUN gem update --system && gem install bundler -v 2.4.22
 
 # 開発用のツールをインストール

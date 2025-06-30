@@ -106,4 +106,20 @@ coverage: ## テストカバレッジを計測
 		-e COVERAGE=true \
 		app-test bundle exec rspec
 
-.PHONY: e2e-test e2e-setup rubocop rubocop-fix brakeman coverage
+# CI環境でのテスト
+ci-build: ## CI環境用のDockerイメージをビルド
+	docker-compose -f docker-compose.ci.yml build
+
+ci-test: ## CI環境でE2Eテストを実行（GitHub Actions環境を再現）
+	docker-compose -f docker-compose.ci.yml run --rm app-ci
+
+ci-test-interactive: ## CI環境でインタラクティブにテスト（デバッグ用）
+	docker-compose -f docker-compose.ci.yml run --rm app-ci bash
+
+ci-clean: ## CI環境のコンテナとボリュームを削除
+	docker-compose -f docker-compose.ci.yml down -v
+
+ci-logs: ## CI環境のログを表示
+	docker-compose -f docker-compose.ci.yml logs -f
+
+.PHONY: e2e-test e2e-setup rubocop rubocop-fix brakeman coverage ci-build ci-test ci-test-interactive ci-clean ci-logs

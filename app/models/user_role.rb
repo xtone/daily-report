@@ -5,7 +5,7 @@ class UserRole < ApplicationRecord
   validates :role,
             presence: true
 
-  enum role: {
+  enum :role, {
     administrator: 0,
     director: 1
   }

@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
 import { createRoot } from 'react-dom/client';
 
 // ReportSummary機能のReactコンポーネント（既存のCoffeeScriptから移植）
