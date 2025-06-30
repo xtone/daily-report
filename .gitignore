@@ -51,3 +51,6 @@ yarn-debug.log*
 
 # Ignore compiled assets
 /public/assets
+
+# Ignore coverage reports
+/coverage/

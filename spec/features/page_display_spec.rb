@@ -34,7 +34,11 @@ RSpec.feature 'Page Display', :js, type: :feature do
 
     scenario 'ログイン画面のレイアウトが正しく表示される' do
       visit '/users/sign_in'
-      expect(page).to have_css('.navbar-brand', text: '日報システム')
+      # ログイン画面では認証されていないため、ナビゲーションバーは表示されない
+      expect(page).not_to have_css('.navbar-brand')
+      expect(page).to have_content('Log in')
+      expect(page).to have_field('メールアドレス')
+      expect(page).to have_field('パスワード')
       expect(page).not_to have_content('Exception')
       expect(page).not_to have_content('Error')
     end

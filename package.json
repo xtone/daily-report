@@ -24,6 +24,10 @@
   "devDependencies": {
     "webpack-dev-server": "^4.11.0"
   },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "babel": {
     "presets": [
       "@babel/preset-env",
