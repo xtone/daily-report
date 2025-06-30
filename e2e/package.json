@@ -1,0 +1,17 @@
+{
+  "name": "daily-report-e2e",
+  "version": "1.0.0",
+  "description": "E2E tests for Daily Report system",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "codegen": "playwright codegen http://localhost:3456",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  }
+}
