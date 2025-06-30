@@ -17,6 +17,15 @@ class DatePicker extends React.Component {
   }
 
   initializeDatePicker() {
+    // グローバルスコープから $ と moment を取得
+    if (typeof window.$ === 'undefined' || typeof window.moment === 'undefined') {
+      console.error('jQuery or moment.js is not loaded');
+      return;
+    }
+    
+    const $ = window.$;
+    const moment = window.moment;
+    
     const $input = $(this.inputRef.current);
     
     // Bootstrap datetimepickerの初期化
@@ -38,6 +47,11 @@ class DatePicker extends React.Component {
   }
 
   destroyDatePicker() {
+    if (typeof window.$ === 'undefined') {
+      return;
+    }
+    
+    const $ = window.$;
     const $input = $(this.inputRef.current);
     if ($input.data('DateTimePicker')) {
       $input.data('DateTimePicker').destroy();
