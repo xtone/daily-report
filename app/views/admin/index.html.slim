@@ -2,7 +2,7 @@ h1 管理画面
 
 dl.dl-horizontal
   dt
-    = link_to 'プロジェクト管理', projects_path
+    = link_to 'プロジェクト管理', projects_path(active: true, order: 'code_desc')
   dd 日報に登録するプロジェクトを管理します。
   /
     dt
