@@ -7,7 +7,7 @@ class Reports::SummariesController < ApplicationController
     authorize Report.new, :summary?
     respond_to do |format|
       format.csv do
-        raise ActiveRecord::RecordNotFoundunless unless params[:reports].present?
+        raise ActiveRecord::RecordNotFound unless params[:reports].present?
 
         @start_date = Date.parse(params[:reports][:start])
         @end_date = Date.parse(params[:reports][:end])

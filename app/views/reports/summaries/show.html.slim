@@ -23,6 +23,8 @@ h1 稼働集計
     | または
   .p-2
     = form_with url: summary_path(format: :csv), method: :get, id: 'summaryDownload' do
+      input type="hidden" name="reports[start]" id="csv_start_date" value="#{@start_date.strftime('%Y-%m-%d')}"
+      input type="hidden" name="reports[end]" id="csv_end_date" value="#{@end_date.strftime('%Y-%m-%d')}"
       = submit_tag 'CSVダウンロード', class: 'btn btn-primary'
 
 - if params[:reports].present?
@@ -49,11 +51,5 @@ h1 稼働集計
 
 = javascript_include_tag 'reports_summary'
 
-- content_for :foot do
-  javascript:
-    $('.input-group.date').datetimepicker({
-      format: 'YYYY-MM-DD',
-      dayViewHeaderFormat: 'YYYY年MMMM',
-      locale: moment.locale('ja'),
-      showClose: true
-    });
+- content_for :head do
+  = javascript_include_tag 'summary_datepicker'
