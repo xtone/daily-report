@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/ruby:3.1.6
+FROM public.ecr.aws/docker/library/ruby:3.2.5
 ENV LANG=C.UTF-8
 
 # 必要なパッケージをインストール
@@ -13,9 +13,9 @@ RUN apt-get update && \
         g++ && \
     rm -rf /var/lib/apt/lists/*
 
-# Node.js 18.x をインストール（Debian標準パッケージ）
-RUN apt-get update && \
-    apt-get install -y nodejs npm && \
+# Node.js 18.x をインストール（NodeSourceリポジトリから）
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/* && \
     node --version && \
     npm --version
@@ -23,8 +23,8 @@ RUN apt-get update && \
 # Yarnをnpmでインストール
 RUN npm install -g yarn@1.22.19
 
-# Ruby 3.1で使用可能な最新のBundler 2.4.22をインストール
-RUN gem update --system 3.4.22 && gem install bundler -v 2.4.22
+# Ruby 3.2.5で使用可能な最新のBundlerをインストール
+RUN gem update --system && gem install bundler
 
 ENV APP_ROOT=/daily-report
 RUN mkdir -p $APP_ROOT
@@ -37,7 +37,7 @@ RUN yarn install --frozen-lockfile
 
 RUN bundle config set --local deployment 'true' && \
     bundle config set --local without 'development test' && \
-    bundle _2.4.22_ install --jobs 4 --retry 3
+    bundle install --jobs 4 --retry 3
 
 # 本番環境用の環境変数を設定
 ENV RAILS_ENV=production
@@ -45,31 +45,22 @@ ENV NODE_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_LOG_TO_STDOUT=true
 
-# webpacker用の環境変数を追加
+# Node.js用の環境変数を追加
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
-# webpackerのキャッシュディレクトリを作成
-RUN mkdir -p tmp/cache/webpacker public/packs scripts
+# 必要なディレクトリを作成
+RUN mkdir -p tmp/cache public/assets
 
-# scriptsディレクトリを作成してマニフェスト生成スクリプトをコピー
-COPY scripts/generate-manifest.js scripts/
+# 本番環境用のJavaScriptビルドを実行
+RUN NODE_ENV=production npm run build
 
-# 古いwebpackerファイルを削除
-RUN rm -rf public/packs/*
-
-# Railsのassets:precompileでCSSなどの残りのアセットを処理（webpackerファイルは除く）
+# Railsのassets:precompileを実行（CSSとJavaScriptの両方を処理）
 RUN RAILS_ENV=production \
     SECRET_KEY_BASE=dummy \
     DISABLE_SPRING=1 \
     RAILS_LOG_LEVEL=error \
     DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
     bundle exec rails assets:precompile
-
-# 本番環境用のwebpackビルドを実行（Railsアセットプリコンパイル後）
-RUN NODE_ENV=production npm run build
-
-# マニフェストファイルを再生成（webpackとRailsアセットの両方を含む）
-RUN npm run postbuild
 
 # 本番環境では不要なdevDependenciesを削除してイメージサイズを削減
 RUN yarn install --production && yarn cache clean
