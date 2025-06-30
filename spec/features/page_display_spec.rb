@@ -139,6 +139,27 @@ RSpec.feature 'Page Display', :js, type: :feature do
       end
     end
 
+    scenario 'プロジェクト管理リンクが正しいURLパラメータを含む' do
+      begin
+        # 管理画面へのリンクが表示されることを確認
+        expect(page).to have_link('管理画面', wait: 5)
+        # リンクをクリックして遷移
+        click_link_with_retry '管理画面'
+        expect(page).to have_css('h1', text: '管理画面', wait: 5)
+        # プロジェクト管理リンクのhref属性を確認
+        expect(page).to have_link('プロジェクト管理', href: '/projects?active=true&order=code_desc')
+      rescue StandardError => e
+        # CI環境でのSeleniumエラーを回避
+        if e.message.include?('Node with given id does not belong to the document') ||
+           e.message.include?('element click intercepted') ||
+           e.message.include?('stale element reference')
+          skip 'CI環境でのSeleniumエラーのためスキップ'
+        else
+          raise e
+        end
+      end
+    end
+
     scenario 'ユーザー管理画面が表示される' do
       begin
         # ホーム画面に戻ってから管理画面へ遷移
