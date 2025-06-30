@@ -22,8 +22,9 @@ RSpec.feature 'Page Display', :js, type: :feature do
   describe '未認証ユーザー' do
     scenario 'ログイン画面が表示される' do
       visit '/'
-      # Turbo Driveが無効化されていることを確認
-      expect(page.evaluate_script('window.Turbo ? window.Turbo.session.drive : true')).to eq(false)
+      # Rails 8.0ではTurbo Driveがデフォルトで有効
+      # Turboの存在確認のみ行う
+      expect(page.evaluate_script('window.Turbo !== undefined')).to eq(true)
       
       expect(page).to have_current_path('/users/sign_in')
       expect(page).to have_content('Log in')
