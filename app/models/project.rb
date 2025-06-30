@@ -13,11 +13,13 @@ class Project < ApplicationRecord
             uniqueness: true
 
   validates :name,
-            presence: true
+            presence: true,
+            sjis_convertible: true
 
   validates :name_reading,
             presence: true,
-            format: { with: /\A[\p{hiragana}ー]+\Z/ }
+            format: { with: /\A[\p{hiragana}ー]+\Z/ },
+            sjis_convertible: true
 
   scope :available, -> { where(hidden: false) }
 
