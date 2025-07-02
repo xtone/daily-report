@@ -10,14 +10,15 @@ module SpreadsheetReadable
   # @return [String | Integer | Float | nil] セルに入っている値
   def read(sheet, address, default_value = nil)
     md = address.match(/\A([A-Z]+)(\d+)\z/)
-    row, col = md[2].to_i, md[1]
+    row = md[2].to_i
+    col = md[1]
     begin
       logger.debug "value = #{sheet.cell(row, col)}"
       sheet.cell(row, col) || default_value
-    rescue => ex
-      logger.debug ex.message
-      logger.debug ex.backtrace.join("\n")
-      raise ex
+    rescue StandardError => e
+      logger.debug e.message
+      logger.debug e.backtrace.join("\n")
+      raise e
     end
   end
 end

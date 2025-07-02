@@ -4,7 +4,7 @@ module UsersHelper
       form_with model: user, method: :delete do |f|
         f.submit('このユーザーを集計対象から外す',
                  class: 'btn btn-danger navbar-btn',
-                 data: { confirm: "このユーザーを集計対象から外します。よろしいですか？" })
+                 data: { confirm: 'このユーザーを集計対象から外します。よろしいですか？' })
       end
     else
       form_with model: user, url: revive_user_path(user), method: :patch do |f|
@@ -25,12 +25,8 @@ module UsersHelper
 
   def role_labels(user)
     capture do
-      if user.administrator?
-        concat content_tag(:span, t('user_role.administrator'), class: 'label label-primary')
-      end
-      if user.director?
-        concat content_tag(:span, t('user_role.director'), class: 'label label-primary')
-      end
+      concat content_tag(:span, t('user_role.administrator'), class: 'label label-primary') if user.administrator?
+      concat content_tag(:span, t('user_role.director'), class: 'label label-primary') if user.director?
     end
   end
 end

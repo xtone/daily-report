@@ -30,14 +30,5 @@ h2 ユーザー一覧
 = form_with url: users_path(format: :csv), method: :get do
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
 
-- content_for :foot do
-  javascript:
-    new Report({ form: 'reports' });
-    new CsvDownload();
-
-    $('.input-group.date').datetimepicker({
-      format: 'YYYY-MM-DD',
-      dayViewHeaderFormat: 'YYYY年MMMM',
-      locale: moment.locale('ja'),
-      showClose: true
-    });
+- content_for :head do
+  = javascript_include_tag 'csv_datepicker'

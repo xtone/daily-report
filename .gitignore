@@ -23,9 +23,35 @@ vendor/node_modules
 
 /docker/mysql/volumes/*
 !/docker/mysql/volumes/.keep
+docker-compose.override.yml
 
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
 
+# 環境変数ファイル
+.env
+.env.local
+
 /.idea
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+
+# Webpacker artifacts (removed)
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# Ignore builds
+/app/assets/builds/*
+!/app/assets/builds/.keep
+!/app/assets/builds/manifest.json
+
+# Ignore compiled assets
+/public/assets
+
+# Ignore coverage reports
+/coverage/
+coverage/

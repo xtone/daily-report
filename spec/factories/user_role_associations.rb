@@ -1,6 +1,6 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user_role_association do
-    user_id 1
-    user_role_id 1
+    association :user
+    association :user_role
   end
 end

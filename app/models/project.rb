@@ -1,5 +1,5 @@
 class Project < ApplicationRecord
-  enum category: { undefined: 0, client_shot: 1, client_maintenance: 2, internal: 3, general_affairs: 4, other: 5 }
+  enum :category, { undefined: 0, client_shot: 1, client_maintenance: 2, internal: 3, general_affairs: 4, other: 5 }
 
   has_many :operations
   has_many :user_projects, dependent: :destroy
@@ -8,16 +8,18 @@ class Project < ApplicationRecord
   has_many :bills, through: :estimates
 
   validates :code,
-    allow_blank: true,
-    numericality: { greater_than_or_equal_to: 0 },
-    uniqueness: true
+            allow_blank: true,
+            numericality: { greater_than_or_equal_to: 0 },
+            uniqueness: true
 
   validates :name,
-    presence: true
+            presence: true,
+            sjis_convertible: true
 
   validates :name_reading,
-    presence: true,
-    format: { with: /\A[\p{hiragana}ー]+\Z/ }
+            presence: true,
+            format: { with: /\A[\p{hiragana}ー]+\Z/ },
+            sjis_convertible: true
 
   scope :available, -> { where(hidden: false) }
 
@@ -54,17 +56,17 @@ class Project < ApplicationRecord
   # @return [ActiveRecord::Relation]
   def members
     @members ||= User.includes(reports: :operations)
-                   .references(:operations)
-                   .where(operations: { project_id: self.id })
+                     .references(:operations)
+                     .where(operations: { project_id: id })
   end
 
   def displayed?
-    !self.hidden
+    !hidden
   end
 
   # 表示ステータス
   # @return [String]
   def display_status
-    self.hidden ? I18n.t('project.display_status.hidden') : I18n.t('project.display_status.display')
+    hidden ? I18n.t('project.display_status.hidden') : I18n.t('project.display_status.display')
   end
 end

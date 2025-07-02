@@ -1,6 +1,6 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import Turbolinks from 'turbolinks'
+import { createRoot } from 'react-dom/client'
+import * as Turbo from '@hotwired/turbo-rails'
 import PropTypes from 'prop-types'
 
 const csrfToken = document.getElementsByName('csrf-token').item(0).content;
@@ -84,14 +84,27 @@ class ProjectMember extends React.Component {
 
 
 
-Turbolinks.start();
+// React 18のルートを保持する変数
+let projectMembersRoot = null;
 
-document.addEventListener('turbolinks:load', () => {
-  ReactDOM.render(
-    <ProjectMembers project_members_path={window.location.pathname} />,
-    document.getElementById('project_members'));
+document.addEventListener('turbo:load', () => {
+  const container = document.getElementById('project_members');
+  if (!container) return;
+  
+  // 既存のルートがある場合は再利用、なければ新規作成
+  if (!projectMembersRoot) {
+    projectMembersRoot = createRoot(container);
+  }
+  
+  projectMembersRoot.render(
+    <ProjectMembers project_members_path={window.location.pathname} />
+  );
 });
 
-document.addEventListener('turbolinks:before-render', () => {
-  ReactDOM.unmountComponentAtNode(document.getElementById('project_members'));
+document.addEventListener('turbo:before-render', () => {
+  // React 18のルートをアンマウント
+  if (projectMembersRoot) {
+    projectMembersRoot.unmount();
+    projectMembersRoot = null;
+  }
 });

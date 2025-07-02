@@ -1,10 +1,10 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user_role do
     trait :administrator do
-      role 0
+      role { 0 }
     end
     trait :director do
-      role 1
+      role { 1 }
     end
   end
 end

@@ -1,0 +1,65 @@
+# Git関連
+.git
+.gitignore
+
+# ログファイル
+log/*
+tmp/*
+!tmp/.keep
+
+# 開発・テスト関連
+spec/
+.rspec
+.byebug_history
+.pry_history
+
+# IDE関連
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS関連
+.DS_Store
+Thumbs.db
+
+# 環境設定
+.env
+.env.local
+.env.development
+.env.test
+
+# キャッシュ
+tmp/cache/*
+!tmp/cache/.keep
+
+# 開発用Docker関連
+docker-compose.yml
+docker-compose.override.yml
+docker-compose.override.yml.example
+Dockerfile
+docker/
+
+# CI/CD関連（本番ビルドでは不要）
+.circleci/
+.github/
+
+# ドキュメント
+README.md
+docs/
+
+# 削除済みのwebpacker関連ファイル（念のため）
+#node_modules/
+#package.json
+#yarn.lock
+#.browserslistrc
+#webpack.config.js
+#babel.config.js
+#.babelrc
+#postcss.config.js
+#.postcssrc.yml
+
+# 開発用スクリプト
+scripts/install_and_migrate.sh
+scripts/start_server.sh
+scripts/stop_server.sh 

@@ -1,0 +1,74 @@
+FROM public.ecr.aws/docker/library/ruby:3.2.5
+ENV LANG=C.UTF-8
+
+# 必要なパッケージをインストール
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        ca-certificates \
+        libmariadb-dev-compat \
+        python3 \
+        make \
+        g++ && \
+    rm -rf /var/lib/apt/lists/*
+
+# Node.js 18.x をインストール（NodeSourceリポジトリから）
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/* && \
+    node --version && \
+    npm --version
+
+# Yarnをnpmでインストール
+RUN npm install -g yarn@1.22.19
+
+# Ruby 3.2.5で使用可能な最新のBundlerをインストール
+RUN gem update --system && gem install bundler
+
+ENV APP_ROOT=/daily-report
+RUN mkdir -p $APP_ROOT
+WORKDIR $APP_ROOT
+
+# アプリケーションコードをコピー
+COPY . $APP_ROOT
+
+RUN yarn install --frozen-lockfile
+
+RUN bundle config set --local deployment 'true' && \
+    bundle config set --local without 'development test' && \
+    bundle install --jobs 4 --retry 3
+
+# 本番環境用の環境変数を設定
+ENV RAILS_ENV=production
+ENV NODE_ENV=production
+ENV RAILS_SERVE_STATIC_FILES=true
+ENV RAILS_LOG_TO_STDOUT=true
+
+# Node.js用の環境変数を追加
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+# 必要なディレクトリを作成
+RUN mkdir -p tmp/cache public/assets
+
+# 本番環境用のJavaScriptビルドを実行
+RUN NODE_ENV=production npm run build
+
+# Railsのassets:precompileを実行（CSSとJavaScriptの両方を処理）
+RUN RAILS_ENV=production \
+    SECRET_KEY_BASE=dummy \
+    DISABLE_SPRING=1 \
+    RAILS_LOG_LEVEL=error \
+    DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
+    bundle exec rails assets:precompile
+
+# 本番環境では不要なdevDependenciesを削除してイメージサイズを削減
+RUN yarn install --production && yarn cache clean
+
+# PIDファイルとtmpディレクトリをクリーンアップ
+RUN rm -rf tmp/pids/* tmp/cache/* && mkdir -p tmp/pids
+
+EXPOSE 3000
+
+# 本番環境用の起動コマンド（PIDファイルを削除してから起動）
+CMD ["sh", "-c", "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0 -p 3000 -e production"]

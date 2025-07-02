@@ -1,0 +1,38 @@
+FROM ruby:2.7.8
+
+# Install Chrome for E2E testing
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        gnupg \
+        wget && \
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        google-chrome-stable \
+        libmariadb-dev-compat \
+        nodejs \
+        npm && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+RUN mkdir -p /daily-report
+WORKDIR /daily-report
+
+# Copy Gemfile
+COPY Gemfile Gemfile.lock ./
+
+# Install gems
+RUN bundle install
+
+# Copy application
+COPY . .
+
+# Create directory for screenshots
+RUN mkdir -p tmp/screenshots
+
+# Set Chrome path for webdrivers
+ENV CHROME_BIN=/usr/bin/google-chrome
+
+CMD ["bash"]

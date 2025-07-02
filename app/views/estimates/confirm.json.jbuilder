@@ -15,9 +15,7 @@ if @error.blank?
     json.cost @resource.cost
     json.filename @resource.filename
   end
-  unless @warnings.blank?
-    json.warnings @warnings
-  end
+  json.warnings @warnings if @warnings.present?
 else
   json.status 'error'
   json.error @error

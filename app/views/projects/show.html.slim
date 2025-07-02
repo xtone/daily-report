@@ -29,7 +29,7 @@ dl.dl-horizontal
                   method: :delete,
                   class: 'navbar-form navbar-right',
                   data: { title: '削除の確認',
-                          confirm: 'このプロジェクトを削除します。よろしいですか？'} do |f|
+                          turbo_confirm: 'このプロジェクトを削除します。よろしいですか？'} do |f|
         = f.submit 'このプロジェクトを削除', class: 'btn btn-danger'
 
 h2 このプロジェクトの日報を投稿したメンバー
@@ -68,7 +68,7 @@ h2 このプロジェクトの日報を投稿したメンバー
       td= @estimates.size
     tr
       th.text-right= t('estimate.filename')
-      td== @estimates.map { |e| e.filename }.join('<br/>')
+      td= safe_join(@estimates.map { |e| e.filename }, tag.br)
     tr
       th.text-right= t('project.estimate.cost')
       td= "¥#{@estimates.sum { |e| e.cost }.to_s(:delimited)}"

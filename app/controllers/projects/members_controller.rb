@@ -8,20 +8,20 @@ class Projects::MembersController < ApplicationController
     authorize @project
     respond_to do |format|
       format.json { @users = User.find_in_project(@project.id) }
-      format.any {}
+      format.html {}
     end
   end
 
   def update
     authorize @project
     @project.users << User.find(params[:id])
-    head 200
+    head :ok
   end
 
   def destroy
     authorize @project
     @project.user_projects.find_by(user_id: params[:id]).destroy
-    head 200
+    head :ok
   end
 
   private
