@@ -3,29 +3,29 @@
 //= require moment/ja.js
 //= require bootstrap-datetimepicker
 
-$(document).on('turbo:load', function() {
-  initializeUnsubmittedDatePickers();
-});
+// Rails 8.0でTurboと連携するための日付ピッカー初期化
+(function() {
+  'use strict';
 
-$(document).ready(function() {
-  if (!window.Turbo) {
+  // Turboイベントの登録
+  document.addEventListener('turbo:load', function() {
     initializeUnsubmittedDatePickers();
-  }
-});
+  });
+
+  // DOMContentLoadedイベントでも初期化（初回ページロード時）
+  document.addEventListener('DOMContentLoaded', function() {
+    initializeUnsubmittedDatePickers();
+  });
+
+  // turbo:renderイベントでも初期化（Turboフレーム更新時）
+  document.addEventListener('turbo:render', function() {
+    initializeUnsubmittedDatePickers();
+  });
+})();
 
 function initializeUnsubmittedDatePickers() {
-  console.log('Initializing unsubmitted date pickers...');
-  console.log('jQuery available:', typeof $ !== 'undefined');
-  console.log('moment available:', typeof moment !== 'undefined');
-  console.log('datetimepicker available:', typeof $.fn !== 'undefined' && typeof $.fn.datetimepicker !== 'undefined');
-  
-  if (typeof $ === 'undefined' || typeof moment === 'undefined') {
-    console.error('Required dependencies not loaded');
-    return;
-  }
-  
-  if (typeof $.fn.datetimepicker === 'undefined') {
-    console.error('DateTimePicker plugin not loaded');
+  // 依存関係のチェック
+  if (typeof $ === 'undefined' || typeof moment === 'undefined' || typeof $.fn.datetimepicker === 'undefined') {
     return;
   }
   
