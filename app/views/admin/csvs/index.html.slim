@@ -30,5 +30,44 @@ h2 ユーザー一覧
 = form_with url: users_path(format: :csv), method: :get do
   = submit_tag 'ダウンロード', class: 'btn btn-primary'
 
-- content_for :head do
-  = javascript_include_tag 'csv_datepicker'
+- content_for :foot do
+  javascript:
+    // CSV出力ページ専用の日付ピッカー初期化
+    function initializeCSVDatePickers() {
+      if (typeof $ === 'undefined' || typeof moment === 'undefined' || typeof $.fn.datetimepicker === 'undefined') {
+        return;
+      }
+      
+      $('.input-group.date').each(function() {
+        var $this = $(this);
+        if (!$this.data('DateTimePicker')) {
+          $this.datetimepicker({
+            format: 'YYYY-MM-DD',
+            dayViewHeaderFormat: 'YYYY年MMMM',
+            locale: 'ja',
+            showClose: true,
+            icons: {
+              time: 'glyphicon glyphicon-time',
+              date: 'glyphicon glyphicon-calendar',
+              up: 'glyphicon glyphicon-chevron-up',
+              down: 'glyphicon glyphicon-chevron-down',
+              previous: 'glyphicon glyphicon-chevron-left',
+              next: 'glyphicon glyphicon-chevron-right',
+              today: 'glyphicon glyphicon-screenshot',
+              clear: 'glyphicon glyphicon-trash',
+              close: 'glyphicon glyphicon-remove'
+            }
+          });
+        }
+      });
+    }
+    
+    // 即座に実行
+    $(function() {
+      initializeCSVDatePickers();
+    });
+    
+    // Turboイベントでも実行
+    document.addEventListener('turbo:load', function() {
+      initializeCSVDatePickers();
+    });
