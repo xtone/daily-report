@@ -85,11 +85,11 @@ ps: ## コンテナの状態を表示
 e2e-test: ## E2Eテストを実行
 	docker-compose -f docker-compose.test.yml run --rm \
 		-e RAILS_ENV=test \
-		app-test bundle exec rspec spec/features
+		app-test bash -c "npx playwright install chromium && bundle exec rspec spec/features"
 
 e2e-setup: ## E2Eテスト環境をセットアップ
 	docker-compose -f docker-compose.test.yml build app-test
-	docker-compose -f docker-compose.test.yml run --rm app-test bundle install
+	docker-compose -f docker-compose.test.yml run --rm app-test bash -c "bundle install && yarn install && npx playwright install chromium"
 
 # CI/CD commands
 rubocop: ## RuboCopを実行

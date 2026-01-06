@@ -240,23 +240,44 @@ RSpec.feature 'System Admin', :js, type: :feature do
       end
 
       scenario 'ユーザーを更新できる' do
-        begin
-          visit "/system_admin/users/#{regular_user.id}/edit"
-          expect(page).to have_css('h3', text: /ユーザー編集/, wait: 10)
+        visit "/system_admin/users/#{regular_user.id}/edit"
+        expect(page).to have_css('h3', text: /ユーザー編集/, wait: 10)
 
-          fill_in 'ユーザー名', with: '更新済みユーザー'
-          click_button '更新'
+        fill_in 'ユーザー名', with: '更新済みユーザー'
+        click_button '更新'
 
-          expect(page).to have_content('ユーザーを更新しました')
-          expect(page).to have_content('更新済みユーザー')
-        rescue StandardError => e
-          if e.message.include?('Node with given id does not belong to the document') ||
-             e.message.include?('stale element reference')
-            skip 'CI環境でのSeleniumエラーのためスキップ'
-          else
-            raise e
-          end
+        expect(page).to have_content('ユーザーを更新しました')
+        expect(page).to have_content('更新済みユーザー')
+      end
+
+      scenario 'ユーザーの職種を変更できる' do
+        visit "/system_admin/users/#{regular_user.id}/edit"
+        expect(page).to have_css('h3', text: /ユーザー編集/, wait: 10)
+
+        # 職種セレクトボックスが日本語で表示されていることを確認
+        expect(page).to have_select('職種', with_options: ['未設定', '営業・ディレクター', 'エンジニア', 'デザイナー', 'その他'])
+
+        # 職種を変更
+        select 'デザイナー', from: '職種'
+        click_button '更新'
+
+        expect(page).to have_content('ユーザーを更新しました')
+        expect(page).to have_content('デザイナー')
+      end
+
+      scenario 'ユーザーに管理者権限を付与できる' do
+        # 事前に権限を作成
+        UserRole.find_or_create_by!(role: :administrator)
+
+        visit "/system_admin/users/#{regular_user.id}"
+        expect(page).to have_css('h3', text: regular_user.name, wait: 10)
+
+        # 管理者の行を特定して権限付与ボタンをクリック
+        within('tr', text: '管理者') do
+          click_button '付与'
         end
+
+        expect(page).to have_content('権限を付与しました')
       end
 
       scenario 'ユーザーを削除（論理削除）できる' do

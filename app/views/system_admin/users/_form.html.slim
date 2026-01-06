@@ -33,7 +33,7 @@
     .col-md-6
       .form-group
         = f.label :division, class: 'control-label'
-        = f.select :division, User.divisions.keys.map { |k| [User.human_attribute_name("division.#{k}"), k] }, {}, class: 'form-control'
+        = f.select :division, User.divisions.keys.map { |k| [I18n.t("enums.user.division.#{k}"), k] }, {}, class: 'form-control'
 
     .col-md-6
       .form-group
@@ -43,9 +43,9 @@
   .form-group
     = f.label :role_ids, '権限', class: 'control-label'
     .checkbox
-      - UserRole.all.each do |role|
+      - UserRole.select("MIN(id) as id, role").group(:role).each do |role|
         label.checkbox-inline
-          = check_box_tag 'user[role_ids][]', role.id, user.user_roles.include?(role)
+          = check_box_tag 'user[role_ids][]', role.id, user.user_roles.exists?(role: role.role)
           = role.role_i18n
 
   .form-actions
