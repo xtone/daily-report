@@ -12,12 +12,15 @@ require 'warden'
 include Warden::Test::Helpers
 Warden.test_mode!
 
-# Rails 8.0 Rack 3 compatibility fix for Capybara
+# Rails 8.0 Rack 3 compatibility fix for Capybara/Puma
 require 'rack'
 require 'rackup'
 module Rack
   Handler = Rackup::Handler unless const_defined?(:Handler)
 end
+
+# Playwright browser context cleanup
+require 'capybara/playwright' if defined?(Capybara::Playwright)
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are

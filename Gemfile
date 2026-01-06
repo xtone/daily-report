@@ -99,11 +99,10 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.10'
   gem 'pry-rails'
 
-  # E2E testing
+  # E2E testing with Playwright
   gem 'capybara'
+  gem 'capybara-playwright-driver'
   gem 'database_cleaner-active_record'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
 
   # CI/CD
   gem 'brakeman', require: false
