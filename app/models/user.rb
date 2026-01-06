@@ -14,6 +14,13 @@ class User < ApplicationRecord
 
   scope :available, -> { where(deleted_at: nil) }
 
+  # 新規作成時にパスワードを暗号化するためのコールバック
+  # password_saltがIDに依存しているため、作成後に正しいsaltで再暗号化する
+  before_create :set_temporary_encrypted_password, if: :password_required_for_create?
+  after_create :reencrypt_password_with_correct_salt, if: :password_for_reencryption_present?
+
+  attr_accessor :password_for_reencryption
+
   validates :name,
             presence: true
 
@@ -29,6 +36,28 @@ class User < ApplicationRecord
             presence: true
 
   class << self
+    # Devise/Warden セッションシリアライズのカスタマイズ
+    # encryptableモジュールとWarden Test Helpersの互換性のため
+    def serialize_into_session(record)
+      [record.to_key, record.authenticatable_salt]
+    end
+
+    def serialize_from_session(*args)
+      # Warden Test Helpersが多くの引数を渡す場合の対応
+      # 通常は [key, salt] の2つ、Warden Testでは全属性が渡される場合がある
+      if args.length == 2
+        key, salt = args
+        key = key.first if key.is_a?(Array)
+        record = find_by(id: key)
+        record if record && record.authenticatable_salt == salt
+      else
+        # Warden Test Helpersからの呼び出し時は最初の引数がIDまたはキー
+        key = args.first
+        key = key.first if key.is_a?(Array)
+        find_by(id: key)
+      end
+    end
+
     # 該当のプロジェクトに関与しているかの情報を含むリストを取得
     # @param [Integer] project_id
     # @return [Array]
@@ -102,5 +131,40 @@ class User < ApplicationRecord
       report = user.reports.create(worked_in: date)
       report.operations.create(project: absent_project, workload: 100)
     end
+  end
+
+  private
+
+  # 新規作成時にパスワードの保存が必要かどうか
+  def password_required_for_create?
+    new_record? && password.present?
+  end
+
+  # after_create用: パスワードの再暗号化が必要かどうか
+  def password_for_reencryption_present?
+    password_for_reencryption.present?
+  end
+
+  # before_create: 一時的なencrypted_passwordを設定してDBのNOT NULL制約を回避
+  def set_temporary_encrypted_password
+    # パスワードを一時保存
+    self.password_for_reencryption = password
+
+    # 一時的なハッシュ値を設定（後でafter_createで再暗号化する）
+    require 'digest/md5'
+    self.encrypted_password = Digest::MD5.hexdigest("temporary_#{SecureRandom.hex}")
+  end
+
+  # after_create: 正しいsalt（ID）を使用してパスワードを再暗号化
+  def reencrypt_password_with_correct_salt
+    return unless password_for_reencryption.present?
+
+    require 'digest/md5'
+    salt = id.to_s
+    correct_encrypted_password = Digest::MD5.hexdigest(password_for_reencryption + salt)
+    update_column(:encrypted_password, correct_encrypted_password)
+
+    # 一時保存したパスワードをクリア
+    self.password_for_reencryption = nil
   end
 end
