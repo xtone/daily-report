@@ -58,6 +58,11 @@ module ApplicationHelper
           link_to '管理画面', admin_root_path
         end)
       end
+      if current_user.administrator?
+        concat(content_tag(:li, class: request.path.start_with?('/system_admin') ? 'active' : nil) do
+          link_to 'システム管理', system_admin_root_path
+        end)
+      end
     end
   end
 

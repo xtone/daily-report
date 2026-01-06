@@ -1,0 +1,189 @@
+ja:
+  system_admin:
+    title: システム管理
+    unauthorized: 管理者権限が必要です
+
+    nav:
+      dashboard: ダッシュボード
+      users: ユーザー管理
+      projects: プロジェクト管理
+      reports: 日報管理
+      reports_summary: 稼働集計
+      reports_unsubmitted: 未提出確認
+      estimates: 見積書管理
+      bills: 請求書管理
+      user_roles: 権限管理
+      csvs: CSV出力
+      back_to_app: アプリに戻る
+      logout: ログアウト
+
+    roles:
+      administrator: 管理者
+      director: ディレクター
+
+    dashboard:
+      title: ダッシュボード
+      stats:
+        total_users: 総ユーザー数
+        active_users: 有効ユーザー
+        total_projects: 総プロジェクト数
+        active_projects: 有効プロジェクト
+        total_reports: 総日報数
+        reports_this_month: 今月の日報
+        total_estimates: 総見積書数
+        total_bills: 総請求書数
+      recent_reports: 最近の日報
+      recent_users: 最近登録されたユーザー
+
+    users:
+      title: ユーザー管理
+      new: 新規ユーザー作成
+      edit: ユーザー編集
+      show: ユーザー詳細
+      created: ユーザーを作成しました
+      updated: ユーザーを更新しました
+      deleted: ユーザーを削除しました
+      revived: ユーザーを復活させました
+      role_added: "%{role}権限を付与しました"
+      role_removed: "%{role}権限を削除しました"
+      invalid_role: 無効な権限です
+      status:
+        active: 有効
+        deleted: 削除済み
+      filters:
+        all: すべて
+        active: 有効のみ
+        deleted: 削除済みのみ
+        search_placeholder: 名前で検索
+
+    projects:
+      title: プロジェクト管理
+      new: 新規プロジェクト作成
+      edit: プロジェクト編集
+      show: プロジェクト詳細
+      created: プロジェクトを作成しました
+      updated: プロジェクトを更新しました
+      deleted: プロジェクトを削除しました
+      cannot_delete_has_operations: このプロジェクトには日報データが紐付いているため削除できません
+      status:
+        active: 有効
+        hidden: 非表示
+      filters:
+        all: すべて
+        active: 有効のみ
+        hidden: 非表示のみ
+        search_placeholder: 名前で検索
+      members:
+        title: メンバー管理
+        manage: メンバー管理
+        current_members: 現在のメンバー
+        add_member: メンバー追加
+        select_user: ユーザーを選択
+        add: 追加
+        remove: 削除
+        added: "%{user}をメンバーに追加しました"
+        removed: "%{user}をメンバーから削除しました"
+        no_members: メンバーがいません
+        no_available_users: 追加可能なユーザーがいません
+        confirm_remove: このメンバーを削除しますか？
+      recent_operations: 最近の作業
+
+    reports:
+      title: 日報管理
+      edit: 日報編集
+      show: 日報詳細
+      updated: 日報を更新しました
+      deleted: 日報を削除しました
+      filters:
+        date_from: 開始日
+        date_to: 終了日
+        user: ユーザー
+      operations: 作業内容
+      summary:
+        title: 稼働集計
+        total: 合計
+        invalid_date_range: 集計開始日が集計終了日より後になっています
+        select_period: 期間を指定してください
+      unsubmitted:
+        title: 未提出日報確認
+        missing_dates: 未提出日
+        count: 件数
+        invalid_date_range: 集計開始日が集計終了日より後になっています
+        all_submitted: 指定期間内の日報は全員提出済みです
+
+    estimates:
+      title: 見積書管理
+      new: 見積書アップロード
+      edit: 見積書編集
+      show: 見積書詳細
+      created: "見積書ファイル %{filename} を登録しました"
+      updated: 見積書を更新しました
+      deleted: 見積書を削除しました
+      filters:
+        project: プロジェクト
+        search_placeholder: 件名で検索
+      upload:
+        file_required: 見積書ファイルをアップロードしてください
+        parse_error: ファイルの解析に失敗しました
+        empty_project_code: PJコードが空です
+        project_not_found: 存在しないプロジェクトです
+        duplicate_serial_no: 見積書NOが重複しています。登録内容は上書きされます
+        too_old: 見積もり日付が半年以上前です
+        deja_vu: 過去に全く同じ工数・原価設定があります
+        select_file: 見積書ファイルを選択
+        file_hint: Excel形式（.xlsx, .xls）のファイルを選択してください
+        confirm: 内容確認
+        register: 登録する
+
+    bills:
+      title: 請求書管理
+      new: 請求書アップロード
+      edit: 請求書編集
+      show: 請求書詳細
+      created: "請求書ファイル %{filename} を登録しました"
+      updated: 請求書を更新しました
+      deleted: 請求書を削除しました
+      filters:
+        search_placeholder: 件名で検索
+      upload:
+        file_required: 請求書ファイルをアップロードしてください
+        estimate_not_found: 紐づく見積書が存在しません
+        duplicate_serial_no: 請求書NOが重複しています。登録内容は上書きされます
+        select_file: 請求書ファイルを選択
+        file_hint: Excel形式（.xlsx, .xls）のファイルを選択してください
+        confirm: 内容確認
+        register: 登録する
+        tax_included_amount: 税込金額
+
+    user_roles:
+      title: 権限管理
+      show: 権限詳細
+      members: この権限を持つユーザー
+
+    csvs:
+      title: CSV出力
+      download: ダウンロード
+      reports:
+        title: 日報一覧
+      summary:
+        title: 稼働集計
+      projects:
+        title: プロジェクト一覧
+      users:
+        title: ユーザー一覧
+
+    common:
+      actions: 操作
+      back: 戻る
+      create: 作成
+      update: 更新
+      delete: 削除
+      edit: 編集
+      show: 詳細
+      confirm_delete: 本当に削除しますか？
+      search: 検索
+      filter: 絞り込み
+      reset: リセット
+      no_data: データがありません
+      created_at: 作成日時
+      updated_at: 更新日時
