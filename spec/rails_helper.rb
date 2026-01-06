@@ -7,6 +7,11 @@ require 'spec_helper'
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
+# Warden test helpers for login_as
+require 'warden'
+include Warden::Test::Helpers
+Warden.test_mode!
+
 # Rails 8.0 Rack 3 compatibility fix for Capybara
 require 'rack'
 require 'rackup'
@@ -66,4 +71,12 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::IntegrationHelpers, type: :feature
+
+  # Warden test helpers
+  config.include Warden::Test::Helpers, type: :feature
+
+  config.after(:each, type: :feature) do
+    Warden.test_reset!
+    Capybara.reset_sessions!
+  end
 end
