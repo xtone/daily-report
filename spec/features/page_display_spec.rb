@@ -60,12 +60,6 @@ RSpec.feature 'Page Display', :js, type: :feature do
       expect(page).to have_button('ログアウト')
     end
 
-    scenario 'プロジェクト一覧が表示される' do
-      # プロジェクト一覧は管理者権限が必要なので、このテストはスキップ
-      # 管理者権限のテストは後述の「管理者ユーザーとしてログイン」セクションで実施
-      skip '管理者権限が必要なためスキップ'
-    end
-
     scenario '参加プロジェクト設定が表示される' do
       begin
         # ナビゲーションリンクが表示されるまで待つ
@@ -216,33 +210,33 @@ RSpec.feature 'Page Display', :js, type: :feature do
     end
 
     scenario 'モバイルサイズでの表示' do
-      # Playwrightのリサイズはviewportオプションで設定する必要がある
-      # このテストは画面サイズ確認が目的なのでスキップ
-      skip 'Playwrightではセッション中のリサイズがサポートされていません'
+      # Playwrightのビューポートをモバイルサイズにリサイズ
+      page.driver.with_playwright_page do |playwright_page|
+        playwright_page.viewport_size = { width: 375, height: 667 }
+      end
+
+      visit '/'
+      expect(page).to have_content('日報')
+      # モバイルサイズではナビゲーションがハンバーガーメニューになる
+      expect(page).to have_css('.navbar')
     end
 
     scenario 'タブレットサイズでの表示' do
-      # Playwrightのリサイズはviewportオプションで設定する必要がある
-      # このテストは画面サイズ確認が目的なのでスキップ
-      skip 'Playwrightではセッション中のリサイズがサポートされていません'
+      # Playwrightのビューポートをタブレットサイズにリサイズ
+      page.driver.with_playwright_page do |playwright_page|
+        playwright_page.viewport_size = { width: 768, height: 1024 }
+      end
+
+      visit '/'
+      expect(page).to have_content('日報')
+      expect(page).to have_css('.navbar')
     end
   end
 
   describe 'エラーハンドリング' do
-    scenario '存在しないページへのアクセス' do
-      # スキップ: テスト環境ではエラーが再発生されるため、
-      # このテストは別のアプローチが必要
-      skip 'テスト環境では404エラーが再発生されるため、スキップ'
-
-      sign_in_as(regular_user)
-
-      # テスト環境では、application_controller.rbがエラーを再発生させる設定になっている
-      # これはテスト環境での期待される動作であり、
-      # 実際のアプリケーションが404エラーを処理できることを確認している
-      # このテストは、ルーティングが正しく動作し、
-      # 存在しないパスで適切なエラーが発生することを検証している
-      expect(page).to have_content('日報') # ログイン確認
-    end
+    # 注: 「存在しないページへのアクセス」テストは削除しました
+    # 理由: ApplicationControllerで本番環境以外ではエラーを再発生させる設計のため、
+    # E2Eテストでは404ページの表示を検証できません
 
     scenario '権限のないページへのアクセス' do
       # ユーザーを再度保存してIDを確定させ、パスワードを更新
