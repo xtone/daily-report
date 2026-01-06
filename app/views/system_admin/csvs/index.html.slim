@@ -1,0 +1,52 @@
+- content_for :page_title, t('system_admin.csvs.title')
+
+.card
+  .card-header
+    h4= t('system_admin.csvs.title')
+
+  .card-body
+    .row
+      .col-md-6
+        .card.mb-4
+          .card-header
+            h5= t('system_admin.csvs.reports.title')
+          .card-body
+            = form_tag reports_path(format: :csv), method: :get, class: 'form'
+              .form-group
+                = label_tag 'reports[start]', t('system_admin.reports.filters.date_from')
+                = date_field_tag 'reports[start]', 1.month.ago.to_date, class: 'form-control'
+              .form-group
+                = label_tag 'reports[end]', t('system_admin.reports.filters.date_to')
+                = date_field_tag 'reports[end]', Date.today, class: 'form-control'
+              = submit_tag t('system_admin.csvs.download'), class: 'btn btn-primary'
+
+      .col-md-6
+        .card.mb-4
+          .card-header
+            h5= t('system_admin.csvs.summary.title')
+          .card-body
+            = form_tag summary_system_admin_reports_path(format: :csv), method: :get, class: 'form'
+              .form-group
+                = label_tag 'reports[start]', t('system_admin.reports.filters.date_from')
+                = date_field_tag 'reports[start]', 1.month.ago.to_date, class: 'form-control'
+              .form-group
+                = label_tag 'reports[end]', t('system_admin.reports.filters.date_to')
+                = date_field_tag 'reports[end]', Date.today, class: 'form-control'
+              = submit_tag t('system_admin.csvs.download'), class: 'btn btn-primary'
+
+    .row
+      .col-md-6
+        .card.mb-4
+          .card-header
+            h5= t('system_admin.csvs.projects.title')
+          .card-body
+            = form_tag projects_path(format: :csv), method: :get, class: 'form'
+              = submit_tag t('system_admin.csvs.download'), class: 'btn btn-primary'
+
+      .col-md-6
+        .card.mb-4
+          .card-header
+            h5= t('system_admin.csvs.users.title')
+          .card-body
+            = form_tag users_path(format: :csv), method: :get, class: 'form'
+              = submit_tag t('system_admin.csvs.download'), class: 'btn btn-primary'

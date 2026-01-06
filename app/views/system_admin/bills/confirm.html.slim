@@ -1,0 +1,56 @@
+- content_for :page_title, t('system_admin.bills.upload.confirm')
+
+.card
+  .card-header
+    h4= t('system_admin.bills.upload.confirm')
+
+  .card-body
+    - if @error.present?
+      .alert.alert-danger
+        = @error
+      = link_to t('system_admin.common.back'), new_system_admin_bill_path, class: 'btn btn-secondary'
+    - else
+      - if @warnings.present?
+        .alert.alert-warning
+          ul.mb-0
+            - @warnings.each do |warning|
+              li= warning
+
+      table.table.table-bordered
+        tbody
+          tr
+            th= t('activerecord.attributes.bill.estimate')
+            td
+              = @resource.estimate.serial_no
+              |  -
+              = @resource.estimate.subject
+          tr
+            th= t('activerecord.attributes.bill.serial_no')
+            td= @resource.serial_no
+          tr
+            th= t('activerecord.attributes.bill.subject')
+            td= @resource.subject
+          tr
+            th= t('activerecord.attributes.bill.claimed_on')
+            td= @resource.claimed_on.present? ? l(@resource.claimed_on, format: :short) : '-'
+          tr
+            th= t('system_admin.bills.upload.tax_included_amount')
+            td= number_to_currency(@tax_included_amount, unit: '¥', precision: 0)
+          tr
+            th= t('activerecord.attributes.bill.amount')
+            td= number_to_currency(@resource.amount, unit: '¥', precision: 0)
+          tr
+            th= t('activerecord.attributes.bill.filename')
+            td= @resource.filename
+
+      = form_tag system_admin_bills_path, method: :post
+        = hidden_field_tag 'bill[estimate_id]', @resource.estimate_id
+        = hidden_field_tag 'bill[serial_no]', @resource.serial_no
+        = hidden_field_tag 'bill[subject]', @resource.subject
+        = hidden_field_tag 'bill[claimed_on]', @resource.claimed_on
+        = hidden_field_tag 'bill[amount]', @resource.amount
+        = hidden_field_tag 'bill[filename]', @resource.filename
+
+        .form-group
+          = submit_tag t('system_admin.bills.upload.register'), class: 'btn btn-success'
+          = link_to t('system_admin.common.back'), new_system_admin_bill_path, class: 'btn btn-secondary ml-2'

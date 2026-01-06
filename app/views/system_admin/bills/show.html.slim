@@ -1,0 +1,62 @@
+- content_for :page_title, t('system_admin.bills.show')
+
+.admin-card
+  .card-header
+    h3= @bill.subject
+    .btn-group
+      = link_to edit_system_admin_bill_path(@bill), class: 'btn btn-sm btn-default'
+        i.glyphicon.glyphicon-pencil
+        |  #{t('system_admin.common.edit')}
+      = button_to system_admin_bill_path(@bill), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-sm btn-danger', form: { style: 'display: inline' }
+        i.glyphicon.glyphicon-trash
+        |  #{t('system_admin.common.delete')}
+
+  .card-body
+    .detail-section
+      h4.section-title 基本情報
+      table.detail-table
+        tr
+          th ID
+          td= @bill.id
+        tr
+          th 請求番号
+          td= @bill.serial_no
+        tr
+          th 件名
+          td= @bill.subject
+        tr
+          th 金額（税抜）
+          td= number_to_currency(@bill.amount, unit: '¥', precision: 0)
+        tr
+          th 金額（税込）
+          td= number_to_currency(@bill.tax_included_amount, unit: '¥', precision: 0)
+        tr
+          th 請求日
+          td= @bill.claimed_on ? l(@bill.claimed_on, format: :long) : '-'
+        tr
+          th ファイル名
+          td= @bill.filename
+
+    .detail-section
+      h4.section-title 関連見積書
+      - if @estimate
+        table.detail-table
+          tr
+            th 見積番号
+            td= link_to @estimate.serial_no, system_admin_estimate_path(@estimate)
+          tr
+            th 件名
+            td= @estimate.subject
+          tr
+            th プロジェクト
+            td= @estimate.project ? link_to(@estimate.project.name, system_admin_project_path(@estimate.project)) : '-'
+          tr
+            th 金額
+            td= number_to_currency(@estimate.amount, unit: '¥', precision: 0)
+      - else
+        p.text-muted 見積書がありません
+
+  .card-footer
+    = link_to system_admin_bills_path, class: 'btn btn-default'
+      i.glyphicon.glyphicon-arrow-left
+      |  #{t('system_admin.common.back')}

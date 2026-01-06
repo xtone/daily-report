@@ -1,0 +1,49 @@
+- content_for :page_title, t('system_admin.bills.edit')
+
+.admin-card
+  .card-header
+    h3= "#{t('system_admin.bills.edit')}: #{@bill.subject}"
+
+  .card-body
+    = form_with model: [:system_admin, @bill], local: true, class: 'admin-form' do |f|
+      - if @bill.errors.any?
+        .alert.alert-danger
+          ul.mb-0
+            - @bill.errors.full_messages.each do |message|
+              li= message
+
+      .row
+        .col-md-6
+          .form-group
+            = f.label :serial_no, class: 'control-label'
+            = f.text_field :serial_no, class: 'form-control', required: true
+
+        .col-md-6
+          .form-group
+            = f.label :estimate_id, class: 'control-label'
+            = f.collection_select :estimate_id, @estimates, :id, :serial_no, { include_blank: '選択してください' }, class: 'form-control'
+
+      .form-group
+        = f.label :subject, class: 'control-label'
+        = f.text_field :subject, class: 'form-control', required: true
+
+      .row
+        .col-md-6
+          .form-group
+            = f.label :amount, class: 'control-label'
+            .input-group
+              span.input-group-addon ¥
+              = f.number_field :amount, class: 'form-control', min: 1, required: true
+
+        .col-md-6
+          .form-group
+            = f.label :claimed_on, class: 'control-label'
+            = f.date_field :claimed_on, class: 'form-control'
+
+      .form-group
+        = f.label :filename, class: 'control-label'
+        = f.text_field :filename, class: 'form-control', required: true
+
+      .form-actions
+        = f.submit t('system_admin.common.update'), class: 'btn btn-primary'
+        = link_to t('system_admin.common.back'), system_admin_bill_path(@bill), class: 'btn btn-default'

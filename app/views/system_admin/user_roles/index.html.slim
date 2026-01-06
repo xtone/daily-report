@@ -1,0 +1,24 @@
+- content_for :page_title, t('system_admin.user_roles.title')
+
+.admin-card
+  .card-header
+    h3= t('system_admin.user_roles.title')
+
+  .card-body
+    - if @user_roles.present?
+      .row
+        - @user_roles.each do |role|
+          .col-md-6
+            .panel.panel-default
+              .panel-heading
+                h4.panel-title= role.role_i18n
+              .panel-body
+                .row
+                  .col-xs-6
+                    .h1.text-center= role.users.count
+                    p.text-center.text-muted ユーザー数
+                  .col-xs-6.text-center
+                    = link_to system_admin_user_role_path(role), class: 'btn btn-default'
+                      | 詳細を見る
+    - else
+      p.text-muted= t('system_admin.common.no_data')

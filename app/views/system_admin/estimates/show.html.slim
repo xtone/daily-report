@@ -1,0 +1,78 @@
+- content_for :page_title, t('system_admin.estimates.show')
+
+.admin-card
+  .card-header
+    h3= @estimate.subject
+    .btn-group
+      = link_to edit_system_admin_estimate_path(@estimate), class: 'btn btn-sm btn-default'
+        i.glyphicon.glyphicon-pencil
+        |  #{t('system_admin.common.edit')}
+      = button_to system_admin_estimate_path(@estimate), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-sm btn-danger', form: { style: 'display: inline' }
+        i.glyphicon.glyphicon-trash
+        |  #{t('system_admin.common.delete')}
+
+  .card-body
+    .detail-section
+      h4.section-title 基本情報
+      table.detail-table
+        tr
+          th ID
+          td= @estimate.id
+        tr
+          th 見積番号
+          td= @estimate.serial_no
+        tr
+          th 件名
+          td= @estimate.subject
+        tr
+          th プロジェクト
+          td= @estimate.project ? link_to(@estimate.project.name, system_admin_project_path(@estimate.project)) : '-'
+        tr
+          th 金額
+          td= number_to_currency(@estimate.amount, unit: '¥', precision: 0)
+        tr
+          th 見積日
+          td= @estimate.estimated_on ? l(@estimate.estimated_on, format: :long) : '-'
+        tr
+          th ファイル名
+          td= @estimate.filename
+
+    .detail-section
+      h4.section-title 工数・原価
+      table.detail-table
+        tr
+          th ディレクター工数
+          td= "#{@estimate.director_manday} 人日"
+        tr
+          th エンジニア工数
+          td= "#{@estimate.engineer_manday} 人日"
+        tr
+          th デザイナー工数
+          td= "#{@estimate.designer_manday} 人日"
+        tr
+          th その他工数
+          td= "#{@estimate.other_manday} 人日"
+        tr
+          th 原価
+          td= number_to_currency(@estimate.cost, unit: '¥', precision: 0) if @estimate.cost
+
+    .detail-section
+      h4.section-title 関連請求書
+      - if @bill
+        table.detail-table
+          tr
+            th 請求番号
+            td= link_to @bill.serial_no, system_admin_bill_path(@bill)
+          tr
+            th 件名
+            td= @bill.subject
+          tr
+            th 金額
+            td= number_to_currency(@bill.amount, unit: '¥', precision: 0)
+      - else
+        p.text-muted 請求書がありません
+
+  .card-footer
+    = link_to system_admin_estimates_path, class: 'btn btn-default'
+      i.glyphicon.glyphicon-arrow-left
+      |  #{t('system_admin.common.back')}

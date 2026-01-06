@@ -1,0 +1,46 @@
+- content_for :page_title, "#{@project.name} - #{t('system_admin.projects.members.title')}"
+
+.card
+  .card-header
+    h4= "#{@project.name} - #{t('system_admin.projects.members.title')}"
+
+  .card-body
+    .row
+      .col-md-6
+        h5= t('system_admin.projects.members.current_members')
+        - if @members.any?
+          table.table.table-striped
+            thead
+              tr
+                th= t('activerecord.attributes.user.name')
+                th= t('activerecord.attributes.user.email')
+                th= t('system_admin.common.actions')
+            tbody
+              - @members.each do |user|
+                tr
+                  td= user.name
+                  td= user.email
+                  td
+                    = link_to system_admin_project_member_path(@project, user),
+                              method: :delete,
+                              class: 'btn btn-sm btn-danger',
+                              data: { confirm: t('system_admin.projects.members.confirm_remove') }
+                      = t('system_admin.projects.members.remove')
+        - else
+          p.text-muted= t('system_admin.projects.members.no_members')
+
+      .col-md-6
+        h5= t('system_admin.projects.members.add_member')
+        - if @available_users.any?
+          = form_tag system_admin_project_members_path(@project), method: :post, class: 'form-inline'
+            .form-group
+              = select_tag :user_id,
+                           options_from_collection_for_select(@available_users, :id, :name),
+                           class: 'form-control',
+                           include_blank: t('system_admin.projects.members.select_user')
+            = submit_tag t('system_admin.projects.members.add'), class: 'btn btn-primary ml-2'
+        - else
+          p.text-muted= t('system_admin.projects.members.no_available_users')
+
+  .card-footer
+    = link_to t('system_admin.common.back'), system_admin_project_path(@project), class: 'btn btn-secondary'

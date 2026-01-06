@@ -1,0 +1,106 @@
+- content_for :page_title, t('system_admin.users.show')
+
+.admin-card
+  .card-header
+    h3= @user.name
+    .btn-group
+      = link_to edit_system_admin_user_path(@user), class: 'btn btn-sm btn-default'
+        i.glyphicon.glyphicon-pencil
+        |  #{t('system_admin.common.edit')}
+      - if @user.available?
+        = button_to system_admin_user_path(@user), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-sm btn-danger', form: { style: 'display: inline' }
+          i.glyphicon.glyphicon-trash
+          |  #{t('system_admin.common.delete')}
+      - else
+        = button_to revive_system_admin_user_path(@user), method: :patch, class: 'btn btn-sm btn-success', form: { style: 'display: inline' }
+          i.glyphicon.glyphicon-repeat
+          |  復活
+
+  .card-body
+    .detail-section
+      h4.section-title 基本情報
+      table.detail-table
+        tr
+          th ID
+          td= @user.id
+        tr
+          th= t('activerecord.attributes.user.name')
+          td= @user.name
+        tr
+          th= t('activerecord.attributes.user.email')
+          td= @user.email
+        tr
+          th= t('activerecord.attributes.user.division')
+          td= @user.division_i18n
+        tr
+          th= t('activerecord.attributes.user.began_on')
+          td= @user.began_on ? l(@user.began_on, format: :short) : '-'
+        tr
+          th ステータス
+          td
+            - if @user.available?
+              span.badge-status.badge-active= t('system_admin.users.status.active')
+            - else
+              span.badge-status.badge-inactive= t('system_admin.users.status.deleted')
+              |  (
+              = l(@user.deleted_at, format: :short)
+              | )
+        tr
+          th= t('system_admin.common.created_at')
+          td= l(@user.created_at, format: :long)
+        tr
+          th= t('system_admin.common.updated_at')
+          td= l(@user.updated_at, format: :long)
+
+    .detail-section
+      h4.section-title 権限
+      table.detail-table
+        tr
+          th= t('system_admin.roles.administrator')
+          td
+            - if @user.administrator?
+              span.label.label-danger= t('system_admin.roles.administrator')
+              = button_to toggle_role_system_admin_user_path(@user, role: 'administrator'), method: :patch, class: 'btn btn-xs btn-default', style: 'margin-left: 10px', form: { style: 'display: inline' }
+                | 削除
+            - else
+              span.text-muted なし
+              = button_to toggle_role_system_admin_user_path(@user, role: 'administrator'), method: :patch, class: 'btn btn-xs btn-success', style: 'margin-left: 10px', form: { style: 'display: inline' }
+                | 付与
+        tr
+          th= t('system_admin.roles.director')
+          td
+            - if @user.director?
+              span.label.label-info= t('system_admin.roles.director')
+              = button_to toggle_role_system_admin_user_path(@user, role: 'director'), method: :patch, class: 'btn btn-xs btn-default', style: 'margin-left: 10px', form: { style: 'display: inline' }
+                | 削除
+            - else
+              span.text-muted なし
+              = button_to toggle_role_system_admin_user_path(@user, role: 'director'), method: :patch, class: 'btn btn-xs btn-success', style: 'margin-left: 10px', form: { style: 'display: inline' }
+                | 付与
+
+    .detail-section
+      h4.section-title 関連データ
+      .row
+        .col-md-4
+          .panel.panel-default
+            .panel-heading 日報
+            .panel-body.text-center
+              .h2= @user.reports.count
+              = link_to '日報一覧を見る', system_admin_reports_path(user_id: @user.id), class: 'btn btn-sm btn-default'
+
+        .col-md-4
+          .panel.panel-default
+            .panel-heading プロジェクト
+            .panel-body.text-center
+              .h2= @user.projects.count
+
+        .col-md-4
+          .panel.panel-default
+            .panel-heading 作業記録
+            .panel-body.text-center
+              .h2= @user.operations.count
+
+  .card-footer
+    = link_to system_admin_users_path, class: 'btn btn-default'
+      i.glyphicon.glyphicon-arrow-left
+      |  #{t('system_admin.common.back')}

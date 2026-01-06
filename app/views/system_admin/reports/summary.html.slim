@@ -1,0 +1,51 @@
+- content_for :page_title, t('system_admin.reports.summary.title')
+
+.card
+  .card-header
+    h4= t('system_admin.reports.summary.title')
+
+  .card-body
+    = form_tag summary_system_admin_reports_path, method: :get, class: 'form-inline mb-4'
+      .form-group.mr-3
+        = label_tag 'reports[start]', t('system_admin.reports.filters.date_from'), class: 'mr-2'
+        = date_field_tag 'reports[start]', @start_date, class: 'form-control'
+      .form-group.mr-3
+        = label_tag 'reports[end]', t('system_admin.reports.filters.date_to'), class: 'mr-2'
+        = date_field_tag 'reports[end]', @end_date, class: 'form-control'
+      = submit_tag t('system_admin.common.search'), class: 'btn btn-primary'
+      - if @sum.present?
+        = link_to summary_system_admin_reports_path(reports: { start: @start_date, end: @end_date }, format: :csv),
+                  class: 'btn btn-success ml-2'
+          i.glyphicon.glyphicon-download
+          |  CSV
+
+    - if @sum.present? && @users.present?
+      .table-responsive
+        table.table.table-bordered.table-striped
+          thead
+            tr
+              th= t('activerecord.models.project')
+              - @users.each do |user|
+                th= user.name
+              th= t('system_admin.reports.summary.total')
+          tbody
+            - @projects.each do |project_id, project|
+              tr
+                td= project.name
+                - row_total = 0
+                - @users.each do |user|
+                  - value = @sum.dig(project_id, user.id) || 0
+                  - row_total += value
+                  td.text-right= value > 0 ? "#{value}%" : '-'
+                td.text-right.font-weight-bold= "#{row_total}%"
+            tr.table-active
+              td.font-weight-bold= t('system_admin.reports.summary.total')
+              - @users.each do |user|
+                - col_total = @sum.values.sum { |v| v[user.id] || 0 }
+                td.text-right.font-weight-bold= "#{col_total}%"
+              td
+    - elsif params.dig(:reports, :start).present?
+      p.text-muted= t('system_admin.common.no_data')
+
+  .card-footer
+    = link_to t('system_admin.common.back'), system_admin_reports_path, class: 'btn btn-secondary'

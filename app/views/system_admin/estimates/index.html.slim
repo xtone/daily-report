@@ -1,0 +1,67 @@
+- content_for :page_title, t('system_admin.estimates.title')
+
+/ フィルター
+.filters-form
+  = form_tag system_admin_estimates_path, method: :get, class: 'form-inline'
+    .filter-row
+      .form-group
+        = text_field_tag :q, params[:q], class: 'form-control', placeholder: t('system_admin.estimates.filters.search_placeholder')
+
+      .form-group
+        = label_tag :project_id, t('system_admin.estimates.filters.project'), class: 'control-label'
+        = select_tag :project_id, options_from_collection_for_select(Project.order(:name), :id, :name, params[:project_id]), include_blank: '全プロジェクト', class: 'form-control'
+
+      .form-group
+        = submit_tag t('system_admin.common.search'), class: 'btn btn-primary'
+        = link_to t('system_admin.common.reset'), system_admin_estimates_path, class: 'btn btn-default'
+
+/ 見積書一覧
+.admin-card
+  .card-header
+    .d-flex.justify-content-between.align-items-center
+      h3= t('system_admin.estimates.title')
+      = link_to new_system_admin_estimate_path, class: 'btn btn-primary'
+        i.glyphicon.glyphicon-plus
+        |  #{t('system_admin.estimates.new')}
+
+  .card-body
+    - if @estimates.present?
+      table.table.admin-table
+        thead
+          tr
+            th ID
+            th 見積番号
+            th 件名
+            th プロジェクト
+            th 金額
+            th 見積日
+            th 請求書
+            th= t('system_admin.common.actions')
+        tbody
+          - @estimates.each do |estimate|
+            tr
+              td= estimate.id
+              td= estimate.serial_no
+              td= estimate.subject
+              td= estimate.project ? link_to(estimate.project.name, system_admin_project_path(estimate.project)) : '-'
+              td= number_to_currency(estimate.amount, unit: '¥', precision: 0)
+              td= estimate.estimated_on ? l(estimate.estimated_on, format: :short) : '-'
+              td
+                - if estimate.bill
+                  = link_to estimate.bill.serial_no, system_admin_bill_path(estimate.bill)
+                - else
+                  span.text-muted なし
+              td.actions
+                = link_to system_admin_estimate_path(estimate), class: 'btn btn-xs btn-default', title: t('system_admin.common.show')
+                  i.glyphicon.glyphicon-eye-open
+                = link_to edit_system_admin_estimate_path(estimate), class: 'btn btn-xs btn-default', title: t('system_admin.common.edit')
+                  i.glyphicon.glyphicon-pencil
+                = button_to system_admin_estimate_path(estimate), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-xs btn-danger', title: t('system_admin.common.delete'), form: { style: 'display: inline' }
+                  i.glyphicon.glyphicon-trash
+    - else
+      p.text-muted= t('system_admin.common.no_data')
+
+  - if @estimates.present?
+    .card-footer
+      .pagination-wrapper
+        = paginate @estimates

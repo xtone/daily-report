@@ -1,0 +1,53 @@
+= form_with model: [:system_admin, user], local: true, class: 'admin-form' do |f|
+  - if user.errors.any?
+    .alert.alert-danger
+      ul.mb-0
+        - user.errors.full_messages.each do |message|
+          li= message
+
+  .row
+    .col-md-6
+      .form-group
+        = f.label :name, class: 'control-label'
+        = f.text_field :name, class: 'form-control', required: true
+
+    .col-md-6
+      .form-group
+        = f.label :email, class: 'control-label'
+        = f.email_field :email, class: 'form-control', required: true
+
+  .row
+    .col-md-6
+      .form-group
+        = f.label :password, class: 'control-label'
+        = f.password_field :password, class: 'form-control', required: user.new_record?
+        - unless user.new_record?
+          p.help-block 変更する場合のみ入力してください
+
+    .col-md-6
+      .form-group
+        = f.label :password_confirmation, class: 'control-label'
+        = f.password_field :password_confirmation, class: 'form-control', required: user.new_record?
+
+  .row
+    .col-md-6
+      .form-group
+        = f.label :division, class: 'control-label'
+        = f.select :division, User.divisions.keys.map { |k| [User.human_attribute_name("division.#{k}"), k] }, {}, class: 'form-control'
+
+    .col-md-6
+      .form-group
+        = f.label :began_on, class: 'control-label'
+        = f.date_field :began_on, class: 'form-control', required: true
+
+  .form-group
+    = f.label :role_ids, '権限', class: 'control-label'
+    .checkbox
+      - UserRole.all.each do |role|
+        label.checkbox-inline
+          = check_box_tag 'user[role_ids][]', role.id, user.user_roles.include?(role)
+          = role.role_i18n
+
+  .form-actions
+    = f.submit user.new_record? ? t('system_admin.common.create') : t('system_admin.common.update'), class: 'btn btn-primary'
+    = link_to t('system_admin.common.back'), user.new_record? ? system_admin_users_path : system_admin_user_path(user), class: 'btn btn-default'
