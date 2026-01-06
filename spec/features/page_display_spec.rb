@@ -61,22 +61,13 @@ RSpec.feature 'Page Display', :js, type: :feature do
     end
 
     scenario '参加プロジェクト設定が表示される' do
-      begin
-        # ナビゲーションリンクが表示されるまで待つ
-        wait_for_page_load
-        expect(page).to have_link('プロジェクト設定', wait: ENV['CI'] ? 15 : 10)
-        # ナビゲーションリンクをクリックして遷移
-        click_link 'プロジェクト設定'
-        expect(page).to have_css('h1', text: '参加プロジェクト設定', wait: 5)
-        expect(page).to have_content('クリックすると参加状態のOn/Offを切り替えることができます。')
-      rescue Selenium::WebDriver::Error::UnknownError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # ナビゲーションリンクが表示されるまで待つ
+      wait_for_page_load
+      expect(page).to have_link('プロジェクト設定', wait: ENV['CI'] ? 15 : 10)
+      # ナビゲーションリンクをクリックして遷移
+      click_link 'プロジェクト設定'
+      expect(page).to have_css('h1', text: '参加プロジェクト設定', wait: 5)
+      expect(page).to have_content('クリックすると参加状態のOn/Offを切り替えることができます。')
     end
 
     scenario 'パスワード変更画面が表示される' do
@@ -93,114 +84,59 @@ RSpec.feature 'Page Display', :js, type: :feature do
 
   describe '管理者ユーザーとしてログイン' do
     before do
-      begin
-        sign_in_as(admin_user)
-      rescue Selenium::WebDriver::Error::UnknownError => e
-        # CI環境でのSeleniumエラーをキャッチ
-        if e.message.include?('Node with given id does not belong to the document')
-          # ページをリフレッシュして再試行
-          visit '/'
-          sign_in_as(admin_user)
-        else
-          raise e
-        end
-      end
+      sign_in_as(admin_user)
     end
 
     scenario '管理画面が表示される' do
-      begin
-        # 管理画面へのリンクが表示されることを確認
-        expect(page).to have_link('管理画面', wait: 5)
-        # リンクをクリックして遷移
-        click_link_with_retry '管理画面'
-        expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        expect(page).to have_link('プロジェクト管理')
-        expect(page).to have_link('ユーザー管理')
-        expect(page).to have_link('CSV出力')
-        expect(page).to have_link('稼働集計')
-        expect(page).to have_link('日報未提出一覧')
-      rescue StandardError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') ||
-           e.message.include?('element click intercepted') ||
-           e.message.include?('stale element reference')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # 管理画面へのリンクが表示されることを確認
+      expect(page).to have_link('管理画面', wait: 5)
+      # リンクをクリックして遷移
+      click_link_with_retry '管理画面'
+      expect(page).to have_css('h1', text: '管理画面', wait: 5)
+      expect(page).to have_link('プロジェクト管理')
+      expect(page).to have_link('ユーザー管理')
+      expect(page).to have_link('CSV出力')
+      expect(page).to have_link('稼働集計')
+      expect(page).to have_link('日報未提出一覧')
     end
 
     scenario 'プロジェクト管理リンクが正しいURLパラメータを含む' do
-      begin
-        # 管理画面へのリンクが表示されることを確認
-        expect(page).to have_link('管理画面', wait: 5)
-        # リンクをクリックして遷移
-        click_link_with_retry '管理画面'
-        expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        # プロジェクト管理リンクのhref属性を確認
-        expect(page).to have_link('プロジェクト管理', href: '/projects?active=true&order=code_desc')
-      rescue StandardError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') ||
-           e.message.include?('element click intercepted') ||
-           e.message.include?('stale element reference')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # 管理画面へのリンクが表示されることを確認
+      expect(page).to have_link('管理画面', wait: 5)
+      # リンクをクリックして遷移
+      click_link_with_retry '管理画面'
+      expect(page).to have_css('h1', text: '管理画面', wait: 5)
+      # プロジェクト管理リンクのhref属性を確認
+      expect(page).to have_link('プロジェクト管理', href: '/projects?active=true&order=code_desc')
     end
 
     scenario 'ユーザー管理画面が表示される' do
-      begin
-        # ホーム画面に戻ってから管理画面へ遷移
-        visit '/'
-        expect(page).to have_content('日報', wait: 5)
-        # 管理画面経由でユーザー管理画面へ遷移
-        click_link_with_retry '管理画面'
-        expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        click_link_with_retry 'ユーザー管理'
-        expect(page).to have_css('h1', text: 'ユーザー一覧', wait: 5)
-        expect(page).to have_link('新規登録')
-        expect(page).to have_table
-        expect(page).to have_content(admin_user.name)
-      rescue StandardError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') ||
-           e.message.include?('element click intercepted') ||
-           e.message.include?('stale element reference')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # ホーム画面に戻ってから管理画面へ遷移
+      visit '/'
+      expect(page).to have_content('日報', wait: 5)
+      # 管理画面経由でユーザー管理画面へ遷移
+      click_link_with_retry '管理画面'
+      expect(page).to have_css('h1', text: '管理画面', wait: 5)
+      click_link_with_retry 'ユーザー管理'
+      expect(page).to have_css('h1', text: 'ユーザー一覧', wait: 5)
+      expect(page).to have_link('新規登録')
+      expect(page).to have_table
+      expect(page).to have_content(admin_user.name)
     end
 
     scenario 'CSV出力画面が表示される' do
-      begin
-        # ホーム画面に戻ってから管理画面へ遷移
-        visit '/'
-        expect(page).to have_content('日報', wait: 5)
-        # 管理画面経由でCSV出力画面へ遷移
-        click_link_with_retry '管理画面'
-        expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        click_link_with_retry 'CSV出力'
-        expect(page).to have_css('h1', text: 'CSV出力', wait: 5)
-        expect(page).to have_content('提出済みの日報一覧')
-        expect(page).to have_content('プロジェクト一覧')
-        expect(page).to have_content('ユーザー一覧')
-        expect(page).to have_button('ダウンロード', count: 3)
-      rescue StandardError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') ||
-           e.message.include?('element click intercepted') ||
-           e.message.include?('stale element reference')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # ホーム画面に戻ってから管理画面へ遷移
+      visit '/'
+      expect(page).to have_content('日報', wait: 5)
+      # 管理画面経由でCSV出力画面へ遷移
+      click_link_with_retry '管理画面'
+      expect(page).to have_css('h1', text: '管理画面', wait: 5)
+      click_link_with_retry 'CSV出力'
+      expect(page).to have_css('h1', text: 'CSV出力', wait: 5)
+      expect(page).to have_content('提出済みの日報一覧')
+      expect(page).to have_content('プロジェクト一覧')
+      expect(page).to have_content('ユーザー一覧')
+      expect(page).to have_button('ダウンロード', count: 3)
     end
   end
 
