@@ -1,0 +1,90 @@
+- content_for :page_title, t('system_admin.projects.show')
+
+.admin-card
+  .card-header
+    h3= @project.name
+    .btn-group
+      = link_to edit_system_admin_project_path(@project), class: 'btn btn-sm btn-default'
+        i.glyphicon.glyphicon-pencil
+        |  #{t('system_admin.common.edit')}
+      = button_to system_admin_project_path(@project), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-sm btn-danger', form: { style: 'display: inline' }
+        i.glyphicon.glyphicon-trash
+        |  #{t('system_admin.common.delete')}
+
+  .card-body
+    .detail-section
+      h4.section-title 基本情報
+      table.detail-table
+        tr
+          th ID
+          td= @project.id
+        tr
+          th コード
+          td= @project.code || '-'
+        tr
+          th= t('activerecord.attributes.project.name')
+          td= @project.name
+        tr
+          th= t('activerecord.attributes.project.name_reading')
+          td= @project.name_reading
+        tr
+          th カテゴリー
+          td= @project.category_i18n
+        tr
+          th ステータス
+          td
+            - if @project.displayed?
+              span.badge-status.badge-active= t('system_admin.projects.status.active')
+            - else
+              span.badge-status.badge-hidden= t('system_admin.projects.status.hidden')
+        tr
+          th= t('system_admin.common.created_at')
+          td= l(@project.created_at, format: :long)
+        tr
+          th= t('system_admin.common.updated_at')
+          td= l(@project.updated_at, format: :long)
+
+    .detail-section
+      .d-flex.justify-content-between.align-items-center
+        h4.section-title= t('system_admin.projects.members')
+        = link_to system_admin_project_members_path(@project), class: 'btn btn-sm btn-primary'
+          i.glyphicon.glyphicon-plus
+          |  #{t('system_admin.projects.members.manage')}
+      - if @members.present?
+        table.table.admin-table
+          thead
+            tr
+              th ID
+              th= t('activerecord.attributes.user.name')
+              th= t('activerecord.attributes.user.email')
+          tbody
+            - @members.each do |user|
+              tr
+                td= user.id
+                td= link_to user.name, system_admin_user_path(user)
+                td= user.email
+      - else
+        p.text-muted メンバーがいません
+
+    .detail-section
+      h4.section-title= t('system_admin.projects.recent_operations')
+      - if @recent_operations.present?
+        table.table.admin-table
+          thead
+            tr
+              th 日付
+              th ユーザー
+              th 工数
+          tbody
+            - @recent_operations.each do |operation|
+              tr
+                td= l(operation.report.worked_in, format: :short)
+                td= link_to operation.report.user.name, system_admin_user_path(operation.report.user)
+                td= "#{operation.workload}%"
+      - else
+        p.text-muted 作業記録がありません
+
+  .card-footer
+    = link_to system_admin_projects_path, class: 'btn btn-default'
+      i.glyphicon.glyphicon-arrow-left
+      |  #{t('system_admin.common.back')}

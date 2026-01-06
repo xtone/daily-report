@@ -1,0 +1,90 @@
+- content_for :page_title, t('system_admin.dashboard.title')
+
+/ 統計カード
+.stats-row
+  .stat-card.stat-primary
+    .stat-value= @stats[:total_users]
+    .stat-label= t('system_admin.dashboard.stats.total_users')
+
+  .stat-card.stat-success
+    .stat-value= @stats[:active_users]
+    .stat-label= t('system_admin.dashboard.stats.active_users')
+
+  .stat-card.stat-primary
+    .stat-value= @stats[:total_projects]
+    .stat-label= t('system_admin.dashboard.stats.total_projects')
+
+  .stat-card.stat-success
+    .stat-value= @stats[:active_projects]
+    .stat-label= t('system_admin.dashboard.stats.active_projects')
+
+.stats-row
+  .stat-card
+    .stat-value= @stats[:total_reports]
+    .stat-label= t('system_admin.dashboard.stats.total_reports')
+
+  .stat-card.stat-warning
+    .stat-value= @stats[:reports_this_month]
+    .stat-label= t('system_admin.dashboard.stats.reports_this_month')
+
+  .stat-card
+    .stat-value= @stats[:total_estimates]
+    .stat-label= t('system_admin.dashboard.stats.total_estimates')
+
+  .stat-card
+    .stat-value= @stats[:total_bills]
+    .stat-label= t('system_admin.dashboard.stats.total_bills')
+
+.row
+  .col-md-8
+    / 最近の日報
+    .admin-card
+      .card-header
+        h3= t('system_admin.dashboard.recent_reports')
+        = link_to t('system_admin.common.show'), system_admin_reports_path, class: 'btn btn-sm btn-default'
+
+      .card-body
+        - if @recent_reports.present?
+          table.table.admin-table
+            thead
+              tr
+                th= t('activerecord.attributes.report.worked_in')
+                th= t('activerecord.attributes.report.user')
+                th= t('system_admin.common.created_at')
+                th= t('system_admin.common.actions')
+            tbody
+              - @recent_reports.each do |report|
+                tr
+                  td= l(report.worked_in, format: :short)
+                  td= report.user.name
+                  td= l(report.created_at, format: :short)
+                  td.actions
+                    = link_to system_admin_report_path(report), class: 'btn btn-xs btn-default'
+                      i.glyphicon.glyphicon-eye-open
+        - else
+          p.text-muted= t('system_admin.common.no_data')
+
+  .col-md-4
+    / 最近登録されたユーザー
+    .admin-card
+      .card-header
+        h3= t('system_admin.dashboard.recent_users')
+        = link_to t('system_admin.common.show'), system_admin_users_path, class: 'btn btn-sm btn-default'
+
+      .card-body
+        - if @recent_users.present?
+          ul.list-group
+            - @recent_users.each do |user|
+              li.list-group-item
+                .row
+                  .col-xs-8
+                    strong= user.name
+                    br
+                    small.text-muted= user.email
+                  .col-xs-4.text-right
+                    - if user.available?
+                      span.badge-status.badge-active= t('system_admin.users.status.active')
+                    - else
+                      span.badge-status.badge-inactive= t('system_admin.users.status.deleted')
+        - else
+          p.text-muted= t('system_admin.common.no_data')

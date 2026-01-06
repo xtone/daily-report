@@ -1,0 +1,63 @@
+- content_for :page_title, t('system_admin.reports.title')
+
+/ フィルター
+.filters-form
+  = form_tag system_admin_reports_path, method: :get, class: 'form-inline'
+    .filter-row
+      .form-group
+        = label_tag :user_id, t('system_admin.reports.filters.user'), class: 'control-label'
+        = select_tag :user_id, options_from_collection_for_select(User.available.order(:name), :id, :name, params[:user_id]), include_blank: '全員', class: 'form-control'
+
+      .form-group
+        = label_tag :date_from, t('system_admin.reports.filters.date_from'), class: 'control-label'
+        = date_field_tag :date_from, params[:date_from], class: 'form-control'
+
+      .form-group
+        = label_tag :date_to, t('system_admin.reports.filters.date_to'), class: 'control-label'
+        = date_field_tag :date_to, params[:date_to], class: 'form-control'
+
+      .form-group
+        = submit_tag t('system_admin.common.search'), class: 'btn btn-primary'
+        = link_to t('system_admin.common.reset'), system_admin_reports_path, class: 'btn btn-default'
+
+/ 日報一覧
+.admin-card
+  .card-header
+    h3= t('system_admin.reports.title')
+
+  .card-body
+    - if @reports.present?
+      table.table.admin-table
+        thead
+          tr
+            th ID
+            th= t('activerecord.attributes.report.worked_in')
+            th ユーザー
+            th 作業内容
+            th= t('system_admin.common.created_at')
+            th= t('system_admin.common.actions')
+        tbody
+          - @reports.each do |report|
+            tr
+              td= report.id
+              td= l(report.worked_in, format: :short)
+              td= link_to report.user.name, system_admin_user_path(report.user)
+              td
+                - report.operations.each do |operation|
+                  span.label.label-default style="margin-right: 5px"
+                    = "#{operation.project.name} (#{operation.workload}%)"
+              td= l(report.created_at, format: :short)
+              td.actions
+                = link_to system_admin_report_path(report), class: 'btn btn-xs btn-default', title: t('system_admin.common.show')
+                  i.glyphicon.glyphicon-eye-open
+                = link_to edit_system_admin_report_path(report), class: 'btn btn-xs btn-default', title: t('system_admin.common.edit')
+                  i.glyphicon.glyphicon-pencil
+                = button_to system_admin_report_path(report), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-xs btn-danger', title: t('system_admin.common.delete'), form: { style: 'display: inline' }
+                  i.glyphicon.glyphicon-trash
+    - else
+      p.text-muted= t('system_admin.common.no_data')
+
+  - if @reports.present?
+    .card-footer
+      .pagination-wrapper
+        = paginate @reports

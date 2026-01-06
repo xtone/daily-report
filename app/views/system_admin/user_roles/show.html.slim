@@ -1,0 +1,58 @@
+- content_for :page_title, t('system_admin.user_roles.show')
+
+.admin-card
+  .card-header
+    h3= @user_role.role_i18n
+
+  .card-body
+    .detail-section
+      h4.section-title 基本情報
+      table.detail-table
+        tr
+          th ID
+          td= @user_role.id
+        tr
+          th 権限名
+          td= @user_role.role_i18n
+        tr
+          th ユーザー数
+          td= @user_role.users.count
+
+    .detail-section
+      h4.section-title= t('system_admin.user_roles.members')
+      - if @users.present?
+        table.table.admin-table
+          thead
+            tr
+              th ID
+              th= t('activerecord.attributes.user.name')
+              th= t('activerecord.attributes.user.email')
+              th ステータス
+              th= t('system_admin.common.actions')
+          tbody
+            - @users.each do |user|
+              tr
+                td= user.id
+                td= link_to user.name, system_admin_user_path(user)
+                td= user.email
+                td
+                  - if user.available?
+                    span.badge-status.badge-active= t('system_admin.users.status.active')
+                  - else
+                    span.badge-status.badge-inactive= t('system_admin.users.status.deleted')
+                td.actions
+                  = link_to system_admin_user_path(user), class: 'btn btn-xs btn-default', title: t('system_admin.common.show')
+                    i.glyphicon.glyphicon-eye-open
+                  = button_to toggle_role_system_admin_user_path(user, role: @user_role.role), method: :patch, data: { turbo_confirm: 'この権限を削除しますか？' }, class: 'btn btn-xs btn-warning', title: '権限を削除', form: { style: 'display: inline' }
+                    i.glyphicon.glyphicon-remove
+
+        - if @users.total_pages > 1
+          .pagination-wrapper
+            = paginate @users
+      - else
+        p.text-muted この権限を持つユーザーがいません
+
+  .card-footer
+    = link_to system_admin_user_roles_path, class: 'btn btn-default'
+      i.glyphicon.glyphicon-arrow-left
+      |  #{t('system_admin.common.back')}

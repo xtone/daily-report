@@ -65,6 +65,9 @@ gem 'momentjs-rails', '>= 2.9.0'
 # Use EnumHelp to work fine with I18n
 gem 'enum_help'
 
+# Use Kaminari for pagination
+gem 'kaminari'
+
 # Use Spreadsheet to read xls file
 gem 'roo-xls', '~> 1.1.0'
 gem 'spreadsheet'
@@ -96,11 +99,10 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.10'
   gem 'pry-rails'
 
-  # E2E testing
+  # E2E testing with Playwright
   gem 'capybara'
+  gem 'capybara-playwright-driver'
   gem 'database_cleaner-active_record'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
 
   # CI/CD
   gem 'brakeman', require: false

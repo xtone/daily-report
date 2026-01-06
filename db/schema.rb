@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_29_094804) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_034731) do
   create_table "bills", charset: "utf8", force: :cascade do |t|
     t.bigint "estimate_id"
     t.string "serial_no", null: false
@@ -68,6 +68,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_094804) do
     t.date "worked_in"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.text "comment"
     t.index ["user_id"], name: "index_reports_on_user_id"
   end
 

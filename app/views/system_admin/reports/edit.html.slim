@@ -1,0 +1,48 @@
+- content_for :page_title, t('system_admin.reports.edit')
+
+.admin-card
+  .card-header
+    h3= "#{t('system_admin.reports.edit')}: #{l(@report.worked_in, format: :short)} - #{@report.user.name}"
+
+  .card-body
+    = form_with model: [:system_admin, @report], local: true, class: 'admin-form' do |f|
+      - if @report.errors.any?
+        .alert.alert-danger
+          ul.mb-0
+            - @report.errors.full_messages.each do |message|
+              li= message
+
+      .row
+        .col-md-6
+          .form-group
+            = f.label :worked_in, class: 'control-label'
+            = f.date_field :worked_in, class: 'form-control', required: true
+
+        .col-md-6
+          .form-group
+            label.control-label ユーザー
+            p.form-control-static= @report.user.name
+
+      .form-group
+        = f.label :comment, class: 'control-label'
+        = f.text_area :comment, class: 'form-control', rows: 3
+
+      .detail-section style="margin-top: 20px"
+        h4.section-title= t('system_admin.reports.operations')
+        p.text-muted 作業内容の編集は日報画面から行ってください
+
+        - if @operations.present?
+          table.table.admin-table
+            thead
+              tr
+                th プロジェクト
+                th 工数
+            tbody
+              - @operations.each do |operation|
+                tr
+                  td= operation.project.name
+                  td= "#{operation.workload}%"
+
+      .form-actions
+        = f.submit t('system_admin.common.update'), class: 'btn btn-primary'
+        = link_to t('system_admin.common.back'), system_admin_report_path(@report), class: 'btn btn-default'

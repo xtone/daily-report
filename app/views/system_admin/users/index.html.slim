@@ -1,0 +1,76 @@
+- content_for :page_title, t('system_admin.users.title')
+
+/ フィルター
+.filters-form
+  = form_tag system_admin_users_path, method: :get, class: 'form-inline'
+    .filter-row
+      .form-group
+        = text_field_tag :q, params[:q], class: 'form-control', placeholder: t('system_admin.users.filters.search_placeholder')
+
+      .form-group
+        = select_tag :status, options_for_select([[t('system_admin.users.filters.all'), ''], [t('system_admin.users.filters.active'), 'active'], [t('system_admin.users.filters.deleted'), 'deleted']], params[:status]), class: 'form-control'
+
+      .form-group
+        = submit_tag t('system_admin.common.search'), class: 'btn btn-primary'
+        = link_to t('system_admin.common.reset'), system_admin_users_path, class: 'btn btn-default'
+
+/ ユーザー一覧
+.admin-card
+  .card-header
+    h3= t('system_admin.users.title')
+    = link_to system_admin_users_path(format: :csv), class: 'btn btn-sm btn-default', style: 'margin-right: 10px'
+      i.glyphicon.glyphicon-download-alt
+      |  CSV
+    = link_to new_system_admin_user_path, class: 'btn btn-sm btn-primary'
+      i.glyphicon.glyphicon-plus
+      |  #{t('system_admin.users.new')}
+
+  .card-body
+    - if @users.present?
+      table.table.admin-table
+        thead
+          tr
+            th ID
+            th= t('activerecord.attributes.user.name')
+            th= t('activerecord.attributes.user.email')
+            th= t('activerecord.attributes.user.division')
+            th= t('system_admin.roles.administrator')
+            th= t('system_admin.roles.director')
+            th ステータス
+            th= t('system_admin.common.actions')
+        tbody
+          - @users.each do |user|
+            tr
+              td= user.id
+              td= user.name
+              td= user.email
+              td= user.division_i18n
+              td
+                - if user.administrator?
+                  i.glyphicon.glyphicon-ok.text-success
+              td
+                - if user.director?
+                  i.glyphicon.glyphicon-ok.text-success
+              td
+                - if user.available?
+                  span.badge-status.badge-active= t('system_admin.users.status.active')
+                - else
+                  span.badge-status.badge-inactive= t('system_admin.users.status.deleted')
+              td.actions
+                = link_to system_admin_user_path(user), class: 'btn btn-xs btn-default', title: t('system_admin.common.show')
+                  i.glyphicon.glyphicon-eye-open
+                = link_to edit_system_admin_user_path(user), class: 'btn btn-xs btn-default', title: t('system_admin.common.edit')
+                  i.glyphicon.glyphicon-pencil
+                - if user.available?
+                  = button_to system_admin_user_path(user), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-xs btn-danger', title: t('system_admin.common.delete'), form: { style: 'display: inline' }
+                    i.glyphicon.glyphicon-trash
+                - else
+                  = button_to revive_system_admin_user_path(user), method: :patch, class: 'btn btn-xs btn-success', title: '復活', form: { style: 'display: inline' }
+                    i.glyphicon.glyphicon-repeat
+    - else
+      p.text-muted= t('system_admin.common.no_data')
+
+  - if @users.present?
+    .card-footer
+      .pagination-wrapper
+        = paginate @users

@@ -50,4 +50,36 @@ Rails.application.routes.draw do
   namespace :projects do
     get 'members/edit'
   end
+
+  # システム管理画面
+  namespace :system_admin do
+    root to: 'dashboard#index'
+    resources :users do
+      member do
+        patch :revive
+        patch :toggle_role
+      end
+    end
+    resources :projects do
+      resources :members, only: %i(index create destroy), module: :projects
+    end
+    resources :reports, only: %i(index show edit update destroy) do
+      collection do
+        get :summary
+        get :unsubmitted
+      end
+    end
+    resources :estimates do
+      collection do
+        post :confirm
+      end
+    end
+    resources :bills do
+      collection do
+        post :confirm
+      end
+    end
+    resources :user_roles, only: %i(index show)
+    resources :csvs, only: %i(index)
+  end
 end

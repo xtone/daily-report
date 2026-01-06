@@ -38,6 +38,7 @@ services:
       bash -c "
         bundle install &&
         yarn install &&
+        npx playwright install chromium --with-deps &&
         bundle exec rails db:create db:migrate &&
         bundle exec rspec
       "

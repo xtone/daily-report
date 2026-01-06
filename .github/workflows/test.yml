@@ -64,11 +64,16 @@ jobs:
         bundle exec rails db:create
         bundle exec rails db:migrate
 
+    - name: Install Playwright browsers
+      run: npx playwright install chromium --with-deps
+
     - name: Run tests
       env:
         RAILS_ENV: test
         MYSQL_HOST: 127.0.0.1
         MYSQL_PASSWORD: password
+        CI: true
+        HEADLESS: true
       run: |
         bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml
 

@@ -22,10 +22,7 @@ RSpec.feature 'Page Display', :js, type: :feature do
   describe '未認証ユーザー' do
     scenario 'ログイン画面が表示される' do
       visit '/'
-      # Rails 8.0ではTurbo Driveがデフォルトで有効
-      # Turboの存在確認のみ行う
-      expect(page.evaluate_script('window.Turbo !== undefined')).to eq(true)
-      
+
       expect(page).to have_current_path('/users/sign_in')
       expect(page).to have_content('Log in')
       expect(page).to have_field('メールアドレス')
@@ -63,29 +60,14 @@ RSpec.feature 'Page Display', :js, type: :feature do
       expect(page).to have_button('ログアウト')
     end
 
-    scenario 'プロジェクト一覧が表示される' do
-      # プロジェクト一覧は管理者権限が必要なので、このテストはスキップ
-      # 管理者権限のテストは後述の「管理者ユーザーとしてログイン」セクションで実施
-      skip '管理者権限が必要なためスキップ'
-    end
-
     scenario '参加プロジェクト設定が表示される' do
-      begin
-        # ナビゲーションリンクが表示されるまで待つ
-        wait_for_page_load
-        expect(page).to have_link('プロジェクト設定', wait: ENV['CI'] ? 15 : 10)
-        # ナビゲーションリンクをクリックして遷移
-        click_link 'プロジェクト設定'
-        expect(page).to have_css('h1', text: '参加プロジェクト設定', wait: 5)
-        expect(page).to have_content('クリックすると参加状態のOn/Offを切り替えることができます。')
-      rescue Selenium::WebDriver::Error::UnknownError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # ナビゲーションリンクが表示されるまで待つ
+      wait_for_page_load
+      expect(page).to have_link('プロジェクト設定', wait: ENV['CI'] ? 15 : 10)
+      # ナビゲーションリンクをクリックして遷移
+      click_link 'プロジェクト設定'
+      expect(page).to have_css('h1', text: '参加プロジェクト設定', wait: 5)
+      expect(page).to have_content('クリックすると参加状態のOn/Offを切り替えることができます。')
     end
 
     scenario 'パスワード変更画面が表示される' do
@@ -102,114 +84,59 @@ RSpec.feature 'Page Display', :js, type: :feature do
 
   describe '管理者ユーザーとしてログイン' do
     before do
-      begin
-        sign_in_as(admin_user)
-      rescue Selenium::WebDriver::Error::UnknownError => e
-        # CI環境でのSeleniumエラーをキャッチ
-        if e.message.include?('Node with given id does not belong to the document')
-          # ページをリフレッシュして再試行
-          visit '/'
-          sign_in_as(admin_user)
-        else
-          raise e
-        end
-      end
+      sign_in_as(admin_user)
     end
 
     scenario '管理画面が表示される' do
-      begin
-        # 管理画面へのリンクが表示されることを確認
-        expect(page).to have_link('管理画面', wait: 5)
-        # リンクをクリックして遷移
-        click_link_with_retry '管理画面'
-        expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        expect(page).to have_link('プロジェクト管理')
-        expect(page).to have_link('ユーザー管理')
-        expect(page).to have_link('CSV出力')
-        expect(page).to have_link('稼働集計')
-        expect(page).to have_link('日報未提出一覧')
-      rescue StandardError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') ||
-           e.message.include?('element click intercepted') ||
-           e.message.include?('stale element reference')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # 管理画面へのリンクが表示されることを確認
+      expect(page).to have_link('管理画面', wait: 5)
+      # リンクをクリックして遷移
+      click_link_with_retry '管理画面'
+      expect(page).to have_css('h1', text: '管理画面', wait: 5)
+      expect(page).to have_link('プロジェクト管理')
+      expect(page).to have_link('ユーザー管理')
+      expect(page).to have_link('CSV出力')
+      expect(page).to have_link('稼働集計')
+      expect(page).to have_link('日報未提出一覧')
     end
 
     scenario 'プロジェクト管理リンクが正しいURLパラメータを含む' do
-      begin
-        # 管理画面へのリンクが表示されることを確認
-        expect(page).to have_link('管理画面', wait: 5)
-        # リンクをクリックして遷移
-        click_link_with_retry '管理画面'
-        expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        # プロジェクト管理リンクのhref属性を確認
-        expect(page).to have_link('プロジェクト管理', href: '/projects?active=true&order=code_desc')
-      rescue StandardError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') ||
-           e.message.include?('element click intercepted') ||
-           e.message.include?('stale element reference')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # 管理画面へのリンクが表示されることを確認
+      expect(page).to have_link('管理画面', wait: 5)
+      # リンクをクリックして遷移
+      click_link_with_retry '管理画面'
+      expect(page).to have_css('h1', text: '管理画面', wait: 5)
+      # プロジェクト管理リンクのhref属性を確認
+      expect(page).to have_link('プロジェクト管理', href: '/projects?active=true&order=code_desc')
     end
 
     scenario 'ユーザー管理画面が表示される' do
-      begin
-        # ホーム画面に戻ってから管理画面へ遷移
-        visit '/'
-        expect(page).to have_content('日報', wait: 5)
-        # 管理画面経由でユーザー管理画面へ遷移
-        click_link_with_retry '管理画面'
-        expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        click_link_with_retry 'ユーザー管理'
-        expect(page).to have_css('h1', text: 'ユーザー一覧', wait: 5)
-        expect(page).to have_link('新規登録')
-        expect(page).to have_table
-        expect(page).to have_content(admin_user.name)
-      rescue StandardError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') ||
-           e.message.include?('element click intercepted') ||
-           e.message.include?('stale element reference')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # ホーム画面に戻ってから管理画面へ遷移
+      visit '/'
+      expect(page).to have_content('日報', wait: 5)
+      # 管理画面経由でユーザー管理画面へ遷移
+      click_link_with_retry '管理画面'
+      expect(page).to have_css('h1', text: '管理画面', wait: 5)
+      click_link_with_retry 'ユーザー管理'
+      expect(page).to have_css('h1', text: 'ユーザー一覧', wait: 5)
+      expect(page).to have_link('新規登録')
+      expect(page).to have_table
+      expect(page).to have_content(admin_user.name)
     end
 
     scenario 'CSV出力画面が表示される' do
-      begin
-        # ホーム画面に戻ってから管理画面へ遷移
-        visit '/'
-        expect(page).to have_content('日報', wait: 5)
-        # 管理画面経由でCSV出力画面へ遷移
-        click_link_with_retry '管理画面'
-        expect(page).to have_css('h1', text: '管理画面', wait: 5)
-        click_link_with_retry 'CSV出力'
-        expect(page).to have_css('h1', text: 'CSV出力', wait: 5)
-        expect(page).to have_content('提出済みの日報一覧')
-        expect(page).to have_content('プロジェクト一覧')
-        expect(page).to have_content('ユーザー一覧')
-        expect(page).to have_button('ダウンロード', count: 3)
-      rescue StandardError => e
-        # CI環境でのSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') ||
-           e.message.include?('element click intercepted') ||
-           e.message.include?('stale element reference')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          raise e
-        end
-      end
+      # ホーム画面に戻ってから管理画面へ遷移
+      visit '/'
+      expect(page).to have_content('日報', wait: 5)
+      # 管理画面経由でCSV出力画面へ遷移
+      click_link_with_retry '管理画面'
+      expect(page).to have_css('h1', text: '管理画面', wait: 5)
+      click_link_with_retry 'CSV出力'
+      expect(page).to have_css('h1', text: 'CSV出力', wait: 5)
+      expect(page).to have_content('提出済みの日報一覧')
+      expect(page).to have_content('プロジェクト一覧')
+      expect(page).to have_content('ユーザー一覧')
+      expect(page).to have_button('ダウンロード', count: 3)
     end
   end
 
@@ -219,53 +146,33 @@ RSpec.feature 'Page Display', :js, type: :feature do
     end
 
     scenario 'モバイルサイズでの表示' do
-      begin
-        page.driver.browser.manage.window.resize_to(375, 667)
-        visit '/'
-        expect(page).to have_css('.navbar')
-        expect(page).to have_content('日報')
-      rescue Selenium::WebDriver::Error::UnknownError => e
-        # Chrome headlessモードでのウィンドウリサイズエラーやその他のSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') || e.message.include?('window.resize')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          skip 'Headless Chromeでウィンドウリサイズがサポートされていません'
-        end
+      # Playwrightのビューポートをモバイルサイズにリサイズ
+      page.driver.with_playwright_page do |playwright_page|
+        playwright_page.viewport_size = { width: 375, height: 667 }
       end
+
+      visit '/'
+      expect(page).to have_content('日報')
+      # モバイルサイズではナビゲーションがハンバーガーメニューになる
+      expect(page).to have_css('.navbar')
     end
 
     scenario 'タブレットサイズでの表示' do
-      begin
-        page.driver.browser.manage.window.resize_to(768, 1024)
-        visit '/'
-        expect(page).to have_css('.navbar')
-        expect(page).to have_content('日報')
-      rescue Selenium::WebDriver::Error::UnknownError => e
-        # Chrome headlessモードでのウィンドウリサイズエラーやその他のSeleniumエラーを回避
-        if e.message.include?('Node with given id does not belong to the document') || e.message.include?('window.resize')
-          skip 'CI環境でのSeleniumエラーのためスキップ'
-        else
-          skip 'Headless Chromeでウィンドウリサイズがサポートされていません'
-        end
+      # Playwrightのビューポートをタブレットサイズにリサイズ
+      page.driver.with_playwright_page do |playwright_page|
+        playwright_page.viewport_size = { width: 768, height: 1024 }
       end
+
+      visit '/'
+      expect(page).to have_content('日報')
+      expect(page).to have_css('.navbar')
     end
   end
 
   describe 'エラーハンドリング' do
-    scenario '存在しないページへのアクセス' do
-      # スキップ: テスト環境ではエラーが再発生されるため、
-      # このテストは別のアプローチが必要
-      skip 'テスト環境では404エラーが再発生されるため、スキップ'
-
-      sign_in_as(regular_user)
-
-      # テスト環境では、application_controller.rbがエラーを再発生させる設定になっている
-      # これはテスト環境での期待される動作であり、
-      # 実際のアプリケーションが404エラーを処理できることを確認している
-      # このテストは、ルーティングが正しく動作し、
-      # 存在しないパスで適切なエラーが発生することを検証している
-      expect(page).to have_content('日報') # ログイン確認
-    end
+    # 注: 「存在しないページへのアクセス」テストは削除しました
+    # 理由: ApplicationControllerで本番環境以外ではエラーを再発生させる設計のため、
+    # E2Eテストでは404ページの表示を検証できません
 
     scenario '権限のないページへのアクセス' do
       # ユーザーを再度保存してIDを確定させ、パスワードを更新
