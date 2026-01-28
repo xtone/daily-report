@@ -2,7 +2,8 @@ module Reports
   extend ActiveSupport::Concern
 
   included do
-    before_action :authenticate_user!
+    include ApiAuthenticatable
+    before_action :authenticate_with_token_or_session!
   end
 
   private

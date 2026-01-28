@@ -1,0 +1,61 @@
+h1 APIトークン管理
+
+- if @plain_token.present?
+  .alert.alert-warning
+    strong 重要:
+    | このトークンは二度と表示されません。今すぐコピーして安全な場所に保存してください。
+    .mt-2
+      code.user-select-all style="word-break: break-all; display: block; padding: 10px; background: #f8f9fa; border-radius: 4px;"
+        = @plain_token
+    .mt-2
+      button.btn.btn-sm.btn-outline-secondary onclick="navigator.clipboard.writeText('#{@plain_token}').then(() => alert('コピーしました'))"
+        | コピー
+
+- if flash[:notice]
+  .alert.alert-success = flash[:notice]
+
+- if flash[:alert]
+  .alert.alert-danger = flash[:alert]
+
+h2.mt-4 新規トークン生成
+
+= form_with model: [:settings, ApiToken.new], local: true, class: 'mb-4' do |f|
+  .form-group.row
+    = f.label :name, 'トークン名', class: 'col-sm-2 col-form-label'
+    .col-sm-6
+      = f.text_field :name, class: 'form-control', placeholder: 'Default'
+    .col-sm-4
+      = f.submit '生成', class: 'btn btn-primary'
+
+h2.mt-4 トークン一覧
+
+- if @api_tokens.empty?
+  p.text-muted トークンがありません。
+
+- else
+  table.table.table-striped
+    thead
+      tr
+        th 名前
+        th 作成日時
+        th 最終使用
+        th 状態
+        th 操作
+    tbody
+      - @api_tokens.each do |token|
+        tr class=('table-secondary text-muted' if token.revoked_at.present?)
+          td = token.name
+          td = l(token.created_at, format: :short)
+          td
+            - if token.last_used_at.present?
+              = l(token.last_used_at, format: :short)
+            - else
+              span.text-muted 未使用
+          td
+            - if token.revoked_at.present?
+              span.badge.badge-secondary 失効済み
+            - else
+              span.badge.badge-success 有効
+          td
+            - if token.revoked_at.blank?
+              = button_to '失効', settings_api_token_path(token), method: :delete, class: 'btn btn-sm btn-outline-danger', data: { confirm: 'このトークンを失効しますか？' }
