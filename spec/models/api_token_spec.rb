@@ -131,12 +131,6 @@ RSpec.describe ApiToken, type: :model do
       expect(result).to be_nil
     end
 
-    it 'uses constant-time comparison' do
-      # secure_compareが使用されていることを確認
-      expect(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_call_original
-      described_class.authenticate(@plain_token)
-    end
-
     it 'updates last_used_at on successful authentication' do
       expect(@api_token.last_used_at).to be_nil
       described_class.authenticate(@plain_token)

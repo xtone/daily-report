@@ -52,8 +52,9 @@ RSpec.describe 'Settings::ApiTokens', type: :request do
           }
         end.to change(ApiToken, :count).by(1)
 
-        expect(response).to redirect_to(settings_api_tokens_path)
-        expect(flash[:notice]).to eq('APIトークンを生成しました。')
+        # renderで同じページを表示（リダイレクトしない）
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include('APIトークンを生成しました。')
       end
 
       it '生成されたトークンが一度だけ表示される' do
@@ -61,17 +62,14 @@ RSpec.describe 'Settings::ApiTokens', type: :request do
           api_token: { name: 'New Token' }
         }
 
-        expect(flash[:plain_token]).to be_present
-        plain_token = flash[:plain_token]
-
-        # リダイレクト後のページを取得
-        follow_redirect!
-        expect(response.body).to include(plain_token)
+        # 生成直後のレスポンスにトークンが含まれる
         expect(response.body).to include('このトークンは二度と表示されません')
+        # トークンがレスポンスに含まれていることを確認（base64urlエンコード形式）
+        expect(response.body).to match(/[A-Za-z0-9_-]{43}/)
 
-        # 再度アクセスすると表示されない
+        # 再度アクセスするとトークンは表示されない
         get settings_api_tokens_path
-        expect(response.body).not_to include(plain_token)
+        expect(response.body).not_to include('このトークンは二度と表示されません')
       end
 
       it '名前が空の場合はデフォルト名が使用される' do

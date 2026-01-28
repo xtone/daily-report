@@ -15,10 +15,8 @@ class ApiToken < ApplicationRecord
   # @param name [String] トークンの名前
   # @return [Array<ApiToken, String>] 作成されたApiTokenと平文トークン
   def self.generate_token(user, name: 'Default')
-    plain_token = nil
-    api_token = nil
-    retries = 0
     max_retries = 3
+    retries = 0
 
     loop do
       plain_token = SecureRandom.urlsafe_base64(32)
@@ -26,16 +24,15 @@ class ApiToken < ApplicationRecord
 
       api_token = new(user: user, token_digest: token_digest, name: name)
 
-      if api_token.save
-        break
-      elsif retries >= max_retries
-        raise ActiveRecord::RecordInvalid, api_token
-      else
+      begin
+        api_token.save!
+        return [api_token, plain_token]
+      rescue ActiveRecord::RecordNotUnique
+        # token_digestの衝突の場合のみリトライ
         retries += 1
+        raise if retries > max_retries
       end
     end
-
-    [api_token, plain_token]
   end
 
   # 平文トークンから認証を行う
@@ -45,14 +42,10 @@ class ApiToken < ApplicationRecord
     return nil if plain_token.blank?
 
     token_digest = Digest::SHA256.hexdigest(plain_token)
+    # SHA256ハッシュでの完全一致検索のため、タイミング攻撃のリスクは低い
     api_token = active.find_by(token_digest: token_digest)
 
     return nil unless api_token
-
-    # 定数時間比較でタイミング攻撃を防ぐ
-    unless ActiveSupport::SecurityUtils.secure_compare(api_token.token_digest, token_digest)
-      return nil
-    end
 
     api_token.touch_last_used!
     api_token

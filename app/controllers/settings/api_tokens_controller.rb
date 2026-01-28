@@ -5,19 +5,21 @@ class Settings::ApiTokensController < ApplicationController
 
   def index
     @api_tokens = current_user.api_tokens.order(created_at: :desc)
-    @plain_token = flash[:plain_token]
   end
 
   def create
-    api_token, plain_token = ApiToken.generate_token(
+    @api_token, @plain_token = ApiToken.generate_token(
       current_user,
       name: api_token_params[:name].presence || 'Default'
     )
 
-    flash[:plain_token] = plain_token
-    redirect_to settings_api_tokens_path, notice: 'APIトークンを生成しました。'
+    @api_tokens = current_user.api_tokens.order(created_at: :desc)
+    flash.now[:notice] = 'APIトークンを生成しました。'
+    render :index
   rescue ActiveRecord::RecordInvalid => e
-    redirect_to settings_api_tokens_path, alert: "トークンの生成に失敗しました: #{e.message}"
+    @api_tokens = current_user.api_tokens.order(created_at: :desc)
+    flash.now[:alert] = "トークンの生成に失敗しました: #{e.message}"
+    render :index
   end
 
   def destroy
