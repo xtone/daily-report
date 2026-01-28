@@ -132,6 +132,51 @@ RSpec.describe 'API Authentication', type: :request do
       end
     end
 
+    describe 'CSRF protection with forgery protection enabled', type: :request do
+      around do |example|
+        # テスト中のみCSRF保護を有効化
+        original_value = ActionController::Base.allow_forgery_protection
+        ActionController::Base.allow_forgery_protection = true
+        example.run
+        ActionController::Base.allow_forgery_protection = original_value
+      end
+
+      context 'with Bearer token' do
+        it 'skips CSRF verification and allows POST' do
+          post reports_path(format: :json),
+               params: {
+                 worked_in: Date.current.to_s,
+                 project_ids: [project.id],
+                 workloads: [100]
+               },
+               headers: { 'Authorization' => "Bearer #{@plain_token}" }
+
+          # CSRFトークンなしでも422（CSRF失敗）にならない
+          # 認証成功しているので401にもならない
+          expect(response).not_to have_http_status(:unauthorized)
+          expect(response).not_to have_http_status(:unprocessable_entity)
+        end
+      end
+
+      context 'without Bearer token and without CSRF token' do
+        it 'returns 422 for session-based POST without CSRF token' do
+          login_as(user)
+
+          # CSRFトークンなしでPOST
+          post reports_path(format: :json),
+               params: {
+                 worked_in: Date.current.to_s,
+                 project_ids: [project.id],
+                 workloads: [100]
+               },
+               headers: { 'X-CSRF-Token' => '' }
+
+          # セッション認証ではCSRFトークンが必要なので422になる
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+    end
+
     describe 'PATCH /reports/:id.json' do
       let!(:report) { create(:report, user: user) }
 

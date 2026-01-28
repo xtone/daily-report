@@ -4,8 +4,10 @@ module ApiAuthenticatable
   extend ActiveSupport::Concern
 
   included do
-    # トークン認証時のみCSRF保護をスキップ
-    skip_forgery_protection if: :token_authenticated?
+    # Bearerトークンヘッダーがある場合はCSRF保護をスキップ
+    # Note: token_authenticated?ではなくbearer_token_present?を使用
+    #       CSRFチェックは認証before_actionより先に実行されるため
+    skip_forgery_protection if: :bearer_token_present?
   end
 
   private
@@ -24,6 +26,7 @@ module ApiAuthenticatable
       else
         # トークンが無効な場合は401を返す（セッションにフォールバックしない）
         render_unauthorized
+        return # 明示的にリクエスト処理を停止
       end
     else
       # トークンがない場合はDeviseのセッション認証にフォールバック
@@ -34,6 +37,11 @@ module ApiAuthenticatable
   # トークン認証が行われたかどうか
   def token_authenticated?
     @token_authenticated == true
+  end
+
+  # Bearerトークンヘッダーが存在するかどうか（CSRF判定用）
+  def bearer_token_present?
+    request.headers['Authorization']&.match?(/\ABearer\s+.+\z/i)
   end
 
   # current_userをオーバーライド（トークン認証時用）
