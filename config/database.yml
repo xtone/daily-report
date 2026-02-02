@@ -72,8 +72,8 @@ production:
     host: <%= ENV['DB_HOST'] %>
     username: <%= ENV['DB_USERNAME'] %>
     password: <%= ENV['DB_PASSWORD'] %>
-    # Puma threads + Solid Queue workers accessing primary DB
-    pool: <%= ENV.fetch('DB_POOL_PRIMARY', 10) %>
+    # Puma(3) + Solid Queue workers(5) accessing primary DB
+    pool: <%= ENV.fetch('DB_POOL_PRIMARY', 8) %>
   queue:
     <<: *default
     database: <%= ENV.fetch('SOLID_QUEUE_DATABASE', 'daily-report_production_queue') %>
@@ -81,8 +81,8 @@ production:
     username: <%= ENV['DB_USERNAME'] %>
     password: <%= ENV['DB_PASSWORD'] %>
     migrations_paths: db/queue_migrate
-    # Solid Queue workers (5 threads × 2 processes) + Dispatcher + Scheduler + Puma
-    pool: <%= ENV.fetch('DB_POOL_QUEUE', 15) %>
+    # Solid Queue workers(5) + Dispatcher(1) + Scheduler(1) + Puma(3)
+    pool: <%= ENV.fetch('DB_POOL_QUEUE', 10) %>
   cable:
     <<: *default
     database: <%= ENV.fetch('SOLID_CABLE_DATABASE', 'daily-report_production_cable') %>
