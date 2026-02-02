@@ -38,6 +38,9 @@ gem 'turbo-rails'
 gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
+
+# Solid Queue for background jobs (Rails 8)
+gem 'solid_queue'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
