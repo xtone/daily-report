@@ -58,8 +58,16 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  database: daily-report_production
-  host: <%= ENV['DB_HOST'] %>
-  username: <%= ENV['DB_USERNAME'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
+  primary:
+    <<: *default
+    database: daily-report_production
+    host: <%= ENV['DB_HOST'] %>
+    username: <%= ENV['DB_USERNAME'] %>
+    password: <%= ENV['DB_PASSWORD'] %>
+  queue:
+    <<: *default
+    database: <%= ENV.fetch('SOLID_QUEUE_DATABASE', 'daily-report_production_queue') %>
+    host: <%= ENV['DB_HOST'] %>
+    username: <%= ENV['DB_USERNAME'] %>
+    password: <%= ENV['DB_PASSWORD'] %>
+    migrations_paths: db/queue_migrate
