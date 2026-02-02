@@ -1,0 +1,6 @@
+- content_for :page_title, t('system_admin.retirement_processings.title')
+
+- content_for :head
+  = javascript_include_tag 'retirement_processing'
+
+#retirement-processor-container data-users="#{@users.map { |u| { id: u.id, name: u.name } }.to_json}"

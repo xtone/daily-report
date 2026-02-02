@@ -82,5 +82,10 @@ Rails.application.routes.draw do
     end
     resources :user_roles, only: %i(index show)
     resources :csvs, only: %i(index)
+    resources :retirement_processings, only: %i(index create show) do
+      member do
+        post :cancel
+      end
+    end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_28_093034) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_02_000001) do
   create_table "api_tokens", charset: "utf8", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "token_digest", null: false
@@ -21,6 +21,26 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_093034) do
     t.datetime "updated_at", null: false
     t.index ["token_digest"], name: "index_api_tokens_on_token_digest", unique: true
     t.index ["user_id"], name: "index_api_tokens_on_user_id"
+  end
+    
+  create_table "async_tasks", charset: "utf8", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "task_type", null: false
+    t.string "status", default: "pending", null: false
+    t.integer "progress", default: 0
+    t.integer "total_items"
+    t.json "params"
+    t.json "result"
+    t.text "last_error"
+    t.integer "retry_count", default: 0
+    t.datetime "started_at"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_async_tasks_on_created_at"
+    t.index ["task_type", "status"], name: "index_async_tasks_on_task_type_and_status"
+    t.index ["user_id", "status"], name: "index_async_tasks_on_user_id_and_status"
+    t.index ["user_id"], name: "index_async_tasks_on_user_id"
   end
 
   create_table "bills", charset: "utf8", force: :cascade do |t|
@@ -122,6 +142,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_093034) do
   end
 
   add_foreign_key "api_tokens", "users"
+  add_foreign_key "async_tasks", "users"
   add_foreign_key "user_projects", "projects"
   add_foreign_key "user_projects", "users"
   add_foreign_key "user_role_associations", "user_roles"
