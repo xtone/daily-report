@@ -68,7 +68,12 @@ RUN yarn install --production && yarn cache clean
 # PIDファイルとtmpディレクトリをクリーンアップ
 RUN rm -rf tmp/pids/* tmp/cache/* && mkdir -p tmp/pids
 
+# エントリーポイントスクリプトをコピー
+COPY docker/rails/entrypoint-ecs.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint-ecs.sh
+
 EXPOSE 3000
 
-# 本番環境用の起動コマンド（PIDファイルを削除してから起動）
-CMD ["sh", "-c", "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0 -p 3000 -e production"]
+# エントリーポイントスクリプトを使用（マイグレーション実行後にサーバー起動）
+ENTRYPOINT ["entrypoint-ecs.sh"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000", "-e", "production"]
