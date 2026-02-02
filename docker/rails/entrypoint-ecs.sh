@@ -32,6 +32,10 @@ if [ "$SKIP_DB_MIGRATE" != "true" ]; then
   echo "Running queue database migrations..."
   bundle exec rails db:migrate:queue
 
+  # Solid Cable用のケーブルデータベースセットアップ
+  echo "Setting up cable database..."
+  bundle exec rails db:prepare:cable
+
   echo "Migrations completed!"
 else
   echo "Skipping migrations (SKIP_DB_MIGRATE=true)"
