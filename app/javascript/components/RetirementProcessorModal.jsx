@@ -394,7 +394,7 @@ class RetirementProcessorModal extends React.Component {
 			<>
 				<button
 					type="button"
-					className="btn btn-warning"
+					className="btn btn-warning navbar-btn"
 					onClick={this.openModal}
 				>
 					<span

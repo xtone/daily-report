@@ -6,10 +6,9 @@
 
 .navbar.navbar-default
   .collapse.navbar-collapse
-    .nav.navbar-nav
+    .navbar-left style="display: flex; align-items: center; gap: 10px; padding: 8px 15px;"
       = destroy_or_revive_button(@user)
-      li
-        #retirement-processor-container data-user-id=@user.id data-user-name=@user.name
+      #retirement-processor-container data-user-id=@user.id data-user-name=@user.name
 
 = render 'form', user: @user, roles: @roles
 
