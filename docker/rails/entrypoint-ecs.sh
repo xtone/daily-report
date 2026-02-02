@@ -34,7 +34,8 @@ if [ "$SKIP_DB_MIGRATE" != "true" ]; then
 
   # Solid Cable用のケーブルデータベースセットアップ
   echo "Setting up cable database..."
-  bundle exec rails db:prepare:cable
+  bundle exec rails db:create:cable 2>/dev/null || true
+  bundle exec rails db:schema:load:cable 2>/dev/null || bundle exec rails db:migrate:cable
 
   echo "Migrations completed!"
 else
