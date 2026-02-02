@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # ELBヘルスチェック用エンドポイント（認証不要）
-  get "up" => "rails/health#show", as: :rails_health_check
+  get "health" => "rails/health#show", as: :rails_health_check
 
   root to: 'reports#index'
 
