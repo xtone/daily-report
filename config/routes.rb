@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   namespace :settings do
     resources :projects, only: %i(index update destroy)
     resource :password, only: %i(show update)
+    resources :api_tokens, only: %i(index create destroy)
   end
 
   scope :admin do

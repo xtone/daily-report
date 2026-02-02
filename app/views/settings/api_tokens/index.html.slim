@@ -1,0 +1,63 @@
+h1 APIトークン管理
+
+- if flash[:notice]
+  .alert.alert-success = flash[:notice]
+
+- if @plain_token.present?
+  .alert.alert-warning style="display: flex; flex-direction: column; gap: 1rem;"
+    div
+      strong 重要:
+      |  このトークンは二度と表示されません。今すぐコピーして安全な場所に保存してください。
+    .d-flex.align-items-stretch
+      code.user-select-all.flex-grow-1 style="word-break: break-all; padding: 10px; background: #f8f9fa; border-radius: 4px 0 0 4px; border: 1px solid #ced4da; border-right: none;"
+        = @plain_token
+      button.btn.btn-outline-secondary.flex-shrink-0 style="border-radius: 0 4px 4px 0; border-left: none; border-color: #ced4da;" onclick="navigator.clipboard.writeText('#{j @plain_token}').then(() => alert('コピーしました'))" title="コピー"
+        svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"
+          path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"
+          path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"
+
+- if flash[:alert]
+  .alert.alert-danger = flash[:alert]
+
+h2.mt-4 新規トークン生成
+
+= form_with model: [:settings, ApiToken.new], local: true, data: { turbo: false }, class: 'mb-4' do |f|
+  .form-group.row
+    = f.label :name, 'トークン名', class: 'col-sm-2 col-form-label'
+    .col-sm-6
+      = f.text_field :name, class: 'form-control', placeholder: 'Default'
+    .col-sm-4
+      = f.submit '生成', class: 'btn btn-primary'
+
+h2.mt-4 トークン一覧
+
+- if @api_tokens.empty?
+  p.text-muted トークンがありません。
+
+- else
+  table.table.table-striped
+    thead
+      tr
+        th 名前
+        th 作成日時
+        th 最終使用
+        th 状態
+        th 操作
+    tbody
+      - @api_tokens.each do |token|
+        tr class=('table-secondary text-muted' if token.revoked_at.present?)
+          td = token.name
+          td = l(token.created_at, format: :short)
+          td
+            - if token.last_used_at.present?
+              = l(token.last_used_at, format: :short)
+            - else
+              span.text-muted 未使用
+          td
+            - if token.revoked_at.present?
+              span.badge.badge-secondary 失効済み
+            - else
+              span.badge.badge-success 有効
+          td
+            - if token.revoked_at.blank?
+              = button_to '失効', settings_api_token_path(token), method: :delete, class: 'btn btn-sm btn-outline-danger', data: { confirm: 'このトークンを失効しますか？' }
