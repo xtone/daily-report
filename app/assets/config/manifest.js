@@ -2,4 +2,4 @@
 //= link_directory ../stylesheets .css
 //= link application.css
 //= link_tree ../builds
-//= link application.js
+//= link legacy_sprockets.js
