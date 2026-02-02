@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # ELBヘルスチェック用エンドポイント（認証不要）
+  get "health" => "rails/health#show", as: :rails_health_check
+
   root to: 'reports#index'
 
   devise_for :users, controllers: {
