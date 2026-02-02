@@ -38,6 +38,11 @@ gem 'turbo-rails'
 gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
+
+# Solid Queue for background jobs (Rails 8)
+gem 'solid_queue'
+# Solid Cable for Action Cable (Redis不要)
+gem 'solid_cable'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -64,6 +69,9 @@ gem 'momentjs-rails', '>= 2.9.0'
 
 # Use EnumHelp to work fine with I18n
 gem 'enum_help'
+
+# Use Kaminari for pagination
+gem 'kaminari'
 
 # Use Spreadsheet to read xls file
 gem 'roo-xls', '~> 1.1.0'
@@ -96,11 +104,10 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.10'
   gem 'pry-rails'
 
-  # E2E testing
+  # E2E testing with Playwright
   gem 'capybara'
+  gem 'capybara-playwright-driver'
   gem 'database_cleaner-active_record'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
 
   # CI/CD
   gem 'brakeman', require: false

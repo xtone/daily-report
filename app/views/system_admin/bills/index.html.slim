@@ -1,0 +1,63 @@
+- content_for :page_title, t('system_admin.bills.title')
+
+/ フィルター
+.filters-form
+  = form_tag system_admin_bills_path, method: :get, class: 'form-inline'
+    .filter-row
+      .form-group
+        = text_field_tag :q, params[:q], class: 'form-control', placeholder: t('system_admin.bills.filters.search_placeholder')
+
+      .form-group
+        = submit_tag t('system_admin.common.search'), class: 'btn btn-primary'
+        = link_to t('system_admin.common.reset'), system_admin_bills_path, class: 'btn btn-default'
+
+/ 請求書一覧
+.admin-card
+  .card-header
+    .d-flex.justify-content-between.align-items-center
+      h3= t('system_admin.bills.title')
+      = link_to new_system_admin_bill_path, class: 'btn btn-primary'
+        i.glyphicon.glyphicon-plus
+        |  #{t('system_admin.bills.new')}
+
+  .card-body
+    - if @bills.present?
+      table.table.admin-table
+        thead
+          tr
+            th ID
+            th 請求番号
+            th 件名
+            th 見積書
+            th プロジェクト
+            th 金額
+            th 請求日
+            th= t('system_admin.common.actions')
+        tbody
+          - @bills.each do |bill|
+            tr
+              td= bill.id
+              td= bill.serial_no
+              td= bill.subject
+              td= bill.estimate ? link_to(bill.estimate.serial_no, system_admin_estimate_path(bill.estimate)) : '-'
+              td
+                - if bill.estimate&.project
+                  = link_to bill.estimate.project.name, system_admin_project_path(bill.estimate.project)
+                - else
+                  | -
+              td= number_to_currency(bill.amount, unit: '¥', precision: 0)
+              td= bill.billed_on ? l(bill.billed_on, format: :short) : '-'
+              td.actions
+                = link_to system_admin_bill_path(bill), class: 'btn btn-xs btn-default', title: t('system_admin.common.show')
+                  i.glyphicon.glyphicon-eye-open
+                = link_to edit_system_admin_bill_path(bill), class: 'btn btn-xs btn-default', title: t('system_admin.common.edit')
+                  i.glyphicon.glyphicon-pencil
+                = button_to system_admin_bill_path(bill), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-xs btn-danger', title: t('system_admin.common.delete'), form: { style: 'display: inline' }
+                  i.glyphicon.glyphicon-trash
+    - else
+      p.text-muted= t('system_admin.common.no_data')
+
+  - if @bills.present?
+    .card-footer
+      .pagination-wrapper
+        = paginate @bills

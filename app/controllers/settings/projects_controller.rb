@@ -1,5 +1,6 @@
 class Settings::ProjectsController < ApplicationController
-  before_action :authenticate_user!
+  include ApiAuthenticatable
+  before_action :authenticate_with_token_or_session!
 
   def index
     respond_to do |format|

@@ -15,6 +15,9 @@
           <li class="<%= 'active' if current_page?(settings_password_path) %>">
             <%= link_to 'パスワード変更', settings_password_path %>
           </li>
+          <li class="<%= 'active' if current_page?(settings_api_tokens_path) %>">
+            <%= link_to 'APIトークン', settings_api_tokens_path %>
+          </li>
           <% if current_user.user_roles.present? %>
             <li class="<%= 'active' if current_page?(admin_root_path) %>">
               <%= link_to '管理画面', admin_root_path %>

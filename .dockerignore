@@ -39,6 +39,8 @@ docker-compose.override.yml
 docker-compose.override.yml.example
 Dockerfile
 docker/
+# ECS用エントリーポイントスクリプトは除外しない
+!docker/rails/entrypoint-ecs.sh
 
 # CI/CD関連（本番ビルドでは不要）
 .circleci/

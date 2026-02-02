@@ -1,0 +1,60 @@
+- content_for :page_title, t('system_admin.reports.show')
+
+.admin-card
+  .card-header
+    h3= "#{l(@report.worked_in, format: :short)} - #{@report.user.name}"
+    .btn-group
+      = link_to edit_system_admin_report_path(@report), class: 'btn btn-sm btn-default'
+        i.glyphicon.glyphicon-pencil
+        |  #{t('system_admin.common.edit')}
+      = button_to system_admin_report_path(@report), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-sm btn-danger', form: { style: 'display: inline' }
+        i.glyphicon.glyphicon-trash
+        |  #{t('system_admin.common.delete')}
+
+  .card-body
+    .detail-section
+      h4.section-title 基本情報
+      table.detail-table
+        tr
+          th ID
+          td= @report.id
+        tr
+          th= t('activerecord.attributes.report.worked_in')
+          td= l(@report.worked_in, format: :long)
+        tr
+          th ユーザー
+          td= link_to @report.user.name, system_admin_user_path(@report.user)
+        tr
+          th コメント
+          td= @report.comment.presence || '-'
+        tr
+          th= t('system_admin.common.created_at')
+          td= l(@report.created_at, format: :long)
+        tr
+          th= t('system_admin.common.updated_at')
+          td= l(@report.updated_at, format: :long)
+
+    .detail-section
+      h4.section-title= t('system_admin.reports.operations')
+      - if @operations.present?
+        table.table.admin-table
+          thead
+            tr
+              th プロジェクト
+              th 工数
+          tbody
+            - @operations.each do |operation|
+              tr
+                td= link_to operation.project.name, system_admin_project_path(operation.project)
+                td= "#{operation.workload}%"
+          tfoot
+            tr
+              th 合計
+              th= "#{@operations.sum(&:workload)}%"
+      - else
+        p.text-muted 作業内容がありません
+
+  .card-footer
+    = link_to system_admin_reports_path(user_id: @report.user_id), class: 'btn btn-default'
+      i.glyphicon.glyphicon-arrow-left
+      |  #{t('system_admin.common.back')}

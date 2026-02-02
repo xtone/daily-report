@@ -2,32 +2,18 @@ require 'digest/md5'
 
 module E2EHelpers
   include TurboHelpers if defined?(TurboHelpers)
-  
+
   def sign_in_as(user)
     visit '/users/sign_in'
     fill_in 'メールアドレス', with: user.email
     fill_in 'パスワード', with: 'password'
     click_button 'ログイン'
-    
+
     # ログイン後のページ遷移を安全に待つ
-    retries = 0
-    max_retries = 3
-    
-    begin
-      # ログインが成功したことを確認（日報ページにリダイレクトされる）
-      expect(page).to have_content('日報', wait: ENV['CI'] ? 15 : 10)
-      # Turbo Driveのページ遷移が完了するのを待つ
-      expect(page).to have_css('.navbar', wait: ENV['CI'] ? 15 : 10)
-      wait_for_page_load if respond_to?(:wait_for_page_load)
-    rescue Selenium::WebDriver::Error::UnknownError => e
-      if e.message.include?('Node with given id does not belong to the document') && retries < max_retries
-        retries += 1
-        sleep 1
-        retry
-      else
-        raise e
-      end
-    end
+    # ログインが成功したことを確認（日報ページにリダイレクトされる）
+    expect(page).to have_content('日報', wait: ENV['CI'] ? 15 : 10)
+    # Turbo Driveのページ遷移が完了するのを待つ
+    expect(page).to have_css('.navbar', wait: ENV['CI'] ? 15 : 10)
   end
 
   # Turbo Driveのナビゲーションを確実に待つためのヘルパー
@@ -62,11 +48,62 @@ module E2EHelpers
 
     # スクリーンショットディレクトリを作成
     FileUtils.mkdir_p('tmp/screenshots')
-    
+
     timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
     filename = "screenshot_#{timestamp}_#{RSpec.current_example.full_description.gsub(/[^0-9A-Za-z.\-]/, '_')}.png"
     page.save_screenshot("tmp/screenshots/#{filename}")
     puts "Screenshot saved: tmp/screenshots/#{filename}"
+  end
+
+  # Turbo/Rails UJSの確認ダイアログを自動承認するヘルパー
+  # このメソッドをブロックで使用して、ブロック内のクリックでconfirmダイアログを自動承認する
+  def accept_turbo_confirm(&block)
+    # 確認ダイアログをバイパスする方法:
+    # 1. window.confirmをオーバーライド
+    # 2. data-turbo-confirm属性を持つ要素からその属性を削除
+    # 3. data-confirm属性を持つ要素からその属性を削除
+    page.execute_script(<<~JS)
+      // window.confirmをオーバーライド
+      window.originalConfirm = window.confirm;
+      window.confirm = function() { return true; };
+
+      // Turbo.confirmをオーバーライド（Turbo 8+）
+      if (typeof Turbo !== 'undefined') {
+        if (Turbo.config && Turbo.config.forms) {
+          window.originalTurboConfirm = Turbo.config.forms.confirm;
+          Turbo.config.forms.confirm = function() { return Promise.resolve(true); };
+        }
+        // Turbo.setConfirmMethodも試す
+        if (Turbo.setConfirmMethod) {
+          Turbo.setConfirmMethod(function() { return Promise.resolve(true); });
+        }
+      }
+
+      // すべてのdata-turbo-confirmとdata-confirm属性を削除
+      document.querySelectorAll('[data-turbo-confirm]').forEach(function(el) {
+        el.removeAttribute('data-turbo-confirm');
+      });
+      document.querySelectorAll('[data-confirm]').forEach(function(el) {
+        el.removeAttribute('data-confirm');
+      });
+    JS
+    yield
+    # ページ遷移を待つ
+    sleep 1
+  end
+
+  # Turbo/Rails UJSの確認ダイアログを自動拒否するヘルパー
+  def dismiss_turbo_confirm(&block)
+    page.execute_script(<<~JS)
+      window.originalConfirm = window.confirm;
+      window.confirm = function() { return false; };
+      if (typeof Turbo !== 'undefined' && Turbo.config && Turbo.config.forms) {
+        window.originalTurboConfirm = Turbo.config.forms.confirm;
+        Turbo.config.forms.confirm = function() { return Promise.resolve(false); };
+      }
+    JS
+    yield
+    sleep 0.5
   end
 end
 

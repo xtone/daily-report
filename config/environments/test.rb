@@ -51,6 +51,10 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 
+  # Completely disable host authorization for tests
+  # The config.hosts must be cleared to prevent HostAuthorization middleware from being added
+  config.hosts.clear
+
   # Turbo Driveをテスト環境で無効化
   config.turbo = ActiveSupport::OrderedOptions.new
   config.turbo.draw_routes = true

@@ -1,0 +1,119 @@
+doctype html
+html
+  head
+    title= "#{t('system_admin.title')} | #{title}"
+    = csrf_meta_tags
+    - if Rails.env.test?
+      meta name="turbo-visit-control" content="reload"
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
+    = stylesheet_link_tag 'system_admin', media: 'all', 'data-turbo-track': 'reload'
+    = content_for(:head) if content_for?(:head)
+    = javascript_include_tag 'application'
+  body.system-admin-body
+    .system-admin-wrapper
+      / サイドバー
+      aside.system-admin-sidebar
+        .sidebar-header
+          = link_to system_admin_root_path, class: 'sidebar-brand'
+            span.brand-icon
+              i.glyphicon.glyphicon-cog
+            span.brand-text= t('system_admin.title')
+
+        nav.sidebar-nav
+          ul.nav-list
+            li.nav-item class=("#{'active' if controller_name == 'dashboard'}")
+              = link_to system_admin_root_path, class: 'nav-link'
+                i.glyphicon.glyphicon-dashboard
+                span= t('system_admin.nav.dashboard')
+
+            li.nav-item class=("#{'active' if controller_name == 'users'}")
+              = link_to system_admin_users_path, class: 'nav-link'
+                i.glyphicon.glyphicon-user
+                span= t('system_admin.nav.users')
+
+            li.nav-item class=("#{'active' if controller_name == 'projects'}")
+              = link_to system_admin_projects_path, class: 'nav-link'
+                i.glyphicon.glyphicon-folder-open
+                span= t('system_admin.nav.projects')
+
+            li.nav-item class=("#{'active' if controller_name == 'reports'}")
+              = link_to system_admin_reports_path, class: 'nav-link'
+                i.glyphicon.glyphicon-list-alt
+                span= t('system_admin.nav.reports')
+              - if controller_name == 'reports'
+                ul.nav-sublist
+                  li
+                    = link_to summary_system_admin_reports_path, class: 'nav-sublink'
+                      = t('system_admin.nav.reports_summary')
+                  li
+                    = link_to unsubmitted_system_admin_reports_path, class: 'nav-sublink'
+                      = t('system_admin.nav.reports_unsubmitted')
+
+            li.nav-item class=("#{'active' if controller_name == 'estimates'}")
+              = link_to system_admin_estimates_path, class: 'nav-link'
+                i.glyphicon.glyphicon-file
+                span= t('system_admin.nav.estimates')
+
+            li.nav-item class=("#{'active' if controller_name == 'bills'}")
+              = link_to system_admin_bills_path, class: 'nav-link'
+                i.glyphicon.glyphicon-credit-card
+                span= t('system_admin.nav.bills')
+
+            li.nav-item class=("#{'active' if controller_name == 'user_roles'}")
+              = link_to system_admin_user_roles_path, class: 'nav-link'
+                i.glyphicon.glyphicon-lock
+                span= t('system_admin.nav.user_roles')
+
+            li.nav-item class=("#{'active' if controller_name == 'csvs'}")
+              = link_to system_admin_csvs_path, class: 'nav-link'
+                i.glyphicon.glyphicon-download-alt
+                span= t('system_admin.nav.csvs')
+
+            li.nav-item class=("#{'active' if controller_name == 'retirement_processings'}")
+              = link_to system_admin_retirement_processings_path, class: 'nav-link'
+                i.glyphicon.glyphicon-log-out
+                span= t('system_admin.nav.retirement_processings')
+
+          hr.nav-divider
+
+          ul.nav-list
+            li.nav-item
+              = link_to root_path, class: 'nav-link'
+                i.glyphicon.glyphicon-home
+                span= t('system_admin.nav.back_to_app')
+
+            li.nav-item
+              = button_to destroy_user_session_path, method: :delete, class: 'nav-link logout-btn', form: { style: 'display: inline' }
+                i.glyphicon.glyphicon-log-out
+                span= t('system_admin.nav.logout')
+
+      / メインコンテンツ
+      main.system-admin-main
+        header.main-header
+          .header-left
+            h1.page-title= yield(:page_title)
+          .header-right
+            .user-info
+              span.user-name= current_user.name
+              span.user-role
+                - if current_user.administrator?
+                  span.label.label-danger= t('system_admin.roles.administrator')
+                - if current_user.director?
+                  span.label.label-info= t('system_admin.roles.director')
+
+        .main-content
+          - if flash[:notice]
+            .alert.alert-success.alert-dismissible role="alert"
+              button.close type="button" data-dismiss="alert" aria-label="Close"
+                span aria-hidden="true" &times;
+              = flash[:notice]
+
+          - if flash[:alert]
+            .alert.alert-danger.alert-dismissible role="alert"
+              button.close type="button" data-dismiss="alert" aria-label="Close"
+                span aria-hidden="true" &times;
+              = flash[:alert]
+
+          = yield
+
+    = content_for(:foot) if content_for?(:foot)

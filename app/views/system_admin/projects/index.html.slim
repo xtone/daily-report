@@ -1,0 +1,66 @@
+- content_for :page_title, t('system_admin.projects.title')
+
+/ フィルター
+.filters-form
+  = form_tag system_admin_projects_path, method: :get, class: 'form-inline'
+    .filter-row
+      .form-group
+        = text_field_tag :q, params[:q], class: 'form-control', placeholder: t('system_admin.projects.filters.search_placeholder')
+
+      .form-group
+        = select_tag :status, options_for_select([[t('system_admin.projects.filters.all'), ''], [t('system_admin.projects.filters.active'), 'active'], [t('system_admin.projects.filters.hidden'), 'hidden']], params[:status]), class: 'form-control'
+
+      .form-group
+        = select_tag :category, options_for_select([['カテゴリー', '']] + Project.categories.keys.map { |k| [Project.human_attribute_name("category.#{k}"), k] }, params[:category]), class: 'form-control'
+
+      .form-group
+        = submit_tag t('system_admin.common.search'), class: 'btn btn-primary'
+        = link_to t('system_admin.common.reset'), system_admin_projects_path, class: 'btn btn-default'
+
+/ プロジェクト一覧
+.admin-card
+  .card-header
+    h3= t('system_admin.projects.title')
+    = link_to new_system_admin_project_path, class: 'btn btn-sm btn-primary'
+      i.glyphicon.glyphicon-plus
+      |  #{t('system_admin.projects.new')}
+
+  .card-body
+    - if @projects.present?
+      table.table.admin-table
+        thead
+          tr
+            th ID
+            th コード
+            th= t('activerecord.attributes.project.name')
+            th= t('activerecord.attributes.project.name_reading')
+            th カテゴリー
+            th ステータス
+            th= t('system_admin.common.actions')
+        tbody
+          - @projects.each do |project|
+            tr
+              td= project.id
+              td= project.code
+              td= project.name
+              td= project.name_reading
+              td= project.category_i18n
+              td
+                - if project.displayed?
+                  span.badge-status.badge-active= t('system_admin.projects.status.active')
+                - else
+                  span.badge-status.badge-hidden= t('system_admin.projects.status.hidden')
+              td.actions
+                = link_to system_admin_project_path(project), class: 'btn btn-xs btn-default', title: t('system_admin.common.show')
+                  i.glyphicon.glyphicon-eye-open
+                = link_to edit_system_admin_project_path(project), class: 'btn btn-xs btn-default', title: t('system_admin.common.edit')
+                  i.glyphicon.glyphicon-pencil
+                = button_to system_admin_project_path(project), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-xs btn-danger', title: t('system_admin.common.delete'), form: { style: 'display: inline' }
+                  i.glyphicon.glyphicon-trash
+    - else
+      p.text-muted= t('system_admin.common.no_data')
+
+  - if @projects.present?
+    .card-footer
+      .pagination-wrapper
+        = paginate @projects

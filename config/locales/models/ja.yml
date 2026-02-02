@@ -63,6 +63,11 @@ ja:
     serial_no: 請求書NO
     amount: 請求金額
 
+  report: &report_attributes
+    worked_in: 勤務日
+    user: ユーザー
+    comment: コメント
+
   activerecord: &activerecord
     models:
       user: ユーザー
@@ -71,13 +76,17 @@ ja:
       operation: 稼働内容
       report: 日報
       estimate: 見積書
+      bill: 請求書
     attributes:
       user:
         <<: *user_attributes
       user_role:
         <<: *user_role_attributes
+        role: 権限
       project:
         <<: *project_attributes
+      report:
+        <<: *report_attributes
       estimate:
         <<: *estimate_attributes
       bill:
@@ -102,3 +111,7 @@ ja:
         engineer: エンジニア
         designer: デザイナー
         other: その他
+    user_role:
+      role:
+        administrator: 管理者
+        director: ディレクター

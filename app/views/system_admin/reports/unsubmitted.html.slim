@@ -1,0 +1,37 @@
+- content_for :page_title, t('system_admin.reports.unsubmitted.title')
+
+.card
+  .card-header
+    h4= t('system_admin.reports.unsubmitted.title')
+
+  .card-body
+    = form_tag unsubmitted_system_admin_reports_path, method: :get, class: 'form-inline mb-4'
+      .form-group.mr-3
+        = label_tag 'reports[start]', t('system_admin.reports.filters.date_from'), class: 'mr-2'
+        = date_field_tag 'reports[start]', @start_date, class: 'form-control'
+      .form-group.mr-3
+        = label_tag 'reports[end]', t('system_admin.reports.filters.date_to'), class: 'mr-2'
+        = date_field_tag 'reports[end]', @end_date, class: 'form-control'
+      = submit_tag t('system_admin.common.search'), class: 'btn btn-primary'
+
+    - if @data.present?
+      table.table.table-striped
+        thead
+          tr
+            th= t('activerecord.attributes.user.name')
+            th= t('system_admin.reports.unsubmitted.missing_dates')
+            th= t('system_admin.reports.unsubmitted.count')
+        tbody
+          - @data.each do |item|
+            tr
+              td= link_to item[:user].name, system_admin_user_path(item[:user])
+              td
+                - item[:dates].each do |date|
+                  span.badge.badge-warning.mr-1= l(date, format: :short)
+              td= item[:dates].count
+    - elsif params.dig(:reports, :start).present?
+      .alert.alert-success
+        = t('system_admin.reports.unsubmitted.all_submitted')
+
+  .card-footer
+    = link_to t('system_admin.common.back'), system_admin_reports_path, class: 'btn btn-secondary'

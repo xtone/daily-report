@@ -1,0 +1,8 @@
+- content_for :page_title, t('system_admin.users.edit')
+
+.admin-card
+  .card-header
+    h3= "#{t('system_admin.users.edit')}: #{@user.name}"
+
+  .card-body
+    = render 'form', user: @user

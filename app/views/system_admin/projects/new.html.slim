@@ -1,0 +1,8 @@
+- content_for :page_title, t('system_admin.projects.new')
+
+.admin-card
+  .card-header
+    h3= t('system_admin.projects.new')
+
+  .card-body
+    = render 'form', project: @project
