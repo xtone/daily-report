@@ -25,6 +25,10 @@ development:
     <<: *default
     database: daily-report_development_queue
     migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: daily-report_development_cable
+    migrations_paths: db/cable_migrate
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -37,6 +41,10 @@ test:
     <<: *default
     database: daily-report_test_queue
     migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: daily-report_test_cable
+    migrations_paths: db/cable_migrate
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -71,3 +79,10 @@ production:
     username: <%= ENV['DB_USERNAME'] %>
     password: <%= ENV['DB_PASSWORD'] %>
     migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: <%= ENV.fetch('SOLID_CABLE_DATABASE', 'daily-report_production_cable') %>
+    host: <%= ENV['DB_HOST'] %>
+    username: <%= ENV['DB_USERNAME'] %>
+    password: <%= ENV['DB_PASSWORD'] %>
+    migrations_paths: db/cable_migrate

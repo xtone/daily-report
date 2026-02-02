@@ -41,6 +41,8 @@ gem 'jbuilder'
 
 # Solid Queue for background jobs (Rails 8)
 gem 'solid_queue'
+# Solid Cable for Action Cable (Redis不要)
+gem 'solid_cable'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
