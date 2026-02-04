@@ -9,8 +9,8 @@ module SystemAdmin
       last_working_date = Date.parse(params[:last_working_date])
       retirement_date = Date.parse(params[:retirement_date])
 
-      if last_working_date >= retirement_date
-        return render json: { error: '最終出社日は退社日より前である必要があります' }, status: :unprocessable_entity
+      if last_working_date > retirement_date
+        return render json: { error: '開始日は終了日より後にできません' }, status: :unprocessable_entity
       end
 
       task = current_user.async_tasks.create!(
@@ -29,7 +29,7 @@ module SystemAdmin
       render json: {
         task_id: task.id,
         status: task.status,
-        message: '退職者処理を開始しました'
+        message: '休み一括登録を開始しました'
       }, status: :accepted
     end
 

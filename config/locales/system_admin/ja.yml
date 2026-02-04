@@ -14,7 +14,7 @@ ja:
       bills: 請求書管理
       user_roles: 権限管理
       csvs: CSV出力
-      retirement_processings: 退職者処理
+      retirement_processings: 休み一括登録
       back_to_app: アプリに戻る
       logout: ログアウト
 
@@ -174,7 +174,7 @@ ja:
         title: ユーザー一覧
 
     retirement_processings:
-      title: 退職者処理
+      title: 休み一括登録
 
     common:
       actions: 操作

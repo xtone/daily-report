@@ -13,7 +13,7 @@ class FillAbsentReportsJob < ApplicationJob
       last_working_date = Date.parse(@task.params['last_working_date'])
       retirement_date = Date.parse(@task.params['retirement_date'])
 
-      business_days = calculate_business_days(last_working_date + 1.day, retirement_date)
+      business_days = calculate_business_days(last_working_date, retirement_date)
 
       @task.update!(
         status: AsyncTask::STATUSES[:processing],
@@ -31,7 +31,7 @@ class FillAbsentReportsJob < ApplicationJob
         result: {
           created_reports_count: business_days.count,
           target_user_name: target_user.name,
-          date_range: "#{(last_working_date + 1.day).strftime('%Y/%m/%d')} - #{retirement_date.strftime('%Y/%m/%d')}"
+          date_range: "#{last_working_date.strftime('%Y/%m/%d')} - #{retirement_date.strftime('%Y/%m/%d')}"
         }
       )
       @task.broadcast_status_change
