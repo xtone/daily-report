@@ -271,12 +271,11 @@ class RetirementProcessor extends React.Component {
 			<div className="retirement-processor">
 				<div className="panel panel-default">
 					<div className="panel-heading">
-						<h3 className="panel-title">退職者処理</h3>
+						<h3 className="panel-title">休み一括登録</h3>
 					</div>
 					<div className="panel-body">
 						<p className="text-muted" style={{ marginBottom: "20px" }}>
-							退職者の最終出社日翌日から退社日までの営業日を「休み
-							100%」で埋めます。
+							開始日から終了日までの営業日を「休み 100%」で埋めます。
 						</p>
 
 						<form onSubmit={this.handleSubmit}>
@@ -299,7 +298,7 @@ class RetirementProcessor extends React.Component {
 							</div>
 
 							<div className="form-group">
-								<label htmlFor="last_working_date">最終出社日</label>
+								<label htmlFor="last_working_date">開始日</label>
 								<input
 									type="date"
 									id="last_working_date"
@@ -311,7 +310,7 @@ class RetirementProcessor extends React.Component {
 							</div>
 
 							<div className="form-group">
-								<label htmlFor="retirement_date">退社日</label>
+								<label htmlFor="retirement_date">終了日</label>
 								<input
 									type="date"
 									id="retirement_date"
