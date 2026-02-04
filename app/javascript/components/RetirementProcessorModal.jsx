@@ -304,18 +304,17 @@ class RetirementProcessorModal extends React.Component {
 							>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title">退職者処理</h4>
+							<h4 className="modal-title">休み一括登録</h4>
 						</div>
 						<div className="modal-body">
 							<p className="text-muted" style={{ marginBottom: "20px" }}>
 								<strong>{userName}</strong>{" "}
-								さんの最終出社日翌日から退社日までの営業日を「休み
-								100%」で埋めます。
+								さんの開始日から終了日までの営業日を「休み 100%」で埋めます。
 							</p>
 
 							<form onSubmit={this.handleSubmit}>
 								<div className="form-group">
-									<label htmlFor="modal_last_working_date">最終出社日</label>
+									<label htmlFor="modal_last_working_date">開始日</label>
 									<input
 										type="date"
 										id="modal_last_working_date"
@@ -327,7 +326,7 @@ class RetirementProcessorModal extends React.Component {
 								</div>
 
 								<div className="form-group">
-									<label htmlFor="modal_retirement_date">退社日</label>
+									<label htmlFor="modal_retirement_date">終了日</label>
 									<input
 										type="date"
 										id="modal_retirement_date"
@@ -398,10 +397,10 @@ class RetirementProcessorModal extends React.Component {
 					onClick={this.openModal}
 				>
 					<span
-						className="glyphicon glyphicon-log-out"
+						className="glyphicon glyphicon-calendar"
 						aria-hidden="true"
 					></span>{" "}
-					退職者処理
+					休み一括登録
 				</button>
 				{this.renderModal()}
 			</>
