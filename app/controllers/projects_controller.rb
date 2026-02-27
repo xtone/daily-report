@@ -58,7 +58,7 @@ class ProjectsController < ApplicationController
       redirect_to projects_path, notice: '新規プロジェクトを作成しました。'
     else
       flash.now[:alert] = (%w[新規プロジェクトの作成に失敗しました。] << @project.errors.full_messages).join("\n")
-      render :new and return
+      render :new, status: :unprocessable_entity and return
     end
   end
 
@@ -68,7 +68,7 @@ class ProjectsController < ApplicationController
       redirect_to projects_path, notice: 'プロジェクトの設定を更新しました。'
     else
       flash.now[:alert] = (%w[プロジェクトの設定の更新に失敗しました。] << @project.errors.full_messages).join("\n")
-      render :edit and return
+      render :edit, status: :unprocessable_entity and return
     end
   end
 
@@ -81,7 +81,7 @@ class ProjectsController < ApplicationController
     end
 
     flash.now[:alert] = (%w[日報に登録されているプロジェクトは削除できません。] << @project.errors.full_messages).join("\n")
-    render :show
+    render :show, status: :unprocessable_entity
   end
 
   private
