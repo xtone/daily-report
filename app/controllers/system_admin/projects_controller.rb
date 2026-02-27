@@ -34,7 +34,7 @@ module SystemAdmin
       if @project.save
         redirect_to system_admin_project_path(@project), notice: I18n.t('system_admin.projects.created')
       else
-        render :new
+        render :new, status: :unprocessable_entity
       end
     end
 
@@ -42,7 +42,7 @@ module SystemAdmin
       if @project.update(project_params)
         redirect_to system_admin_project_path(@project), notice: I18n.t('system_admin.projects.updated')
       else
-        render :edit
+        render :edit, status: :unprocessable_entity
       end
     end
 
