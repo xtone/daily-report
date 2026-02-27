@@ -18,6 +18,7 @@ html
 
     .container
       == breadcrumbs style: :bootstrap
+      = render_flash_message
       = yield
 
     = content_for(:foot) if content_for?(:foot)
