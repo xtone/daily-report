@@ -1,0 +1,379 @@
+openapi: 3.0.3
+info:
+  title: Daily Report API
+  description: 社内日報管理システム API
+  version: 1.0.0
+
+servers:
+  - url: /
+    description: Current server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: APIトークンによるBearer認証
+
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: プロジェクトID
+          example: 1
+        name:
+          type: string
+          description: プロジェクト名
+          example: プロジェクトA
+      required:
+        - id
+        - name
+
+    Operation:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 作業ID
+          example: 456
+        project:
+          $ref: "#/components/schemas/Project"
+        workload:
+          type: integer
+          description: 工数（1〜100）
+          minimum: 1
+          maximum: 100
+          example: 50
+      required:
+        - id
+        - project
+        - workload
+
+    Report:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 日報ID
+          example: 123
+        operations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Operation"
+      required:
+        - id
+        - operations
+
+    ReportEntry:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: 日付（YYYY-MM-DD形式）
+          example: "2024-01-15"
+        wday:
+          type: integer
+          description: 曜日（0=日曜〜6=土曜）
+          minimum: 0
+          maximum: 6
+          example: 1
+        holiday:
+          type: boolean
+          description: 祝日かどうか
+          example: false
+        report:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/Report"
+          description: 日報データ（未作成の場合はnull）
+      required:
+        - date
+        - wday
+        - holiday
+        - report
+
+    SettingsProject:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: プロジェクトID
+          example: 1
+        name:
+          type: string
+          description: プロジェクト名
+          example: プロジェクトA
+        code:
+          type: integer
+          nullable: true
+          description: プロジェクトコード
+          example: 24001
+        name_reading:
+          type: string
+          description: プロジェクト名読み（ひらがな）
+          example: ぷろじぇくとえー
+        related:
+          type: boolean
+          description: 現在のユーザーがプロジェクトに関連付けられているか
+          example: true
+      required:
+        - id
+        - name
+        - code
+        - name_reading
+        - related
+
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: unauthorized
+      required:
+        - error
+
+security:
+  - BearerAuth: []
+
+paths:
+  /reports.json:
+    get:
+      summary: 日報一覧取得
+      description: |
+        指定月の日報一覧を取得する。
+        dateパラメータ未指定時は当日を含む1週間分（当日-4日〜当日+2日）を返す。
+      tags:
+        - Reports
+      parameters:
+        - name: date
+          in: query
+          required: false
+          description: 対象年月（YYYYMM形式）
+          schema:
+            type: string
+            pattern: "^\\d{6}$"
+            example: "202401"
+      responses:
+        "200":
+          description: 日報一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReportEntry"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+
+    post:
+      summary: 日報作成
+      description: 指定日の日報を作成する。project_idsとworkloadsは同じ長さの配列で指定する。
+      tags:
+        - Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                worked_in:
+                  type: string
+                  format: date
+                  description: 勤務日（YYYY-MM-DD形式）
+                  example: "2024-01-15"
+                project_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: プロジェクトIDの配列
+                  example: [1, 2]
+                workloads:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                    maximum: 100
+                  description: 工数の配列（各要素1〜100）
+                  example: [50, 50]
+              required:
+                - worked_in
+                - project_ids
+                - workloads
+      responses:
+        "200":
+          description: 作成された日報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportEntry"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+
+  /reports/{id}.json:
+    patch:
+      summary: 日報更新
+      description: |
+        既存の日報を更新する。
+        operation_ids, project_ids, workloadsは同じ長さの配列で指定する。
+        operation_idsに空文字列を指定すると新規作業として追加される。
+      tags:
+        - Reports
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 日報ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                operation_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: 作業IDの配列（新規作業は空文字列）
+                  example: ["456", ""]
+                project_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: プロジェクトIDの配列
+                  example: [1, 2]
+                workloads:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                    maximum: 100
+                  description: 工数の配列（各要素1〜100）
+                  example: [50, 50]
+              required:
+                - operation_ids
+                - project_ids
+                - workloads
+      responses:
+        "200":
+          description: 更新された日報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportEntry"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+
+    delete:
+      summary: 日報削除
+      description: 指定された日報を削除する。削除後、該当日のreportフィールドはnullになる。
+      tags:
+        - Reports
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 日報ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 削除完了（該当日のreportはnull）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportEntry"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+
+  /settings/projects.json:
+    get:
+      summary: プロジェクト一覧取得
+      description: |
+        利用可能なプロジェクトの一覧を取得する。
+        各プロジェクトにはユーザーとの関連付け状態（related）が含まれる。
+        name_readingの昇順でソートされる。
+      tags:
+        - Settings/Projects
+      responses:
+        "200":
+          description: プロジェクト一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SettingsProject"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+
+  /settings/projects/{id}.json:
+    patch:
+      summary: プロジェクト関連付け追加
+      description: 現在のユーザーを指定プロジェクトに関連付ける。
+      tags:
+        - Settings/Projects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: プロジェクトID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 関連付け完了
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+
+    delete:
+      summary: プロジェクト関連付け削除
+      description: 現在のユーザーと指定プロジェクトの関連付けを削除する。
+      tags:
+        - Settings/Projects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: プロジェクトID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 関連付け削除完了
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
