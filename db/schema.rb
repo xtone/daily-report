@@ -22,7 +22,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_000001) do
     t.index ["token_digest"], name: "index_api_tokens_on_token_digest", unique: true
     t.index ["user_id"], name: "index_api_tokens_on_user_id"
   end
-    
+
   create_table "async_tasks", charset: "utf8", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "task_type", null: false
