@@ -113,9 +113,49 @@ class ReportsController < ApplicationController
     end
   end
 
+  def copy_sources
+    respond_to do |format|
+      format.json do
+        date = Date.parse(params[:date])
+        render json: {
+          previous_day: build_copy_source(current_user, find_previous_business_day(date)),
+          last_week: build_copy_source(current_user, date - 7)
+        }
+      rescue Date::Error
+        head :bad_request
+      end
+    end
+  end
+
   private
 
   def get_resource
     @report = Report.find(params[:id])
+  end
+
+  def find_previous_business_day(date)
+    candidate = date - 1
+    30.times do
+      return candidate unless candidate.saturday? || candidate.sunday? || candidate.holiday?(:jp)
+      candidate -= 1
+    end
+    nil
+  end
+
+  def build_copy_source(user, source_date)
+    return { available: false, source_date: nil, operations: [] } if source_date.nil?
+
+    report = user.reports.includes(operations: :project).find_by(worked_in: source_date)
+    if report
+      {
+        available: true,
+        source_date: source_date.to_s,
+        operations: report.operations.map { |op|
+          { project_id: op.project_id, project_name: op.project.name, workload: op.workload }
+        }
+      }
+    else
+      { available: false, source_date: source_date.to_s, operations: [] }
+    end
   end
 end
