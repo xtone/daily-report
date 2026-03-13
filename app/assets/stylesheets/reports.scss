@@ -48,6 +48,17 @@ ul.date-pager {
         padding: 0.2em 0.5em;
       }
     }
+    .copy-buttons {
+      margin-left: auto;
+      align-self: flex-start;
+      .btn {
+        margin-left: 0.25em;
+      }
+      .btn[disabled] {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
   }
 }
 

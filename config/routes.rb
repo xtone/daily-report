@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     collection do
       resource :summary, only: %i(show), module: :reports
       resource :unsubmitted, only: %i(show), module: :reports
+      get :copy_sources
     end
   end
   resources :projects do
