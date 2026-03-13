@@ -1,0 +1,19 @@
+- content_for :page_title, t('system_admin.feature_flags.new')
+
+.admin-card
+  .card-header
+    h3= t('system_admin.feature_flags.new')
+
+  .card-body
+    = form_tag system_admin_feature_flags_path, method: :post, class: 'form-horizontal'
+      .form-group
+        label.col-sm-3.control-label for="feature_key"
+          = t('system_admin.feature_flags.key')
+        .col-sm-6
+          input.form-control#feature_key name="feature_key" type="text" required="required" pattern="[a-z][a-z0-9_]*" placeholder=t('system_admin.feature_flags.key_placeholder')
+          p.help-block= t('system_admin.feature_flags.key_hint')
+
+      .form-group
+        .col-sm-offset-3.col-sm-6
+          = submit_tag t('system_admin.common.create'), class: 'btn btn-primary'
+          = link_to t('system_admin.common.back'), system_admin_feature_flags_path, class: 'btn btn-default'

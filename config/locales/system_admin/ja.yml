@@ -15,6 +15,7 @@ ja:
       user_roles: 権限管理
       csvs: CSV出力
       retirement_processings: 休み一括登録
+      feature_flags: Feature Flag管理
       back_to_app: アプリに戻る
       logout: ログアウト
 
@@ -175,6 +176,34 @@ ja:
 
     retirement_processings:
       title: 休み一括登録
+
+    feature_flags:
+      title: Feature Flag管理
+      new: 新規フラグ作成
+      show: フラグ詳細
+      key: フラグキー
+      key_placeholder: 例：new_dashboard
+      key_hint: 半角英小文字・数字・アンダースコアのみ（先頭は英小文字）
+      status: ステータス
+      enabled: 有効
+      disabled: 無効
+      enable: 有効にする
+      disable: 無効にする
+      created: フラグを作成しました
+      deleted: フラグを削除しました
+      toggled: フラグのステータスを変更しました
+      invalid_key: フラグキーの形式が不正です（半角英小文字で始まり、英小文字・数字・アンダースコアのみ使用可能）
+      already_exists: このフラグキーは既に存在します
+      not_found: 指定されたフラグが見つかりません
+      global_status: グローバルステータス
+      actor_management: アクター管理
+      actor_description: 特定のユーザーに対してのみフラグを有効にできます
+      select_user: ユーザーを選択
+      add_actor: 追加
+      actor_enabled: "%{user}に対してフラグを有効にしました"
+      actor_disabled: "%{user}に対してフラグを無効にしました"
+      no_actors: アクターが登録されていません
+      unknown_user: 不明なユーザー
 
     common:
       actions: 操作

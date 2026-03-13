@@ -1,0 +1,34 @@
+- content_for :page_title, t('system_admin.feature_flags.title')
+
+.admin-card
+  .card-header
+    h3= t('system_admin.feature_flags.title')
+    .card-actions
+      = link_to new_system_admin_feature_flag_path, class: 'btn btn-primary btn-sm'
+        i.glyphicon.glyphicon-plus
+        |  #{t('system_admin.feature_flags.new')}
+
+  .card-body
+    - if @features.present?
+      table.table.admin-table
+        thead
+          tr
+            th= t('system_admin.feature_flags.key')
+            th= t('system_admin.feature_flags.status')
+            th= t('system_admin.common.actions')
+        tbody
+          - @features.each do |feature|
+            tr
+              td= feature.key
+              td
+                - if feature.enabled?
+                  span.badge-status.badge-active= t('system_admin.feature_flags.enabled')
+                - else
+                  span.badge-status.badge-inactive= t('system_admin.feature_flags.disabled')
+              td.actions
+                = link_to system_admin_feature_flag_path(feature.key), class: 'btn btn-xs btn-default', title: t('system_admin.common.show')
+                  i.glyphicon.glyphicon-eye-open
+                = button_to system_admin_feature_flag_path(feature.key), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-xs btn-danger', title: t('system_admin.common.delete'), form: { style: 'display: inline' }
+                  i.glyphicon.glyphicon-trash
+    - else
+      p.text-muted= t('system_admin.common.no_data')
