@@ -73,6 +73,10 @@ gem 'enum_help'
 # Use Kaminari for pagination
 gem 'kaminari'
 
+# Feature Flag management
+gem 'flipper', '~> 1.3'
+gem 'flipper-active_record', '~> 1.3'
+
 # Use Spreadsheet to read xls file
 gem 'roo-xls', '~> 1.1.0'
 gem 'spreadsheet'
