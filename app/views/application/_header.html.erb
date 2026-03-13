@@ -23,6 +23,11 @@
               <%= link_to '管理画面', admin_root_path %>
             </li>
           <% end %>
+          <% if feature_enabled?(:system_admin, current_user) && current_user.administrator? %>
+            <li class="<%= 'active' if request.path.start_with?('/system_admin') %>">
+              <%= link_to 'システム管理', system_admin_root_path %>
+            </li>
+          <% end %>
         </ul>
         <%= form_with url: destroy_user_session_path, method: 'delete', class: 'navbar-form navbar-right', local: true do %>
           <%= submit_tag 'ログアウト', class: 'btn btn-default' %>
