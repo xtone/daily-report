@@ -1,0 +1,64 @@
+- content_for :page_title, t('system_admin.feature_flags.show')
+
+.admin-card
+  .card-header
+    h3= @feature.key
+
+  .card-body
+    .detail-section
+      h4.section-title= t('system_admin.feature_flags.global_status')
+      .row
+        .col-sm-6
+          p
+            - if @feature.enabled?
+              span.badge-status.badge-active= t('system_admin.feature_flags.enabled')
+            - else
+              span.badge-status.badge-inactive= t('system_admin.feature_flags.disabled')
+          = button_to toggle_system_admin_feature_flag_path(@feature.key), method: :patch, class: "btn btn-sm #{@feature.enabled? ? 'btn-warning' : 'btn-success'}", form: { style: 'display: inline' }
+            - if @feature.enabled?
+              = t('system_admin.feature_flags.disable')
+            - else
+              = t('system_admin.feature_flags.enable')
+
+    hr
+
+    .detail-section
+      h4.section-title= t('system_admin.feature_flags.actor_management')
+      p.text-muted= t('system_admin.feature_flags.actor_description')
+
+      = form_tag enable_actor_system_admin_feature_flag_path(@feature.key), method: :post, class: 'form-inline', style: 'margin-bottom: 15px;'
+        .form-group
+          select.form-control name="user_id"
+            option value=""
+              = t('system_admin.feature_flags.select_user')
+            - User.available.order(:name).each do |user|
+              option value=user.id
+                = "#{user.name} (#{user.email})"
+        = submit_tag t('system_admin.feature_flags.add_actor'), class: 'btn btn-primary btn-sm'
+
+      - if @actors.present?
+        table.table.admin-table
+          thead
+            tr
+              th ID
+              th= t('activerecord.attributes.user.name')
+              th= t('activerecord.attributes.user.email')
+              th= t('system_admin.common.actions')
+          tbody
+            - @actors.each do |actor_value|
+              - user_id = actor_value.delete_prefix('User;')
+              - user = @actor_users[user_id]
+              tr
+                td= user_id
+                td= user&.name || t('system_admin.feature_flags.unknown_user')
+                td= user&.email || '-'
+                td.actions
+                  = button_to disable_actor_system_admin_feature_flag_path(@feature.key, user_id: user_id), method: :delete, data: { turbo_confirm: t('system_admin.common.confirm_delete') }, class: 'btn btn-xs btn-danger', form: { style: 'display: inline' }
+                    i.glyphicon.glyphicon-remove
+      - else
+        p.text-muted= t('system_admin.feature_flags.no_actors')
+
+  .card-footer
+    = link_to system_admin_feature_flags_path, class: 'btn btn-default'
+      i.glyphicon.glyphicon-arrow-left
+      |  #{t('system_admin.common.back')}

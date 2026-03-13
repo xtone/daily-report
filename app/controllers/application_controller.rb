@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
+  include FeatureFlaggable
   protect_from_forgery with: :exception
 
   before_action :set_locale

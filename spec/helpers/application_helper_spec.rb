@@ -129,6 +129,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:current_page?).and_return(false)
+      helper.define_singleton_method(:feature_enabled?) { |*_args| false }
     end
 
     it 'ナビゲーションメニューを含むulタグを返す' do

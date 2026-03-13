@@ -90,5 +90,12 @@ Rails.application.routes.draw do
         post :cancel
       end
     end
+    resources :feature_flags, only: %i[index show new create destroy] do
+      member do
+        patch :toggle
+        post :enable_actor
+        delete :disable_actor
+      end
+    end
   end
 end

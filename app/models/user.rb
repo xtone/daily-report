@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Flipper::Identifier
+
   devise :database_authenticatable, :rememberable, :encryptable
 
   enum :division, { undefined: 0, sales_director: 1, engineer: 2, designer: 3, other: 4 }

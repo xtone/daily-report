@@ -53,9 +53,17 @@ module ApplicationHelper
       concat(content_tag(:li, class: current_page?(settings_password_path) ? 'active' : nil) do
         link_to 'パスワード変更', settings_password_path
       end)
+      concat(content_tag(:li, class: current_page?(settings_api_tokens_path) ? 'active' : nil) do
+        link_to 'APIトークン', settings_api_tokens_path
+      end)
       if current_user.user_roles.present?
         concat(content_tag(:li, class: current_page?(admin_root_path) ? 'active' : nil) do
           link_to '管理画面', admin_root_path
+        end)
+      end
+      if feature_enabled?(:system_admin, current_user) && current_user.administrator?
+        concat(content_tag(:li, class: request.path.start_with?('/system_admin') ? 'active' : nil) do
+          link_to 'システム管理', system_admin_root_path
         end)
       end
     end

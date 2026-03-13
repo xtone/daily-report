@@ -74,6 +74,11 @@ html
                 i.glyphicon.glyphicon-calendar
                 span= t('system_admin.nav.retirement_processings')
 
+            li.nav-item class=("#{'active' if controller_name == 'feature_flags'}")
+              = link_to system_admin_feature_flags_path, class: 'nav-link'
+                i.glyphicon.glyphicon-flag
+                span= t('system_admin.nav.feature_flags')
+
           hr.nav-divider
 
           ul.nav-list
